@@ -25,6 +25,7 @@ class _RecomUserRoadState extends State<RecomUserRoad> {
   @override
   Widget build(BuildContext context) {
     return InkWell(
+      borderRadius: BorderRadius.circular(12.0),
       onTap: () {
         Navigator.of(context).push(MaterialPageRoute(builder: (context) {
           return RecomUserPage(

@@ -44,7 +44,7 @@ class _SearchBarState extends State<SearchBar> {
               ),
             ),
             Expanded(
-              child: InkWell(
+              child: GestureDetector(
                 onTap: () {
                   Navigator.push(
                     context,

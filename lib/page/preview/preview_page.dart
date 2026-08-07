@@ -149,17 +149,24 @@ class _PreviewPageState extends State<PreviewPage> {
               crossAxisCount: 2,
             ),
             itemBuilder: (BuildContext context, int index) {
-              return InkWell(
-                onTap: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (BuildContext context) => GoToLoginPage(
-                          illust: _lightingStore.iStores[index].illusts!)));
-                },
-                child: Card(
-                  child: Container(
-                    child: PixivImage(_lightingStore
-                        .iStores[index].illusts!.imageUrls.squareMedium),
+              return Material(
+                color: Colors.transparent,
+                borderRadius: BorderRadius.circular(4.0),
+                clipBehavior: Clip.antiAlias,
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(4.0),
+                  onTap: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (BuildContext context) => GoToLoginPage(
+                            illust: _lightingStore.iStores[index].illusts!)));
+                  },
+                  child: Card(
+                    child: Container(
+                      child: PixivImage(_lightingStore
+                          .iStores[index].illusts!.imageUrls.squareMedium),
+                    ),
                   ),
+              
                 ),
               );
             },

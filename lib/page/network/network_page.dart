@@ -9,7 +9,7 @@ class NetworkPage extends StatefulWidget {
   final bool? automaticallyImplyLeading;
 
   const NetworkPage({Key? key, this.automaticallyImplyLeading})
-    : super(key: key);
+      : super(key: key);
 
   @override
   _NetworkPageState createState() => _NetworkPageState();
@@ -75,9 +75,13 @@ class _NetworkPageState extends State<NetworkPage> {
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Card(
+                    clipBehavior: Clip.antiAlias,
                     child: Column(
                       children: [
                         ListTile(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12.0),
+                          ),
                           title: Text(
                             I18n.of(context).image_site,
                             style: TextStyle(
@@ -97,6 +101,9 @@ class _NetworkPageState extends State<NetworkPage> {
                           ),
                         ),
                         ListTile(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12.0),
+                          ),
                           title: Text(
                             I18n.of(context).default_title,
                             style: TextStyle(
@@ -117,6 +124,9 @@ class _NetworkPageState extends State<NetworkPage> {
                           },
                         ),
                         ListTile(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12.0),
+                          ),
                           title: Text(
                             ImageCatHost,
                             style: TextStyle(
@@ -135,6 +145,9 @@ class _NetworkPageState extends State<NetworkPage> {
                           },
                         ),
                         ListTile(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12.0),
+                          ),
                           selected:
                               userSetting.pictureSource != ImageHost &&
                               userSetting.pictureSource != ImageCatHost,
@@ -197,9 +210,13 @@ class _NetworkPageState extends State<NetworkPage> {
 
   Widget _buildNetworkModeSetting(BuildContext context) {
     return Card(
+      clipBehavior: Clip.antiAlias,
       child: Column(
         children: [
           ListTile(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12.0),
+            ),
             title: Text(I18n.of(context).network_mode),
             subtitle: Text(I18n.of(context).network_mode_restart_may_required),
           ),
@@ -207,14 +224,18 @@ class _NetworkPageState extends State<NetworkPage> {
             context,
             title: I18n.of(context).network_mode_oauth,
             groupValue: userSetting.oauthNetworkMode,
-            onChanged: userSetting.setOAuthNetworkMode,
+            onChanged: (NetworkMode value) async {
+              await userSetting.setOAuthNetworkMode(value);
+            },
           ),
           Divider(height: 1),
           _buildModeGroup(
             context,
             title: I18n.of(context).network_mode_api_service,
             groupValue: userSetting.networkMode,
-            onChanged: userSetting.setNetworkMode,
+            onChanged: (NetworkMode value) async {
+              await userSetting.setNetworkMode(value);
+            },
           ),
         ],
       ),
@@ -225,27 +246,37 @@ class _NetworkPageState extends State<NetworkPage> {
     BuildContext context, {
     required String title,
     required NetworkMode groupValue,
-    required Future Function(NetworkMode value) onChanged,
+    required Future<void> Function(NetworkMode value) onChanged,
   }) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        ListTile(title: Text(title)),
-        RadioGroup<NetworkMode>(
-          groupValue: groupValue,
-          onChanged: (value) async {
-            if (value == null || value == groupValue) return;
-            await onChanged(value);
-          },
-          child: Column(
-            children: NetworkMode.selectableValues.map((mode) {
-              return RadioListTile<NetworkMode>(
-                value: mode,
-                title: Text(_networkModeTitle(context, mode)),
-                subtitle: Text(_networkModeMessage(context, mode)),
-              );
-            }).toList(),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+          child: Text(
+            title,
+            style: TextStyle(
+              color: Theme.of(context).textTheme.bodyLarge?.color,
+              fontWeight: FontWeight.w500,
+            ),
           ),
         ),
+        ...NetworkMode.selectableValues.map((mode) {
+          return RadioListTile<NetworkMode>(
+            value: mode,
+            groupValue: groupValue,
+            onChanged: (value) {
+              if (value != null && value != groupValue) {
+                onChanged(value);
+              }
+            },
+            title: Text(_networkModeTitle(context, mode)),
+            subtitle: Text(_networkModeMessage(context, mode)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12.0),
+            ),
+          );
+        }).toList(),
       ],
     );
   }

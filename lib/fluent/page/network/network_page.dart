@@ -9,7 +9,7 @@ class NetworkPage extends StatefulWidget {
   final bool? automaticallyImplyLeading;
 
   const NetworkPage({Key? key, this.automaticallyImplyLeading})
-    : super(key: key);
+      : super(key: key);
 
   @override
   _NetworkPageState createState() => _NetworkPageState();
@@ -63,14 +63,18 @@ class _NetworkPageState extends State<NetworkPage> {
             context,
             title: I18n.of(context).network_mode_oauth,
             groupValue: userSetting.oauthNetworkMode,
-            onChanged: userSetting.setOAuthNetworkMode,
+            onChanged: (NetworkMode value) async {
+              await userSetting.setOAuthNetworkMode(value);
+            },
           ),
           const SizedBox(height: 12),
           _buildModeGroup(
             context,
             title: I18n.of(context).network_mode_api_service,
             groupValue: userSetting.networkMode,
-            onChanged: userSetting.setNetworkMode,
+            onChanged: (NetworkMode value) async {
+              await userSetting.setNetworkMode(value);
+            },
           ),
         ],
       ),
@@ -153,7 +157,7 @@ class _NetworkPageState extends State<NetworkPage> {
     BuildContext context, {
     required String title,
     required NetworkMode groupValue,
-    required Future Function(NetworkMode value) onChanged,
+    required Future<void> Function(NetworkMode value) onChanged,
   }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

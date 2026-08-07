@@ -384,10 +384,12 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8.0),
           child: Card(
+            clipBehavior: Clip.antiAlias,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(12)),
             ),
             child: InkWell(
+              borderRadius: BorderRadius.circular(12.0),
               onTap: () {
                 if (_LinkCloser != null) _LinkCloser!();
                 var uri = Uri.tryParse(link);

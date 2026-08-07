@@ -98,11 +98,13 @@ class _NetworkSettingPageState extends State<NetworkSettingPage> {
       body: ListView(
         children: [
           ListTile(
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28.0)),
             title: Text("app-api.pixiv.net"),
             subtitle: Text("Host:" + ApiClient.BASE_API_URL_HOST),
             trailing: _buildCheckIcon(apiStatus),
           ),
           ListTile(
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28.0)),
             title: Text(ImageHost),
             subtitle: Text("Host:" + splashStore.host),
             trailing: _buildCheckIcon(imgStatus),

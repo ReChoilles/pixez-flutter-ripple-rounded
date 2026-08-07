@@ -78,24 +78,31 @@ class _IllustCardState extends State<IllustCard> {
 
   @override
   Widget build(BuildContext context) {
-    if (userSetting.hIsNotAllow)
+    if (userSetting.hIsNotAllow) {
       for (int i = 0; i < store.illusts!.tags.length; i++) {
         if (store.illusts!.tags[i].name.startsWith('R-18')) {
-          return InkWell(
-            onTap: () => _buildTap(context),
-            onLongPress: () => _onLongPressSave(),
-            child: Card(
-              margin: EdgeInsets.all(8.0),
-              elevation: 8.0,
-              clipBehavior: Clip.antiAlias,
-              shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(8.0)),
+          return Material(
+            color: Colors.transparent,
+            borderRadius: BorderRadius.circular(8.0),
+            clipBehavior: Clip.antiAlias,
+            child: InkWell(
+              borderRadius: BorderRadius.circular(8.0),
+              onTap: () => _buildTap(context),
+              onLongPress: () => _onLongPressSave(),
+              child: Card(
+                margin: EdgeInsets.all(8.0),
+                elevation: 8.0,
+                clipBehavior: Clip.antiAlias,
+                shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                ),
+                child: Image.asset(Constants.no_h),
               ),
-              child: Image.asset(Constants.no_h),
             ),
           );
         }
       }
+    }
     return _buildInkWell(context);
   }
 
@@ -125,7 +132,7 @@ class _IllustCardState extends State<IllustCard> {
           );
         },
       );
-      if (!result) {
+      if (result != true) {
         return;
       }
     }
@@ -208,6 +215,9 @@ class _IllustCardState extends State<IllustCard> {
       margin: EdgeInsets.all(8.0),
       clipBehavior: Clip.antiAlias,
       color: Theme.of(context).colorScheme.surface,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12.0),
+      ),
       child: _buildAnimationWraper(
         context,
         Column(
@@ -229,14 +239,6 @@ class _IllustCardState extends State<IllustCard> {
                       ],
                     ),
                   ),
-                  // Positioned(
-                  //   top: 0,
-                  //   left: 0,
-                  //   child: CustomPaint(
-                  //     size: Size(36, 36),
-                  //     painter: TrianglePainter(),
-                  //   ),
-                  // ),
                 ],
               ),
             ),
@@ -288,6 +290,7 @@ class _IllustCardState extends State<IllustCard> {
 
   Widget _buildAnimationWraper(BuildContext context, Widget child) {
     return InkWell(
+      borderRadius: BorderRadius.circular(12.0),
       onLongPress: () {
         _buildLongPressToSaveHint();
       },
@@ -390,7 +393,6 @@ class _IllustCardState extends State<IllustCard> {
                 if (userSetting.saveAfterStar && (store.state == 0)) {
                   saveStore.saveImage(store.illusts!);
                 }
-                // TODO: 添加配置项 开关和过滤器
                 final List<String>? tags;
                 if (userSetting.autoTagWhenStar) {
                   final filters = [RegExp(r"\d+users入り")];

@@ -90,6 +90,7 @@ class _TagForIllustPageState extends State<TagForIllustPage> {
                           children: [
                             Expanded(
                               child: InkWell(
+                                borderRadius: BorderRadius.circular(12.0),
                                 onTap: () {
                                   _store.check(index, !_store.checkList[index]);
                                 },

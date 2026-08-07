@@ -283,7 +283,10 @@ class NovelSeriesPage extends HookConsumerWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 4.0),
       child: Card(
+        clipBehavior: Clip.antiAlias,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
         child: InkWell(
+          borderRadius: BorderRadius.circular(12.0),
           onTap: () async {
             await Navigator.of(context, rootNavigator: true)
                 .push(MaterialPageRoute(

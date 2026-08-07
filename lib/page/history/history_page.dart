@@ -90,6 +90,9 @@ class HistoryPage extends HookConsumerWidget {
                   },
                   child: Card(
                       margin: EdgeInsets.all(8),
+                      clipBehavior: Clip.antiAlias,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12.0)),
                       child: PixivImage(reIllust[index].pictureUrl)));
             });
       });

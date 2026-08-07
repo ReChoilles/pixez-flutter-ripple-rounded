@@ -287,6 +287,7 @@ class _IllustDetailContentState extends State<IllustDetailContent> {
         child: Container(
           child: Center(
             child: InkWell(
+                borderRadius: BorderRadius.circular(12.0),
                 onTap: () {
                   _illustStore?.fetch();
                 },
@@ -378,6 +379,7 @@ class _IllustDetailContentState extends State<IllustDetailContent> {
       child: Padding(
         padding: EdgeInsets.only(left: 16.0, right: 16.0),
         child: InkWell(
+          borderRadius: BorderRadius.circular(12.0),
           onTap: () {
             Leader.push(context, CommentPage(id: data.id));
           },
@@ -541,6 +543,7 @@ class _IllustDetailContentState extends State<IllustDetailContent> {
       userStore = UserStore(illust.user.id, null, illust.user);
     return Observer(builder: (_) {
       return InkWell(
+        borderRadius: BorderRadius.circular(12.0),
         onTap: () async {
           await _push2UserPage(context, illust);
         },

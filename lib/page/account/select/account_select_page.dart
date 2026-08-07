@@ -43,6 +43,7 @@ class _AccountSelectPageState extends State<AccountSelectPage> {
             itemBuilder: (context, index) {
               AccountPersist accountPersist = accountStore.accounts[index];
               return ListTile(
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
                 leading: PainterAvatar(
                   url: accountStore.accounts[index].userImage,
                   id: int.parse(accountStore.accounts[index].userId),

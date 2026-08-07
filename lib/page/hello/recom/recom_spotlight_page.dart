@@ -258,6 +258,7 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
                     child: Material(
                       color: Colors.transparent,
                       child: InkWell(
+                        borderRadius: BorderRadius.circular(12.0),
                         onTap: () {
                           Navigator.of(context).push(MaterialPageRoute(
                               builder: (BuildContext context) {

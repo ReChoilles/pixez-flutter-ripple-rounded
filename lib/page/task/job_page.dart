@@ -245,6 +245,7 @@ class _JobPageState extends State<JobPage> with SingleTickerProviderStateMixin {
                   child: Column(
                     children: <Widget>[
                       ListTile(
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
                         title: Text(I18n.of(context).retry_failed_tasks),
                         onTap: () async {
                           final results =
@@ -258,6 +259,7 @@ class _JobPageState extends State<JobPage> with SingleTickerProviderStateMixin {
                         },
                       ),
                       ListTile(
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
                         title: Text(I18n.of(context).retry_seed_task),
                         onTap: () async {
                           final results =
@@ -271,6 +273,7 @@ class _JobPageState extends State<JobPage> with SingleTickerProviderStateMixin {
                         },
                       ),
                       ListTile(
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
                         title: Text(I18n.of(context).clear_completed_tasks),
                         onTap: () async {
                           final results =
@@ -380,6 +383,7 @@ class _JobPageState extends State<JobPage> with SingleTickerProviderStateMixin {
         },
         closedBuilder: (context, openContainer) {
           return InkWell(
+            borderRadius: BorderRadius.circular(12.0),
             onTap: () {
               openContainer();
             },
@@ -445,6 +449,7 @@ class _JobPageState extends State<JobPage> with SingleTickerProviderStateMixin {
                               ),
                               if (_itemSimple) ...[
                                 InkWell(
+                                    borderRadius: BorderRadius.circular(12.0),
                                     onTap: () {
                                       _retryJob(taskPersist);
                                     },
@@ -452,6 +457,7 @@ class _JobPageState extends State<JobPage> with SingleTickerProviderStateMixin {
                                 Padding(
                                   padding: const EdgeInsets.all(8.0),
                                   child: InkWell(
+                                      borderRadius: BorderRadius.circular(12.0),
                                       onTap: () {
                                         _deleteJob(taskPersist);
                                       },

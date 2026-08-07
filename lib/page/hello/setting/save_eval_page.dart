@@ -117,9 +117,11 @@ function eval(illust, index, mime) {
               height: 12,
             ),
             ListTile(
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28.0)),
               title: Text(I18n.of(context).script_page_hint),
             ),
             ListTile(
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28.0)),
               title: Text("Example output file name:"),
               subtitle: Text(_fileName ?? "undefined"),
             ),
@@ -140,6 +142,7 @@ function eval(illust, index, mime) {
               ),
             ),
             ListTile(
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28.0)),
               leading: Icon(Icons.read_more),
               title: Text("Read script from scheme"),
               onTap: () {
@@ -156,6 +159,7 @@ function eval(illust, index, mime) {
               },
             ),
             ListTile(
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28.0)),
               leading: Icon(Icons.play_arrow),
               title: Text("Run and test"),
               onTap: () async {
@@ -165,6 +169,7 @@ function eval(illust, index, mime) {
               },
             ),
             ListTile(
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28.0)),
               title: Text("Example illust json:"),
             ),
             Padding(

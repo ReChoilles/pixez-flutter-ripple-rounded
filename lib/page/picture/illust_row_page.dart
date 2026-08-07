@@ -385,6 +385,7 @@ class _IllustRowPageState extends State<IllustRowPage>
             .map((element) => IllustStore(element.id, element))
             .toList();
         return InkWell(
+          borderRadius: BorderRadius.circular(12.0),
           onTap: () {
             Leader.push(
               context,
@@ -436,6 +437,7 @@ class _IllustRowPageState extends State<IllustRowPage>
                   int index,
                 ) {
                   return InkWell(
+                    borderRadius: BorderRadius.circular(12.0),
                     onLongPress: () {
                       _pressSave(data, index);
                     },
@@ -466,6 +468,7 @@ class _IllustRowPageState extends State<IllustRowPage>
           }
           Widget placeWidget = Container(height: height);
           return InkWell(
+            borderRadius: BorderRadius.circular(12.0),
             onLongPress: () {
               _pressSave(data, 0);
             },
@@ -807,6 +810,7 @@ class _IllustRowPageState extends State<IllustRowPage>
             children: <Widget>[
               illust.metaPages.isNotEmpty
                   ? ListTile(
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
                       title: Text(I18n.of(context).muti_choice_save),
                       leading: Icon(Icons.save),
                       onTap: () async {
@@ -816,6 +820,7 @@ class _IllustRowPageState extends State<IllustRowPage>
                     )
                   : Container(),
               ListTile(
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
                 leading: Icon(Icons.save_alt),
                 onTap: () async {
                   Navigator.of(context).pop();
@@ -830,6 +835,7 @@ class _IllustRowPageState extends State<IllustRowPage>
                 title: Text(I18n.of(context).save),
               ),
               ListTile(
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
                 leading: Icon(Icons.cancel),
                 onTap: () => Navigator.of(context).pop(),
                 title: Text(I18n.of(context).cancel),
@@ -876,6 +882,7 @@ class _IllustRowPageState extends State<IllustRowPage>
                             child: Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: InkWell(
+                                borderRadius: BorderRadius.circular(12.0),
                                 onTap: () {
                                   setDialogState(() {
                                     indexs[index] = !indexs[index];
@@ -927,6 +934,7 @@ class _IllustRowPageState extends State<IllustRowPage>
                       ),
                     ),
                     ListTile(
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
                       leading: Icon(
                         !allOn
                             ? Icons.check_circle_outline
@@ -942,6 +950,7 @@ class _IllustRowPageState extends State<IllustRowPage>
                       },
                     ),
                     ListTile(
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
                       leading: Icon(Icons.save),
                       title: Text(I18n.of(context).save),
                       onTap: () {
@@ -992,6 +1001,7 @@ class _IllustRowPageState extends State<IllustRowPage>
                     _buildNameAvatar(context, illusts),
                     if (illusts.metaPages.isNotEmpty)
                       ListTile(
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
                         title: Text(I18n.of(context).muti_choice_save),
                         leading: Icon(Icons.save),
                         onTap: () async {
@@ -1000,6 +1010,7 @@ class _IllustRowPageState extends State<IllustRowPage>
                         },
                       ),
                     ListTile(
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
                       title: Text(I18n.of(context).copymessage),
                       leading: Icon(Icons.local_library),
                       onTap: () async {
@@ -1018,6 +1029,7 @@ class _IllustRowPageState extends State<IllustRowPage>
                     Builder(
                       builder: (context) {
                         return ListTile(
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
                           title: Text(I18n.of(context).share),
                           leading: Icon(Icons.share),
                           onTap: () {
@@ -1037,6 +1049,7 @@ class _IllustRowPageState extends State<IllustRowPage>
                       },
                     ),
                     ListTile(
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
                       leading: Icon(Icons.link),
                       title: Text(I18n.of(context).link),
                       onTap: () async {
@@ -1052,6 +1065,7 @@ class _IllustRowPageState extends State<IllustRowPage>
                       },
                     ),
                     ListTile(
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
                       title: Text(I18n.of(context).ban),
                       leading: Icon(Icons.brightness_auto),
                       onTap: () {
@@ -1065,6 +1079,7 @@ class _IllustRowPageState extends State<IllustRowPage>
                       },
                     ),
                     ListTile(
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
                       title: Text(I18n.of(context).report),
                       leading: Icon(Icons.report),
                       onTap: () async {

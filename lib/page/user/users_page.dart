@@ -443,6 +443,7 @@ class _UsersPageState extends State<UsersPage> with TickerProviderStateMixin {
       child: userStore.userDetail != null
           ? userStore.userDetail!.profile.background_image_url != null
                 ? InkWell(
+                    borderRadius: BorderRadius.circular(12.0),
                     onLongPress: () {
                       showDialog(
                         context: context,
@@ -644,6 +645,7 @@ class _UsersPageState extends State<UsersPage> with TickerProviderStateMixin {
               ),
             ),
             InkWell(
+              borderRadius: BorderRadius.circular(12.0),
               onTap: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(

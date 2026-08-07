@@ -79,7 +79,9 @@ class _AccountEditPageState extends State<AccountEditPage> {
                   toastBuilder: (_) => Align(
                     alignment: Alignment(0, 0.8),
                     child: Card(
+                      clipBehavior: Clip.antiAlias,
                       child: ListTile(
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
                           leading: Icon(Icons.error),
                           title: Text("Email format error")),
                     ),
@@ -163,6 +165,7 @@ class _AccountEditPageState extends State<AccountEditPage> {
               if (accountStore.now != null &&
                   accountStore.now!.isMailAuthorized == 1)
                 InkWell(
+                  borderRadius: BorderRadius.circular(12.0),
                   onTap: () async {
                     Clipboard.setData(
                         ClipboardData(text: accountStore.now!.refreshToken));
@@ -183,6 +186,7 @@ class _AccountEditPageState extends State<AccountEditPage> {
                   ),
                 ),
               InkWell(
+                borderRadius: BorderRadius.circular(12.0),
                 onTap: () {
                   showDialog(
                       context: context,

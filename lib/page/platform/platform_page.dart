@@ -105,6 +105,7 @@ class _PlatformPageState extends State<PlatformPage> {
     return Scaffold(
       appBar: AppBar(
         title: ListTile(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
           title: Text("Platform Setting"),
           subtitle: Text(
             "For Android",
@@ -117,6 +118,7 @@ class _PlatformPageState extends State<PlatformPage> {
           return ListView(
             children: <Widget>[
               ListTile(
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
                 leading: Icon(Icons.folder),
                 title: Text(
                     '${I18n.of(context).save_path}(${userSetting.saveMode != 0 ? (userSetting.saveMode == 2 ? I18n.of(context).old_way : 'SAF') : "Media"})'),
@@ -132,6 +134,7 @@ class _PlatformPageState extends State<PlatformPage> {
                 },
               ),
               ListTile(
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
                 leading: Icon(Icons.format_align_left),
                 title: Text(I18n.of(context).save_format),
                 subtitle: Text(userSetting.fileNameEval == 1
@@ -152,6 +155,7 @@ class _PlatformPageState extends State<PlatformPage> {
                   // if (result != null) userSetting.setPath(result);
                 },
                 trailing: InkWell(
+                  borderRadius: BorderRadius.circular(12.0),
                   onTap: () {
                     Leader.push(context, SaveEvalPage());
                   },
@@ -169,34 +173,43 @@ class _PlatformPageState extends State<PlatformPage> {
               ),
               Observer(
                 builder: (context) {
-                  return SwitchListTile(
-                    secondary: Icon(Icons.folder_shared),
-                    onChanged: (bool value) async {
-                      if (value) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text("可能会造成保存等待时间过长")));
-                      }
-                      await userSetting.setSingleFolder(value);
-                    },
-                    title: Text(I18n.of(context).separate_folder),
-                    subtitle: Text(I18n.of(context).separate_folder_message),
-                    value: userSetting.singleFolder,
+                  return Card(
+                    clipBehavior: Clip.antiAlias,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
+                    child: SwitchListTile(
+                      secondary: Icon(Icons.folder_shared),
+                      onChanged: (bool value) async {
+                        if (value) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text("可能会造成保存等待时间过长")));
+                        }
+                        await userSetting.setSingleFolder(value);
+                      },
+                      title: Text(I18n.of(context).separate_folder),
+                      subtitle: Text(I18n.of(context).separate_folder_message),
+                      value: userSetting.singleFolder,
+                    ),
                   );
                 },
               ),
               Observer(
                 builder: (context) {
-                  return SwitchListTile(
-                    secondary: Icon(Icons.folder_open),
-                    onChanged: (bool value) async {
-                      await userSetting.setOverSanityLevelFolder(value);
-                    },
-                    title: Text("Sanity Single Folder"),
-                    value: userSetting.overSanityLevelFolder,
+                  return Card(
+                    clipBehavior: Clip.antiAlias,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
+                    child: SwitchListTile(
+                      secondary: Icon(Icons.folder_open),
+                      onChanged: (bool value) async {
+                        await userSetting.setOverSanityLevelFolder(value);
+                      },
+                      title: Text("Sanity Single Folder"),
+                      value: userSetting.overSanityLevelFolder,
+                    ),
                   );
                 },
               ),
               ListTile(
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
                 leading: Icon(Icons.mobile_screen_share),
                 onTap: () {
                   showModalBottomSheet(
@@ -214,6 +227,7 @@ class _PlatformPageState extends State<PlatformPage> {
                                       itemBuilder: (context, index) {
                                         if (index == 0)
                                           return ListTile(
+                                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
                                             title: Text(I18n.of(context)
                                                 .display_mode_message),
                                             subtitle: Text(I18n.of(context)
@@ -221,6 +235,7 @@ class _PlatformPageState extends State<PlatformPage> {
                                             onTap: () async {},
                                           );
                                         return ListTile(
+                                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
                                           title:
                                               Text(modes[index - 1].toString()),
                                           onTap: () async {
@@ -245,20 +260,25 @@ class _PlatformPageState extends State<PlatformPage> {
               ),
               Observer(
                 builder: (context) {
-                  return SwitchListTile(
-                    secondary: Icon(Icons.photo_album),
-                    onChanged: (bool value) async {
-                      await userSetting.setImagePickerType(value ? 1 : 0);
-                    },
-                    title: InkWell(
-                      child: Text(I18n.of(context).photo_picker),
-                      onTap: () {
-                        launchUrlString(
-                            "https://developer.android.com/training/data-storage/shared/photopicker");
+                  return Card(
+                    clipBehavior: Clip.antiAlias,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
+                    child: SwitchListTile(
+                      secondary: Icon(Icons.photo_album),
+                      onChanged: (bool value) async {
+                        await userSetting.setImagePickerType(value ? 1 : 0);
                       },
+                      title: InkWell(
+                        borderRadius: BorderRadius.circular(12.0),
+                        child: Text(I18n.of(context).photo_picker),
+                        onTap: () {
+                          launchUrlString(
+                              "https://developer.android.com/training/data-storage/shared/photopicker");
+                        },
+                      ),
+                      subtitle: Text(I18n.of(context).photo_picker_subtitle),
+                      value: userSetting.imagePickerType == 1,
                     ),
-                    subtitle: Text(I18n.of(context).photo_picker_subtitle),
-                    value: userSetting.imagePickerType == 1,
                   );
                 },
               ),
@@ -271,6 +291,7 @@ class _PlatformPageState extends State<PlatformPage> {
                   ),
                 ),
                 ListTile(
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
                   leading: Icon(Icons.add_link),
                   title: Text(I18n.of(context).open_by_default),
                   subtitle: Text(I18n.of(context).open_by_default_subtitle),

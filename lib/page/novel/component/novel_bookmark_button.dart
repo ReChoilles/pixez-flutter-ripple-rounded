@@ -32,6 +32,7 @@ class _NovelBookmarkButtonState extends State<NovelBookmarkButton> {
   @override
   Widget build(BuildContext context) {
     return InkWell(
+      borderRadius: BorderRadius.circular(12.0),
       onLongPress: () async {
         if (!widget.novel.isBookmarked) {
           try {

@@ -79,6 +79,7 @@ abstract class SauceStoreBase with Store {
                             await userSetting.setImagePickerType(value ? 1 : 0);
                           },
                           title: InkWell(
+                            borderRadius: BorderRadius.circular(12.0),
                             child: Text(I18n.of(context).photo_picker),
                             onTap: () {
                               launchUrlString(
@@ -94,6 +95,7 @@ abstract class SauceStoreBase with Store {
                     ),
                     Divider(),
                     InkWell(
+                      borderRadius: BorderRadius.circular(12.0),
                       child: Center(
                           child: Padding(
                         padding: const EdgeInsets.all(8.0),

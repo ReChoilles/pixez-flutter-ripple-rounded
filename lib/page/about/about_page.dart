@@ -127,6 +127,7 @@ class _AboutPageState extends State<AboutPage> {
         return ListView(
           children: <Widget>[
             ListTile(
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
               leading: CircleAvatar(
                 backgroundImage: AssetImage('assets/images/me.jpg'),
               ),
@@ -142,6 +143,7 @@ class _AboutPageState extends State<AboutPage> {
                   ),
                   builder: (BuildContext context) {
                     return InkWell(
+                      borderRadius: BorderRadius.circular(12.0),
                       onTap: () {
                         if (Platform.isAndroid)
                           launchUrlString(
@@ -162,6 +164,7 @@ class _AboutPageState extends State<AboutPage> {
               },
             ),
             ListTile(
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
               leading: CircleAvatar(
                 backgroundImage: AssetImage('assets/images/right_now.jpg'),
               ),
@@ -193,7 +196,10 @@ class _AboutPageState extends State<AboutPage> {
                 itemBuilder: (context, index) {
                   final data = contributors[index];
                   return Card(
+                    clipBehavior: Clip.antiAlias,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
                     child: InkWell(
+                      borderRadius: BorderRadius.circular(12.0),
                       onTap: () async {
                         try {
                           if (data.onPressed == null) return;
@@ -236,6 +242,7 @@ class _AboutPageState extends State<AboutPage> {
               ),
             ),
             ListTile(
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
               leading: Icon(Icons.rate_review),
               title: Text(I18n.of(context).rate_title),
               subtitle: Text(I18n.of(context).rate_message),
@@ -250,6 +257,7 @@ class _AboutPageState extends State<AboutPage> {
             ),
             if (Platform.isAndroid || kDebugMode) ...[
               ListTile(
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
                 leading: Icon(Icons.device_hub),
                 title: Text(I18n.of(context).repo_address),
                 subtitle: Text('github.com/Notsfsssf/pixez-flutter'),
@@ -272,6 +280,7 @@ class _AboutPageState extends State<AboutPage> {
                             mainAxisSize: MainAxisSize.min,
                             children: <Widget>[
                               ListTile(
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
                                 title: Text('Version ${Constants.tagName}'),
                                 subtitle: Text(
                                   I18n.of(context).go_to_project_address,
@@ -295,6 +304,7 @@ class _AboutPageState extends State<AboutPage> {
                                 ),
                               ),
                               ListTile(
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
                                 title: Text(I18n.of(context).check_for_updates),
                                 onTap: () {
                                   Navigator.of(context).push(
@@ -306,6 +316,7 @@ class _AboutPageState extends State<AboutPage> {
                                 trailing: Icon(Icons.update),
                               ),
                               ListTile(
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
                                 leading: CircleAvatar(
                                   backgroundImage: NetworkImage(
                                     'https://avatars1.githubusercontent.com/u/9017470?s=400&v=4',
@@ -327,6 +338,7 @@ class _AboutPageState extends State<AboutPage> {
             Visibility(
               visible: false,
               child: ListTile(
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
                 leading: Icon(Icons.home),
                 title: Text('GitHub Page'),
                 subtitle: Text('https://github.com/Notsfsssf'),
@@ -334,16 +346,19 @@ class _AboutPageState extends State<AboutPage> {
               ),
             ),
             ListTile(
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
               leading: Icon(Icons.email),
               title: Text(I18n.of(context).feedback),
               subtitle: Text('PxezFeedBack@outlook.com'),
             ),
             ListTile(
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
               leading: Icon(Icons.stars),
               title: Text(I18n.of(context).support),
               subtitle: Text(I18n.of(context).support_message),
             ),
             ListTile(
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
               leading: Icon(Icons.favorite),
               title: Text(I18n.of(context).thanks),
               subtitle: Text('感谢帮助我测试的弹幕委员会群友们\n感谢pixiv cat站主提供的图床'),
@@ -358,6 +373,7 @@ class _AboutPageState extends State<AboutPage> {
               },
             ),
             ListTile(
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
               leading: Icon(Icons.share),
               title: Text(I18n.of(context).share),
               subtitle: Text(I18n.of(context).share_this_app_link),
@@ -372,24 +388,30 @@ class _AboutPageState extends State<AboutPage> {
               },
             ),
             ListTile(
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
               leading: FaIcon(FontAwesomeIcons.telegram),
               title: Text("Group"),
               subtitle: Text('t.me/PixEzChannel'),
             ),
             if (Platform.isAndroid && !Constants.isGooglePlay) ...[
               ListTile(
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
                 title: Text(I18n.of(context).donate_title),
                 subtitle: Text(I18n.of(context).donate_message),
               ),
               Card(
+                clipBehavior: Clip.antiAlias,
                 child: ListTile(
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
                   title: Text('AliPay'),
                   subtitle: Text('912756674@qq.com'),
                   onTap: () async {},
                 ),
               ),
               Card(
+                clipBehavior: Clip.antiAlias,
                 child: ListTile(
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
                   title: Text('Wechat Pay'),
                   subtitle: Text('tap'),
                   onTap: () async {
@@ -411,7 +433,9 @@ class _AboutPageState extends State<AboutPage> {
             ],
             if (Platform.isIOS) ...[
               Card(
+                clipBehavior: Clip.antiAlias,
                 child: ListTile(
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
                   subtitle: Text('如果你觉得这个应用还不错，支持一下开发者吧!'),
                   title: Text('支持开发者工作'),
                   trailing: Text('12￥'),
@@ -432,7 +456,9 @@ class _AboutPageState extends State<AboutPage> {
                 ),
               ),
               Card(
+                clipBehavior: Clip.antiAlias,
                 child: ListTile(
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
                   subtitle: Text('如果你觉得这个应用非常不错，支持一下开发者吧！'),
                   title: Text('支持开发者工作'),
                   trailing: Text('25￥'),
@@ -458,9 +484,11 @@ class _AboutPageState extends State<AboutPage> {
                 Constants.isGooglePlay)
               for (var i in products)
                 Card(
+                  clipBehavior: Clip.antiAlias,
                   margin: EdgeInsets.all(8.0),
                   elevation: 1.0,
                   child: ListTile(
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
                     leading: FaIcon(FontAwesomeIcons.mugSaucer),
                     title: Text(i.description),
                     subtitle: Text(i.price),

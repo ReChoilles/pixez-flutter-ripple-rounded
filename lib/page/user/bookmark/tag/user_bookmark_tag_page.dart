@@ -212,12 +212,14 @@ class _NewWidgetState extends State<NewWidget> {
           child: ListView(
             children: [
               ListTile(
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
                 title: Text(I18n.of(context).all),
                 onTap: () {
                   Navigator.pop(context, {"tag": null, "restrict": restrict});
                 },
               ),
               ListTile(
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
                 title: Text(I18n.of(context).unclassified),
                 onTap: () {
                   Navigator.pop(context, {
@@ -228,6 +230,7 @@ class _NewWidgetState extends State<NewWidget> {
               ),
               for (var bookmarkTag in _bookMarkTagStore.bookmarkTags)
                 ListTile(
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
                   title: Text(bookmarkTag.name),
                   trailing: Text(bookmarkTag.count.toString()),
                   onTap: () {

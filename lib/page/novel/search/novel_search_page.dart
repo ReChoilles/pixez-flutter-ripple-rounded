@@ -123,6 +123,7 @@ class _NovelSearchPageState extends State<NovelSearchPage> {
               SliverList(
                   delegate: SliverChildListDelegate([
                 InkWell(
+                    borderRadius: BorderRadius.circular(12.0),
                     onTap: () {
                       Leader.push(context, NovelViewerPage(id: _id!));
                     },
@@ -144,6 +145,7 @@ class _NovelSearchPageState extends State<NovelSearchPage> {
                   height: 1,
                 ),
                 InkWell(
+                    borderRadius: BorderRadius.circular(12.0),
                     onTap: () {
                       Leader.push(context, NovelSeriesPage(_id!));
                     },
@@ -165,6 +167,7 @@ class _NovelSearchPageState extends State<NovelSearchPage> {
                   height: 1,
                 ),
                 InkWell(
+                    borderRadius: BorderRadius.circular(12.0),
                     onTap: () {
                       Leader.push(context, NovelUsersPage(id: _id!));
                     },
@@ -202,6 +205,7 @@ class _NovelSearchPageState extends State<NovelSearchPage> {
                     .where((element) => element.type == 1)
                     .isNotEmpty)
                   return InkWell(
+                    borderRadius: BorderRadius.circular(12.0),
                     onTap: () {
                       tagHistoryStore.deleteAll();
                     },
@@ -274,6 +278,7 @@ class _NovelSearchPageState extends State<NovelSearchPage> {
           Leader.push(context, IllustLightingPage(id: tag.illust.id));
         },
         child: InkWell(
+          borderRadius: BorderRadius.circular(12.0),
           onTap: () {
             Leader.push(context, NovelResultPage(word: (tag.tag)));
           },
@@ -315,6 +320,7 @@ class _NovelSearchPageState extends State<NovelSearchPage> {
 
   Widget buildActionChip(TagsPersist f, BuildContext context) {
     return InkWell(
+      borderRadius: BorderRadius.circular(12.0),
       onLongPress: () {
         showDialog(
             context: context,

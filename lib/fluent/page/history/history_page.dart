@@ -133,9 +133,13 @@ class _HistoryItem extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return ContextMenu(
-      child: PixEzButton(
-        child: PixivImage(reIllust[index].pictureUrl),
-        onPressed: () => _navigateTo(context),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(12.0),
+        child: PixEzButton(
+          noPadding: true,
+          child: PixivImage(reIllust[index].pictureUrl),
+          onPressed: () => _navigateTo(context),
+        ),
       ),
       items: [
         MenuFlyoutItem(

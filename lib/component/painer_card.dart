@@ -47,24 +47,28 @@ class _PainterCardState extends State<PainterCard> {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: () async {
-        await Navigator.of(context, rootNavigator: true)
-            .push(MaterialPageRoute(builder: (BuildContext context) {
-          if (isNovel) {
-            return NovelUsersPage(
+    return Card(
+      margin: const EdgeInsets.all(8.0),
+      elevation: 0,
+      clipBehavior: Clip.antiAlias,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(12.0),
+        onTap: () async {
+          await Navigator.of(context, rootNavigator: true)
+              .push(MaterialPageRoute(builder: (BuildContext context) {
+            if (isNovel) {
+              return NovelUsersPage(
+                id: _user.user.id,
+              );
+            }
+            return UsersPage(
               id: _user.user.id,
+              userStore: UserStore(_user.user.id, null, _user.user),
             );
-          }
-          return UsersPage(
-            id: _user.user.id,
-            userStore: UserStore(_user.user.id, null, _user.user),
-          );
-        }));
-        setState(() {});
-      },
-      child: Card(
-        clipBehavior: Clip.antiAlias,
+          }));
+          setState(() {});
+        },
         child: Container(
           child: Column(
             children: [_buildPreviewSlivers(context), buildPadding(context)],

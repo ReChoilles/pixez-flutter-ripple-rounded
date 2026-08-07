@@ -59,7 +59,7 @@ class _SearchSuggestionPageState extends State<SearchSuggestionPage> {
                       .toList(),
                 )));
       } else {
-        BotToast.showText(text: I18n.ofContext().no_result);
+        BotToast.showText(text: I18n.of(context).no_result);
       }
     });
     var query = widget.preword ?? '';
@@ -122,86 +122,106 @@ class _SearchSuggestionPageState extends State<SearchSuggestionPage> {
                   ),
                   SliverVisibility(
                     sliver: SliverList(
-                      delegate: SliverChildBuilderDelegate((context, index) {
-                        if (index == 0)
-                          return ListTile(
-                            title: Text(_filter.text),
-                            subtitle: Text(I18n.of(context).illust_id),
-                            onTap: () {
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (context) => IllustLightingPage(
-                                        id: int.tryParse(_filter.text)!,
-                                      )));
-                            },
-                          );
-                        if (index == 1)
-                          return ListTile(
-                            title: Text(_filter.text),
-                            subtitle: Text(I18n.of(context).painter_id),
-                            onTap: () {
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (context) => UsersPage(
-                                        id: int.tryParse(_filter.text)!,
-                                      )));
-                            },
-                          );
-                        if (index == 2 && _filter.text.length < 5)
-                          return ListTile(
-                            title: Text(_filter.text),
-                            subtitle: Text("Pixivision Id"),
-                            onTap: () {
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (context) => SoupPage(
-                                        url:
-                                            "https://www.pixivision.net/zh/a/${_filter.text.trim()}",
-                                        spotlight: null,
-                                      )));
-                            },
-                          );
-                        return ListTile();
-                      }, childCount: 3),
+                      delegate: SliverChildBuilderDelegate(
+                        (context, index) {
+                          if (index == 0) {
+                            return ListTile(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12.0),
+                              ),
+                              title: Text(_filter.text),
+                              subtitle: Text(I18n.of(context).illust_id),
+                              onTap: () {
+                                Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (context) => IllustLightingPage(
+                                          id: int.tryParse(_filter.text)!,
+                                        )));
+                              },
+                            );
+                          }
+                          if (index == 1) {
+                            return ListTile(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12.0),
+                              ),
+                              title: Text(_filter.text),
+                              subtitle: Text(I18n.of(context).painter_id),
+                              onTap: () {
+                                Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (context) => UsersPage(
+                                          id: int.tryParse(_filter.text)!,
+                                        )));
+                              },
+                            );
+                          }
+                          if (index == 2 && _filter.text.length < 5) {
+                            return ListTile(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12.0),
+                              ),
+                              title: Text(_filter.text),
+                              subtitle: Text("Pixivision Id"),
+                              onTap: () {
+                                Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (context) => SoupPage(
+                                          url: "https://www.pixivision.net/zh/a/${_filter.text.trim()}",
+                                          spotlight: null,
+                                        )));
+                              },
+                            );
+                          }
+                          return const ListTile();
+                        },
+                        childCount: 3,
+                      ),
                     ),
                     visible: idV,
                   ),
                   if (_suggestionStore.autoWords != null &&
                       _suggestionStore.autoWords!.tags.isNotEmpty)
                     SliverList(
-                      delegate: SliverChildBuilderDelegate((context, index) {
-                        final tags = _suggestionStore.autoWords!.tags;
-                        return GestureDetector(
-                          onLongPress: () {
-                            HapticUtil.heavy();
-                            Clipboard.setData(
-                                ClipboardData(text: tags[index].name));
-                            BotToast.showText(
-                                text: I18n.of(context).copied_to_clipboard);
-                          },
-                          child: ListTile(
-                            onTap: () {
-                              if (tagGroup.length > 1) {
-                                tagGroup.last = tags[index].name;
-                                var text = tagGroup.join(" ");
-                                _filter.text = text;
-                                _filter.selection = TextSelection.fromPosition(
-                                    TextPosition(offset: text.length));
-                                setState(() {});
-                              } else {
-                                FocusScope.of(context).unfocus();
-                                Navigator.of(context, rootNavigator: true)
-                                    .push(MaterialPageRoute(builder: (context) {
-                                  return ResultPage(
-                                    word: tags[index].name,
-                                    translatedName:
-                                        tags[index].translated_name ?? "",
-                                  );
-                                }));
-                              }
+                      delegate: SliverChildBuilderDelegate(
+                        (context, index) {
+                          final tags = _suggestionStore.autoWords!.tags;
+                          return GestureDetector(
+                            onLongPress: () {
+                              HapticUtil.heavy();
+                              Clipboard.setData(
+                                  ClipboardData(text: tags[index].name));
+                              BotToast.showText(
+                                  text: I18n.of(context).copied_to_clipboard);
                             },
-                            title: Text(tags[index].name),
-                            subtitle: Text(tags[index].translated_name ?? ""),
-                          ),
-                        );
-                      }, childCount: _suggestionStore.autoWords!.tags.length),
+                            child: ListTile(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12.0),
+                              ),
+                              onTap: () {
+                                if (tagGroup.length > 1) {
+                                  tagGroup.last = tags[index].name;
+                                  var text = tagGroup.join(" ");
+                                  _filter.text = text;
+                                  _filter.selection = TextSelection.fromPosition(
+                                      TextPosition(offset: text.length));
+                                  setState(() {});
+                                } else {
+                                  FocusScope.of(context).unfocus();
+                                  Navigator.of(context, rootNavigator: true)
+                                      .push(MaterialPageRoute(builder: (context) {
+                                    return ResultPage(
+                                      word: tags[index].name,
+                                      translatedName:
+                                          tags[index].translated_name ?? "",
+                                    );
+                                  }));
+                                }
+                              },
+                              title: Text(tags[index].name),
+                              subtitle: Text(tags[index].translated_name ?? ""),
+                            ),
+                          );
+                        },
+                        childCount: _suggestionStore.autoWords!.tags.length,
+                      ),
                     ),
                 ],
               ),

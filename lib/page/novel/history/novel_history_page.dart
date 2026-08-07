@@ -73,6 +73,7 @@ class _NovelHistoryState extends State<NovelHistory> {
                 itemBuilder: (context, index) {
                   final novel = novelHistoryStore.data[index];
                   return ListTile(
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
                     title: Text(novel.title),
                     subtitle: Text(novel.userName),
                     onTap: () => Leader.push(

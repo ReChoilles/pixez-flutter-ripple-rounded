@@ -72,6 +72,7 @@ class _ShieldPageState extends State<ShieldPage> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
                   ListTile(
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
                     title: Text(I18n.of(context).ai_work_display_settings),
                     onTap: () async {
                       try {
@@ -91,6 +92,7 @@ class _ShieldPageState extends State<ShieldPage> {
                     },
                   ),
                   ListTile(
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
                     title: Text(
                       I18n.of(
                         context,

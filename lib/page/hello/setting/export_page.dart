@@ -21,6 +21,7 @@ class _ExportPageState extends State<ExportPage> {
       appBar: AppBar(),
       body: ListView(children: [
         ListTile(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28.0)),
           title: Text("Export tag history"),
           onTap: () {
             final tags = tagHistoryStore.tags;
@@ -31,6 +32,7 @@ class _ExportPageState extends State<ExportPage> {
           },
         ),
         ListTile(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28.0)),
           title: Text("Import tag history"),
           onTap: () async {
             Uint8List uint8list = Uint8List(10);

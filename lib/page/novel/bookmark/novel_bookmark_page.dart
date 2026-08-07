@@ -81,6 +81,7 @@ class _NovelBookmarkPageState extends State<NovelBookmarkPage> {
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
                 ListTile(
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
                   title: Text(I18n.of(context).public),
                   onTap: () {
                     setState(() {
@@ -91,6 +92,7 @@ class _NovelBookmarkPageState extends State<NovelBookmarkPage> {
                   },
                 ),
                 ListTile(
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
                   title: Text(I18n.of(context).private),
                   onTap: () {
                     setState(() {

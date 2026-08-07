@@ -54,6 +54,7 @@ class SpotlightCard extends StatelessWidget {
                   child: Align(
                     alignment: AlignmentDirectional.bottomCenter,
                     child: ListTile(
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
                         title: Text(
                           spotlight.title,
                           maxLines: 1,

@@ -129,6 +129,7 @@ class _NewIllustPageState extends State<NewIllustPage> {
                         mainAxisSize: MainAxisSize.min,
                         children: <Widget>[
                           ListTile(
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
                             title: Text(I18n.of(context).all),
                             onTap: () {
                               Navigator.of(context).pop();
@@ -141,6 +142,7 @@ class _NewIllustPageState extends State<NewIllustPage> {
                             },
                           ),
                           ListTile(
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
                             title: Text(I18n.of(context).public),
                             onTap: () {
                               Navigator.of(context).pop();
@@ -153,6 +155,7 @@ class _NewIllustPageState extends State<NewIllustPage> {
                             },
                           ),
                           ListTile(
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
                             title: Text(I18n.of(context).private),
                             onTap: () {
                               Navigator.of(context).pop();

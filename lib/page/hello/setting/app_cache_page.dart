@@ -16,6 +16,7 @@ class _AppCachePageState extends State<AppCachePage> {
       body: ListView(
         children: [
           ListTile(
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28.0)),
             title: Text(I18n.of(context).clear_all_cache),
           ),
         ],

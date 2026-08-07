@@ -35,6 +35,7 @@ class DataExportPage extends HookConsumerWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         ListTile(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28.0)),
           title: Text(I18n.of(context).export_title),
           subtitle: Text(I18n.of(context).export_tag_history),
           onTap: () async {
@@ -46,6 +47,7 @@ class DataExportPage extends HookConsumerWidget {
           },
         ),
         ListTile(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28.0)),
           title: Text(I18n.of(context).import_title),
           subtitle: Text(I18n.of(context).import_tag_history),
           onTap: () async {
@@ -59,6 +61,7 @@ class DataExportPage extends HookConsumerWidget {
         ),
         Divider(),
         ListTile(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28.0)),
           title: Text(I18n.of(context).export_title),
           subtitle: Text(I18n.of(context).export_bookmark_tag),
           onTap: () async {
@@ -70,6 +73,7 @@ class DataExportPage extends HookConsumerWidget {
           },
         ),
         ListTile(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28.0)),
           title: Text(I18n.of(context).import_title),
           subtitle: Text(I18n.of(context).import_bookmark_tag),
           onTap: () async {
@@ -83,6 +87,7 @@ class DataExportPage extends HookConsumerWidget {
         ),
         Divider(),
         ListTile(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28.0)),
           title: Text(I18n.of(context).export_title),
           subtitle: Text(I18n.of(context).export_illust_history),
           onTap: () async {
@@ -95,6 +100,7 @@ class DataExportPage extends HookConsumerWidget {
           },
         ),
         ListTile(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28.0)),
           title: Text(I18n.of(context).import_title),
           subtitle: Text(I18n.of(context).import_illust_history),
           onTap: () async {
@@ -109,6 +115,7 @@ class DataExportPage extends HookConsumerWidget {
         ),
         Divider(),
         ListTile(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28.0)),
           title: Text(I18n.of(context).export_title),
           subtitle: Text(I18n.of(context).export_novel_history),
           onTap: () async {
@@ -121,6 +128,7 @@ class DataExportPage extends HookConsumerWidget {
           },
         ),
         ListTile(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28.0)),
           title: Text(I18n.of(context).import_title),
           subtitle: Text(I18n.of(context).import_novel_history),
           onTap: () async {
@@ -135,6 +143,7 @@ class DataExportPage extends HookConsumerWidget {
         ),
         Divider(),
         ListTile(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28.0)),
           title: Text(I18n.of(context).export_title),
           subtitle: Text(I18n.of(context).export_mute_data),
           onTap: () async {
@@ -146,6 +155,7 @@ class DataExportPage extends HookConsumerWidget {
           },
         ),
         ListTile(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28.0)),
           title: Text(I18n.of(context).import_title),
           subtitle: Text(I18n.of(context).import_mute_data),
           onTap: () async {
@@ -159,6 +169,7 @@ class DataExportPage extends HookConsumerWidget {
         ),
         Divider(),
         ListTile(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28.0)),
           title: Text(I18n.of(context).clear_all_cache),
           onTap: () async {
             try {

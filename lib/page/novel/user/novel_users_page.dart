@@ -219,6 +219,7 @@ class _NovelUsersPageState extends State<NovelUsersPage>
       child: userStore.userDetail != null
           ? userStore.userDetail!.profile.background_image_url != null
                 ? InkWell(
+                    borderRadius: BorderRadius.circular(12.0),
                     onLongPress: () {
                       showDialog(
                         context: context,
@@ -493,6 +494,7 @@ class _NovelUsersPageState extends State<NovelUsersPage>
               ),
             ),
             InkWell(
+              borderRadius: BorderRadius.circular(12.0),
               onTap: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(

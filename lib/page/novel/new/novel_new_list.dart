@@ -41,6 +41,7 @@ class _NovelNewListState extends State<NovelNewList> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           ListTile(
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
                             title: Text(I18n.of(context).public),
                             onTap: () {
                               setState(() {
@@ -50,6 +51,7 @@ class _NovelNewListState extends State<NovelNewList> {
                             },
                           ),
                           ListTile(
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
                               title: Text(I18n.of(context).private),
                               onTap: () {
                                 setState(() {

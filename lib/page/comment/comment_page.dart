@@ -112,6 +112,7 @@ class _CommentPageState extends State<CommentPage> {
             Padding(
               padding: const EdgeInsets.all(4.0),
               child: InkWell(
+                borderRadius: BorderRadius.circular(12.0),
                 onTap: () {
                   String key = i;
                   String text = _editController.text;
@@ -487,6 +488,7 @@ class _CommentPageState extends State<CommentPage> {
     return Row(
       children: [
         InkWell(
+            borderRadius: BorderRadius.circular(12.0),
             onTap: () {
               if (widget.isReplay) return;
               parentCommentId = comment.id;
@@ -502,6 +504,7 @@ class _CommentPageState extends State<CommentPage> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12.0),
             child: InkWell(
+                borderRadius: BorderRadius.circular(12.0),
                 onTap: () {
                   showModalBottomSheet(
                       context: context,
@@ -515,6 +518,7 @@ class _CommentPageState extends State<CommentPage> {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             ListTile(
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
                               title: Text(I18n.of(context).ban),
                               onTap: () async {
                                 Navigator.of(context).pop();
@@ -522,6 +526,7 @@ class _CommentPageState extends State<CommentPage> {
                               },
                             ),
                             ListTile(
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
                               title: Text(I18n.of(context).report),
                               onTap: () {
                                 Navigator.of(context).pop();

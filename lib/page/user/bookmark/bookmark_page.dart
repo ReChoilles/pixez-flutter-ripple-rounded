@@ -434,6 +434,7 @@ class _BookMarkNestedPageState extends State<BookMarkNestedPage> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
             child: InkWell(
+              borderRadius: BorderRadius.circular(12.0),
               onTap: () async {
                 final result = await Navigator.of(context).push(
                   MaterialPageRoute(builder: (_) => UserBookmarkTagPage()),

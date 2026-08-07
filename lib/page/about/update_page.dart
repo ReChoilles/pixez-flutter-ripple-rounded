@@ -70,10 +70,12 @@ class _UpdatePageState extends State<UpdatePage> {
           : ListView(
               children: <Widget>[
                 ListTile(
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
                   title: Text(I18n.of(context).latest_version),
                   subtitle: Text(lastRelease!.tagName ?? ''),
                 ),
                 ListTile(
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
                   title: Text(I18n.of(context).download_address),
                   subtitle: SelectableText(
                     lastRelease!.assets?.first.browserDownloadUrl ?? '',
@@ -87,6 +89,7 @@ class _UpdatePageState extends State<UpdatePage> {
                   },
                 ),
                 ListTile(
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
                   title: Text(I18n.of(context).new_version_update_information),
                   subtitle: Text(lastRelease!.body ?? ''),
                 ),

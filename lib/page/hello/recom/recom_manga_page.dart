@@ -59,7 +59,10 @@ class _RecomMangaPageState extends State<RecomMangaPage> {
                     itemBuilder: (context, index) {
                       final illust = _store.iStores[index].illusts;
                       return Card(
+                        clipBehavior: Clip.antiAlias,
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
                         child: InkWell(
+                            borderRadius: BorderRadius.circular(12.0),
                             onTap: () {
                               Leader.push(
                                   context, IllustLightingPage(id: illust.id));

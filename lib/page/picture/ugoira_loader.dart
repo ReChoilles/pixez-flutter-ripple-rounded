@@ -56,6 +56,7 @@ class _UgoiraLoaderState extends State<UgoiraLoader> {
                     widget.illusts.width.toDouble());
             if (_store.status == UgoiraStatus.play) {
               return InkWell(
+                borderRadius: BorderRadius.circular(12.0),
                 onLongPress: () async {
                   HapticUtil.heavy();
                   final result = await showModalBottomSheet(
@@ -71,21 +72,25 @@ class _UgoiraLoaderState extends State<UgoiraLoader> {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             ListTile(
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
                               title: Text(I18n.of(context).encode_message),
                             ),
                             ListTile(
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
                               title: Text(I18n.of(context).encode),
                               onTap: () {
                                 Navigator.of(context).pop('OK');
                               },
                             ),
                             ListTile(
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
                               title: Text(I18n.of(context).export),
                               onTap: () {
                                 Navigator.of(context).pop('EXPORT');
                               },
                             ),
                             ListTile(
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
                               title: Text(I18n.of(context).cancel),
                               onTap: () {
                                 Navigator.of(context).pop('SOURCE');

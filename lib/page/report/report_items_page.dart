@@ -46,6 +46,7 @@ class _ReportItemsPageState extends State<ReportItemsPage> {
                       ? Theme.of(context).primaryColor.withValues(alpha: 0.5)
                       : Colors.transparent,
                   child: ListTile(
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
                     title: Text(title),
                     onTap: () {
                       setState(() {

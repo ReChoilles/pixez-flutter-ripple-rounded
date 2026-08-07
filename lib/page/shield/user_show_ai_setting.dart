@@ -50,6 +50,7 @@ class _UserShowAISettingState extends State<UserShowAISetting> {
       body: ListView(
         children: [
           ListTile(
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
             title: Text(I18n.of(context).show),
             trailing: !_showAI ? null : Icon(Icons.check),
             onTap: () {
@@ -59,6 +60,7 @@ class _UserShowAISettingState extends State<UserShowAISetting> {
             },
           ),
           ListTile(
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
             title: Text(I18n.of(context).partially_hidden),
             trailing: _showAI ? null : Icon(Icons.check),
             onTap: () {

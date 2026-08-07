@@ -51,7 +51,7 @@ class NovelViewerPage extends StatefulWidget {
   final NovelStore? novelStore;
 
   const NovelViewerPage({Key? key, required this.id, this.novelStore})
-    : super(key: key);
+      : super(key: key);
 
   @override
   _NovelViewerPageState createState() => _NovelViewerPageState();
@@ -325,6 +325,7 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
                 bottom: 0.0,
               ),
               child: InkWell(
+                borderRadius: BorderRadius.circular(12.0),
                 onTap: () {
                   Leader.push(
                     context,
@@ -607,6 +608,7 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               ListTile(
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
                 subtitle: Text(_novelStore.novel!.user.name, maxLines: 2),
                 title: Text(_novelStore.novel!.title, maxLines: 2),
                 leading: Container(
@@ -645,6 +647,7 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
               ),
               if (Platform.isAndroid)
                 ListTile(
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
                   title: Text(I18n.of(context).export),
                   leading: Icon(Icons.folder_zip),
                   onTap: () {
@@ -652,6 +655,7 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
                   },
                 ),
               ListTile(
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
                 title: Text(I18n.of(context).setting),
                 leading: Icon(Icons.settings),
                 onTap: () {
@@ -662,6 +666,7 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
               Builder(
                 builder: (context) {
                   return ListTile(
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
                     title: Text(I18n.of(context).share),
                     leading: Icon(Icons.share),
                     onTap: () {
@@ -689,6 +694,7 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
   Widget buildListTile(PrevNovel? series) {
     if (series == null) return ListTile(title: Text("no more"));
     return ListTile(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
       title: Text(
         series.title ?? series.contentOrder,
         maxLines: 2,
@@ -713,32 +719,6 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
   void _export() async {
     if (_novelStore.novelTextResponse == null) return;
     if (Platform.isAndroid) {
-      // final path = await getExternalStorageDirectory();
-      // if (path == null) return;
-      // final dirPath = Path.join(path.path, "novel_export");
-      // final dir = Directory(dirPath);
-      // if (!dir.existsSync()) {
-      //   dir.createSync(recursive: true);
-      // }
-      // final allPath = Path.join(dirPath, "All");
-      // final allDir = Directory(allPath);
-      // if (!allDir.existsSync()) {
-      //   allDir.createSync(recursive: true);
-      // }
-      // final novelDirPath =
-      //     Path.join(dirPath, _novelStore.novel!.title.trim().toLegal());
-      // final novelDir = Directory(novelDirPath);
-      // if (!novelDir.existsSync()) {
-      //   novelDir.createSync(recursive: true);
-      // }
-      // final fileInAllPath = Path.join(
-      //     allPath, "${_novelStore.novel!.title.trim().toLegal()}.txt");
-      // final filePath = Path.join(novelDirPath, "${_novelStore.novel!.id}.txt");
-      // final resultFile = File(filePath);
-      // final data = _novelStore.novelTextResponse!.text;
-      // resultFile.writeAsStringSync(data);
-      // File(fileInAllPath).writeAsStringSync(data);
-      // BotToast.showText(text: "export ${filePath}");
       final data = _novelStore.novelTextResponse!.text;
       final uri = await SAFPlugin.createFile(
         "${_novelStore.novel!.title.trim().toLegal()}.txt",

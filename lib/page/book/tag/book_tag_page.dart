@@ -125,6 +125,7 @@ class _BookTagPageState extends State<BookTagPage>
             children: [
               for (var j in bookTagStore.bookTagList)
                 ListTile(
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
                   title: Text(j),
                   onTap: () {
                     _tabController
@@ -159,6 +160,7 @@ class _BookTagPageState extends State<BookTagPage>
               child: Icon(Icons.delete),
             ),
             child: ListTile(
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
               key: Key('$index'),
               title: Text('${_items[index]}'),
             ),

@@ -87,31 +87,38 @@ class _SauceNaoPageState extends State<SauceNaoPage> {
                   ),
                 );
               }
-              return InkWell(
-                child: Card(
-                  child: _store.results.isNotEmpty
-                      ? Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text(I18n.of(context).tap_to_show_results(
-                              _store.results.length.toString())),
-                        )
-                      : Container(
-                          child: Image.asset(
-                            'assets/images/nine.jpg',
+              return Material(
+                color: Colors.transparent,
+                borderRadius: BorderRadius.circular(4.0),
+                clipBehavior: Clip.antiAlias,
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(4.0),
+                  child: Card(
+                    child: _store.results.isNotEmpty
+                        ? Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(I18n.of(context).tap_to_show_results(
+                                _store.results.length.toString())),
+                          )
+                        : Container(
+                            child: Image.asset(
+                              'assets/images/nine.jpg',
+                            ),
                           ),
-                        ),
+                  ),
+                  onTap: () {
+                    if (_store.results.isNotEmpty) {
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => PageView(
+                                children: _store.results
+                                    .map((element) =>
+                                        IllustLightingPage(id: element))
+                                    .toList(),
+                              )));
+                    }
+                  },
+              
                 ),
-                onTap: () {
-                  if (_store.results.isNotEmpty) {
-                    Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => PageView(
-                              children: _store.results
-                                  .map((element) =>
-                                      IllustLightingPage(id: element))
-                                  .toList(),
-                            )));
-                  }
-                },
               );
             }),
           ],

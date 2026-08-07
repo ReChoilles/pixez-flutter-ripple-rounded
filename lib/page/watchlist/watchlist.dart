@@ -135,6 +135,7 @@ class MangaSeriesItem extends StatelessWidget {
                   ClipRRect(
                       borderRadius: BorderRadius.circular(24),
                       child: InkWell(
+                        borderRadius: BorderRadius.circular(12.0),
                         onTap: () {
                           Leader.push(context,
                               IllustLightingPage(id: data.latestContentId));

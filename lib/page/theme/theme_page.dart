@@ -158,6 +158,7 @@ class _ColorPickPageState extends State<ColorPickPage> {
               children: [
                 for (final i in skinList)
                   InkWell(
+                    borderRadius: BorderRadius.circular(12.0),
                     onTap: () {
                       setState(() {
                         pickerColor = i.primaryColor;
@@ -229,6 +230,8 @@ class _ThemePageState extends State<ThemePage> with TickerProviderStateMixin {
             slivers: [
               SliverToBoxAdapter(
                 child: Card(
+                    clipBehavior: Clip.antiAlias,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
                     child: SwitchListTile(
                   value: userSetting.isAMOLED,
                   onChanged: (v) => userSetting.setIsAMOLED(v),
@@ -237,6 +240,8 @@ class _ThemePageState extends State<ThemePage> with TickerProviderStateMixin {
               ),
               SliverToBoxAdapter(
                 child: Card(
+                    clipBehavior: Clip.antiAlias,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
                     child: SwitchListTile(
                   value: userSetting.useDynamicColor,
                   onChanged: (v) async {
@@ -249,7 +254,9 @@ class _ThemePageState extends State<ThemePage> with TickerProviderStateMixin {
               if (!userSetting.useDynamicColor)
                 SliverToBoxAdapter(
                   child: Card(
+                    clipBehavior: Clip.antiAlias,
                     child: ListTile(
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
                       leading: SizedBox(
                         width: 30,
                         height: 30,

@@ -107,6 +107,7 @@ class _SettingPageState extends State<SettingPage> {
                           Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: InkWell(
+                              borderRadius: BorderRadius.circular(28.0),
                               onTap: () {
                                 Navigator.of(context, rootNavigator: true)
                                     .push(MaterialPageRoute(builder: (_) {
@@ -187,6 +188,7 @@ class _SettingPageState extends State<SettingPage> {
                             ),
                           ),
                           ListTile(
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28.0)),
                             leading: Icon(Icons.account_box),
                             title: Text(I18n.of(context).account_message),
                             onTap: () {
@@ -204,6 +206,7 @@ class _SettingPageState extends State<SettingPage> {
                 Column(
                   children: <Widget>[
                     ListTile(
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28.0)),
                       leading: Icon(Icons.history),
                       title: Text(I18n.of(context).history_record),
                       onTap: () {
@@ -216,6 +219,7 @@ class _SettingPageState extends State<SettingPage> {
                       },
                     ),
                     ListTile(
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28.0)),
                       leading: Icon(Icons.settings),
                       title: Text(I18n.of(context).quality_setting),
                       onTap: () {
@@ -226,22 +230,26 @@ class _SettingPageState extends State<SettingPage> {
                       },
                     ),
                     ListTile(
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28.0)),
                       leading: Icon(Icons.bookmark),
                       title: Text(I18n.of(context).favorited_tag),
                       onTap: () =>
                           Leader.pushWithScaffold(context, BookTagPage()),
                     ),
                     ListTile(
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28.0)),
                       leading: Icon(Icons.block),
                       title: Text(I18n.of(context).shielding_settings),
                       onTap: () => Leader.push(context, ShieldPage()),
                     ),
                     ListTile(
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28.0)),
                       leading: Icon(Icons.save_alt),
                       title: Text(I18n.of(context).task_progress),
                       onTap: () => Leader.push(context, JobPage()),
                     ),
                     ListTile(
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28.0)),
                       onTap: () => Leader.push(context, DataExportPage()),
                       title: Text(I18n.of(context).app_data),
                       leading: Icon(Icons.folder_open_rounded),
@@ -252,11 +260,13 @@ class _SettingPageState extends State<SettingPage> {
                 Column(
                   children: <Widget>[
                     ListTile(
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28.0)),
                       leading: Icon(Icons.library_books),
                       title: Text(I18n.of(context).manga),
                       onTap: () => Leader.push(context, RecomMangaPage()),
                     ),
                     ListTile(
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28.0)),
                       leading: Icon(Icons.book),
                       title: Text(I18n.of(context).novel),
                       onTap: () => Navigator.of(context, rootNavigator: true)
@@ -264,6 +274,7 @@ class _SettingPageState extends State<SettingPage> {
                               builder: (context) => NovelRail())),
                     ),
                     ListTile(
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28.0)),
                       leading: Icon(Icons.message),
                       title: Text(I18n.of(context).about),
                       onTap: () => Leader.push(
@@ -281,6 +292,7 @@ class _SettingPageState extends State<SettingPage> {
                     ),
                     if (_needBoardSection)
                       ListTile(
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28.0)),
                         leading: Icon(Icons.article),
                         title: Text(I18n.of(context).bulletin_board),
                         onTap: () => Leader.push(
@@ -292,12 +304,14 @@ class _SettingPageState extends State<SettingPage> {
                     Observer(builder: (context) {
                       if (accountStore.now != null)
                         return ListTile(
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28.0)),
                           leading: Icon(Icons.arrow_back),
                           title: Text(I18n.of(context).logout),
                           onTap: () => _showLogoutDialog(context),
                         );
                       else
                         return ListTile(
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28.0)),
                           leading: Icon(Icons.arrow_back),
                           title: Text(I18n.of(context).login),
                           onTap: () => Leader.push(context, LoginPage()),

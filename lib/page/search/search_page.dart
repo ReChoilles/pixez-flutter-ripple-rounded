@@ -266,6 +266,7 @@ class _SearchPageState extends State<SearchPage>
                   .where((element) => element.type == null || element.type == 0)
                   .isNotEmpty)
                 return InkWell(
+                  borderRadius: BorderRadius.circular(12.0),
                   onTap: () {
                     showDialog(
                         context: context,

@@ -33,6 +33,7 @@ class _NovelResultListState extends State<NovelResultList> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
               InkWell(
+                borderRadius: BorderRadius.circular(12.0),
                 onTap: () {},
                 child: Container(
                   width: MediaQuery.of(context).size.width * 2 / 3,

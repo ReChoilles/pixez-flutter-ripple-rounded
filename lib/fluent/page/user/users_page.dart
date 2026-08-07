@@ -19,32 +19,40 @@ import 'dart:io';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
-import 'package:fluent_ui/fluent_ui.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:pixez/component/common_back_area.dart';
 import 'package:pixez/component/null_hero.dart';
+import 'package:pixez/component/painter_avatar.dart';
+import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/document_plugin.dart';
 import 'package:pixez/er/hoster.dart';
-import 'package:pixez/er/leader.dart';
 import 'package:pixez/er/pixiv_image_source.dart';
-import 'package:pixez/fluent/component/context_menu.dart';
-import 'package:pixez/fluent/component/painter_avatar.dart';
-import 'package:pixez/fluent/component/pixiv_image.dart';
-import 'package:pixez/fluent/page/follow/follow_list.dart';
-import 'package:pixez/fluent/page/report/report_items_page.dart';
-import 'package:pixez/fluent/page/shield/shield_page.dart';
-import 'package:pixez/fluent/page/user/bookmark/bookmark_page.dart';
-import 'package:pixez/fluent/page/user/detail/user_detail.dart';
-import 'package:pixez/fluent/page/user/works/works_page.dart';
-import 'package:pixez/fluent/page/zoom/zoom_page.dart';
 import 'package:pixez/i18n.dart';
+import 'package:pixez/lighting/lighting_store.dart';
 import 'package:pixez/main.dart';
+import 'package:pixez/utils/haptic_util.dart';
 import 'package:pixez/models/illust.dart';
 import 'package:pixez/network/api_client.dart';
+import 'package:pixez/page/follow/follow_list.dart';
+import 'package:pixez/page/novel/user/novel_users_page.dart';
+import 'package:pixez/page/picture/user_follow_button.dart';
+import 'package:pixez/page/report/report_items_page.dart';
+import 'package:pixez/page/shield/shield_page.dart';
+import 'package:pixez/page/user/bookmark/bookmark_page.dart';
+import 'package:pixez/page/user/detail/user_detail.dart';
 import 'package:pixez/page/user/user_store.dart';
+import 'package:pixez/page/user/works/works_page.dart';
 import 'package:share_plus/share_plus.dart';
 
+/*
+🎵 Lyn-The Whims of Fate🎵
+flutter目前3.x以上是支持处理多tab的nestedscrollview的，不需要extended lib，当然extended lib确实比较方便，但是6.0.0存在手势打断的问题
+如果正在求证是否内置的NestedScrollView就能够满足User profile布局，答案是可以的
+可以参见flutter create --sample=widgets.NestedScrollView.1 mysample，你需要把多个tab的列表状态提升到这个User Page上，然后用PageStoreKey记住位置
+*/
 class UsersPage extends StatefulWidget {
   final int id;
   final UserStore? userStore;
@@ -57,16 +65,35 @@ class UsersPage extends StatefulWidget {
   _UsersPageState createState() => _UsersPageState();
 }
 
-class _UsersPageState extends State<UsersPage>
-    with SingleTickerProviderStateMixin, AutomaticKeepAliveClientMixin {
+class _UsersPageState extends State<UsersPage> with TickerProviderStateMixin {
   late UserStore userStore;
+  late TabController _tabController;
   late ScrollController _scrollController;
   bool backToTopVisible = false;
-  BookmarkPageMethodRelay _bookmarkPageMethodRelay = BookmarkPageMethodRelay();
+
+  late LightingStore _workStore;
+  late LightingStore _bookmarkStore;
+
+  String _userWorkType = 'illust';
+
+  String restrict = 'public';
 
   @override
   void initState() {
+    _workStore = LightingStore(
+      ApiForceSource(
+        futureGet: (bool e) =>
+            apiClient.getUserIllusts(widget.id, _userWorkType),
+      ),
+    );
+    _bookmarkStore = LightingStore(
+      ApiForceSource(
+        futureGet: (e) =>
+            apiClient.getBookmarksIllust(widget.id, restrict, null),
+      ),
+    );
     userStore = widget.userStore ?? UserStore(widget.id, null, null);
+    _tabController = TabController(length: 3, vsync: this);
     _scrollController = ScrollController();
     _scrollController.addListener(() {
       if (_scrollController.hasClients) {
@@ -93,6 +120,7 @@ class _UsersPageState extends State<UsersPage>
   @override
   void dispose() {
     _scrollController.dispose();
+    _tabController.dispose();
     super.dispose();
   }
 
@@ -100,28 +128,34 @@ class _UsersPageState extends State<UsersPage>
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
     return Observer(
       builder: (_) {
         if (muteStore.banUserIds.isNotEmpty) {
           if (muteStore.banUserIds
               .map((element) => int.parse(element.userId!))
               .contains(widget.id)) {
-            return ScaffoldPage(
-              content: Center(
+            return Scaffold(
+              appBar: AppBar(
+                backgroundColor: Colors.transparent,
+                elevation: 0.0,
+              ),
+              extendBodyBehindAppBar: true,
+              extendBody: true,
+              body: Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     Text('X_X'),
                     Text('${widget.id}'),
-                    FilledButton(
+                    MaterialButton(
+                      color: Theme.of(context).colorScheme.secondary,
+                      textColor: Colors.white,
                       child: Text(I18n.of(context).shielding_settings),
                       onPressed: () {
-                        Leader.push(
-                          context,
-                          ShieldPage(),
-                          icon: Icon(FluentIcons.settings),
-                          title: Text(I18n.of(context).shielding_settings),
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (BuildContext context) => ShieldPage(),
+                          ),
                         );
                       },
                     ),
@@ -132,13 +166,15 @@ class _UsersPageState extends State<UsersPage>
           }
         }
 
-        if (userStore.errorMessage != null) {
+        if (userStore.errorMessage != null && userStore.user == null) {
           if (userStore.errorMessage!.contains("404"))
-            return ScaffoldPage(
-              content: Container(child: Center(child: Text('404 not found'))),
+            return Scaffold(
+              appBar: AppBar(),
+              body: Container(child: Center(child: Text('404 not found'))),
             );
-          return ScaffoldPage(
-            content: Container(
+          return Scaffold(
+            appBar: AppBar(),
+            body: Container(
               child: Center(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -154,7 +190,8 @@ class _UsersPageState extends State<UsersPage>
                     ),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: FilledButton(
+                      child: MaterialButton(
+                        color: Theme.of(context).colorScheme.primary,
                         onPressed: () {
                           userStore.errorMessage = null;
                           userStore.firstFetch();
@@ -169,164 +206,538 @@ class _UsersPageState extends State<UsersPage>
           );
         }
         if (userStore.user == null) {
-          return ScaffoldPage(
-            content: Container(child: Center(child: ProgressRing())),
+          return Scaffold(
+            appBar: AppBar(),
+            body: Container(
+              child: Center(
+                child: CircularProgressIndicator(
+                  color: Theme.of(context).colorScheme.primary,
+                ),
+              ),
+            ),
           );
         }
-        return NavigationView(
-          pane: NavigationPane(
-            displayMode: PaneDisplayMode.top,
-            selected: _tabIndex,
-            onChanged: (value) {
-              if (value > 2) return;
-              _tabIndex = value;
-              setState(() {});
-            },
-            items: [
-              PaneItem(
-                icon: Icon(FluentIcons.info),
-                title: Text(I18n.of(context).detail),
-                body: _buildDetail(context),
-              ),
-              PaneItem(
-                icon: Icon(FluentIcons.picture_library),
-                title: Text(I18n.of(context).works),
-                body: WorksPage(id: widget.id),
-              ),
-              PaneItem(
-                icon: Icon(FluentIcons.bookmarks),
-                title: Text(I18n.of(context).bookmark),
-                body: BookmarkPage(
-                  isNested: true,
-                  id: widget.id,
-                  relay: _bookmarkPageMethodRelay,
-                ),
-              ),
-            ],
-            footerItems: [
-              PaneItemAction(
-                icon: Icon(FluentIcons.share),
-                onTap: () => SharePlus.instance.share(
-                  ShareParams(text: 'https://www.pixiv.net/users/${widget.id}'),
-                ),
-              ),
-              PaneItemExpander(
-                icon: Container(),
-                body: Container(),
-                items: [
-                  PaneItemAction(
-                    icon: Container(),
-                    title: Text(I18n.of(context).quietly_follow),
-                    onTap: () {
-                      userStore.follow(needPrivate: true);
-                    },
-                  ),
-                  PaneItemAction(
-                    icon: Container(),
-                    title: Text(I18n.of(context).block_user),
-                    onTap: () async {
-                      await showDialog(
-                        context: context,
-                        builder: (context) => ContentDialog(
-                          title: Text('${I18n.of(context).block_user}?'),
-                          actions: <Widget>[
-                            FilledButton(
-                              child: Text(I18n.of(context).ok),
-                              onPressed: () async {
-                                await muteStore.insertBanUserId(
-                                  widget.id.toString(),
-                                  userStore.userDetail!.user.name,
-                                );
-                                Navigator.of(context).pop();
-                              },
-                            ),
-                            Button(
-                              child: Text(I18n.of(context).cancel),
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                              },
-                            ),
-                          ],
-                        ),
-                      );
-                    },
-                  ),
-                  PaneItemAction(
-                    icon: Container(),
-                    title: Text(I18n.of(context).copymessage),
-                    onTap: () {
-                      Clipboard.setData(
-                        ClipboardData(
-                          text:
-                              'painter:${userStore.userDetail?.user.name ?? ''}\npid:${widget.id}',
-                        ),
-                      );
-                      BotToast.showText(
-                        text: I18n.of(context).copied_to_clipboard,
-                      );
-                    },
-                  ),
-                  PaneItemAction(
-                    icon: Container(),
-                    title: Text(I18n.of(context).report),
-                    onTap: () {
-                      Reporter.show(
-                        context,
-                        () async => await muteStore.insertBanUserId(
-                          widget.id.toString(),
-                          userStore.userDetail!.user.name,
-                        ),
-                      );
-                    },
-                  ),
-                ],
-              ),
-            ],
-          ),
-        );
+        return _buildBody(context);
       },
     );
   }
 
-  Widget _buildNameFollow(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) => Container(
-        color: FluentTheme.of(context).cardColor,
-        width: constraints.maxWidth,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              NullHero(
-                tag: userStore.user?.name ?? "" + widget.heroTag.toString(),
-                child: Text(
-                  userStore.user?.name ?? "",
-                  style: FluentTheme.of(context).typography.subtitle,
-                ),
-              ),
-              IconButton(
-                onPressed: () {
-                  Leader.push(
-                    context,
-                    ScaffoldPage(
-                      header: PageHeader(
-                        title: Text(I18n.of(context).followed),
-                      ),
-                      content: FollowList(id: widget.id),
-                    ),
-                    icon: Icon(FluentIcons.follow_user),
-                    title: Text(I18n.of(context).followed),
-                  );
+  Widget _buildBody(BuildContext context) {
+    return Container(
+      child: Scaffold(
+        body: NestedScrollView(
+          controller: _scrollController,
+          body: TabBarView(
+            controller: _tabController,
+            children: [
+              WorksPage(
+                id: widget.id,
+                store: _workStore,
+                portal: "Work",
+                workType: _userWorkType,
+                onWorkTypeChange: (String newType) {
+                  setState(() {
+                    _userWorkType = newType;
+                  });
                 },
-                icon: Text(
-                  userStore.userDetail == null
-                      ? ""
-                      : '${userStore.userDetail!.profile.total_follow_users} ${I18n.of(context).follow}',
-                  style: FluentTheme.of(context).typography.caption,
-                ),
+              ),
+              BookMarkNestedPage(
+                id: widget.id,
+                store: _bookmarkStore,
+                portal: "Book",
+              ),
+              UserDetailPage(
+                key: PageStorageKey('Tab2'),
+                userDetail: userStore.userDetail,
+                isNewNested: true,
               ),
             ],
+          ),
+          headerSliverBuilder:
+              (BuildContext context, bool? innerBoxIsScrolled) {
+                return _HeaderSlivers(innerBoxIsScrolled, context);
+              },
+        ),
+      ),
+    );
+  }
+
+  List<Widget> _HeaderSlivers(bool? innerBoxIsScrolled, BuildContext context) {
+    return [
+      SliverOverlapAbsorber(
+        handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+        sliver: SliverAppBar(
+          pinned: true,
+          elevation: 0.0,
+          forceElevated: innerBoxIsScrolled ?? false,
+          expandedHeight:
+              userStore.userDetail?.profile.background_image_url != null
+              ? MediaQuery.of(context).size.width / 2 +
+                    205 -
+                    MediaQuery.of(context).padding.top
+              : 300,
+          leading: CommonBackArea(),
+          actions: <Widget>[
+            Builder(
+              builder: (context) {
+                return IconButton(
+                  icon: Icon(Icons.share),
+                  onPressed: () {
+                    final box = context.findRenderObject() as RenderBox?;
+                    final pos = box != null
+                        ? box.localToGlobal(Offset.zero) & box.size
+                        : null;
+                    final link = "https://www.pixiv.net/users/${widget.id}";
+                    SharePlus.instance.share(
+                      ShareParams(text: link, sharePositionOrigin: pos),
+                    );
+                  },
+                );
+              },
+            ),
+            _buildPopMenu(context),
+          ],
+          flexibleSpace: FlexibleSpaceBar(
+            collapseMode: CollapseMode.pin,
+            background: Container(
+              color: Theme.of(context).cardColor,
+              child: Stack(
+                children: <Widget>[
+                  _buildBackground(context),
+                  _buildFakeBg(context),
+                  Align(
+                    alignment: Alignment.bottomCenter,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        _buildHeader(context),
+                        Container(
+                          color: Theme.of(context).cardColor,
+                          child: Column(
+                            children: <Widget>[
+                              _buildNameFollow(context),
+                              _buildComment(context),
+                              Tab(text: " "),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          bottom: ColoredTabBar(
+            Theme.of(context).cardColor,
+            TabBar(
+              controller: _tabController,
+              onTap: (index) {
+                HapticUtil.selectionClick();
+                setState(() {
+                  _tabIndex = index;
+                });
+              },
+              indicator: BoxDecoration(
+                borderRadius: BorderRadius.circular(24),
+                color: Theme.of(context).colorScheme.primaryContainer,
+              ),
+              indicatorPadding: const EdgeInsets.symmetric(horizontal: -8),
+              tabs: [
+                GestureDetector(
+                  onDoubleTap: () {
+                    if (_tabIndex == 0) _scrollController.position.jumpTo(0);
+                  },
+                  child: Tab(
+                    child: Material(
+                      color: Colors.transparent,
+                      borderRadius: BorderRadius.circular(24),
+                      clipBehavior: Clip.antiAlias,
+                      child: InkWell(
+                        borderRadius: BorderRadius.circular(24),
+                        onTap: () {},
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 8),
+                          child: Text(I18n.of(context).works),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                GestureDetector(
+                  onDoubleTap: () {
+                    if (_tabIndex == 1) _scrollController.position.jumpTo(0);
+                  },
+                  child: Tab(
+                    child: Material(
+                      color: Colors.transparent,
+                      borderRadius: BorderRadius.circular(24),
+                      clipBehavior: Clip.antiAlias,
+                      child: InkWell(
+                        borderRadius: BorderRadius.circular(24),
+                        onTap: () {},
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 8),
+                          child: Text(I18n.of(context).bookmark),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                GestureDetector(
+                  onDoubleTap: () {
+                    if (_tabIndex == 2) _scrollController.position.jumpTo(0);
+                  },
+                  child: Tab(
+                    child: Material(
+                      color: Colors.transparent,
+                      borderRadius: BorderRadius.circular(24),
+                      clipBehavior: Clip.antiAlias,
+                      child: InkWell(
+                        borderRadius: BorderRadius.circular(24),
+                        onTap: () {},
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 8),
+                          child: Text(
+                              I18n.of(context).user_page_info_title),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+      // SliverPersistentHeader(
+      //   delegate: StickyTabBarDelegate(
+      //       child: TabBar(
+      //     controller: _tabController,
+      //     indicator: MD2Indicator(
+      //         indicatorHeight: 3,
+      //         indicatorColor: Theme.of(context).colorScheme.primary,
+      //         indicatorSize: MD2IndicatorSize.normal),
+      //     onTap: (index) {
+      //       setState(() {
+      //         _tabIndex = index;
+      //       });
+      //     },
+      //     labelColor: Theme.of(context).textTheme.bodyText1!.color,
+      //     indicatorSize: TabBarIndicatorSize.label,
+      //     tabs: [
+      //       GestureDetector(
+      //         onDoubleTap: () {
+      //           if (_tabIndex == 0) _scrollController.position.jumpTo(0);
+      //         },
+      //         child: Tab(
+      //           text: I18n.of(context).works,
+      //         ),
+      //       ),
+      //       GestureDetector(
+      //         onDoubleTap: () {
+      //           if (_tabIndex == 1) _scrollController.position.jumpTo(0);
+      //         },
+      //         child: Tab(
+      //           text: I18n.of(context).bookmark,
+      //         ),
+      //       ),
+      //       GestureDetector(
+      //         onDoubleTap: () {
+      //           if (_tabIndex == 2) _scrollController.position.jumpTo(0);
+      //         },
+      //         child: Tab(
+      //           text: I18n.of(context).detail,
+      //         ),
+      //       ),
+      //     ],
+      //   )),
+      //   pinned: true,
+      // ),
+    ];
+  }
+
+  //为什么会需要这段？因为外部Column无法使子元素贴紧，子元素之间在真机上总是有spacing，所以底部又需要一个cardColor来填充
+  Widget _buildFakeBg(BuildContext context) {
+    return Align(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Container(height: 55, color: Theme.of(context).cardColor),
+          Container(
+            color: Theme.of(context).cardColor,
+            child: Column(
+              children: <Widget>[
+                _buildFakeNameFollow(context),
+                Container(height: 60),
+                Tab(text: " "),
+              ],
+            ),
+          ),
+        ],
+      ),
+      alignment: Alignment.bottomCenter,
+    );
+  }
+
+  Widget _buildBackground(BuildContext context) {
+    return Container(
+      width: MediaQuery.of(context).size.width,
+      height: userStore.userDetail?.profile.background_image_url != null
+          ? MediaQuery.of(context).size.width / 2
+          : MediaQuery.of(context).padding.top + 160,
+      child: userStore.userDetail != null
+          ? userStore.userDetail!.profile.background_image_url != null
+                ? InkWell(
+                    borderRadius: BorderRadius.circular(12.0),
+                    onLongPress: () {
+                      showDialog(
+                        context: context,
+                        builder: (context) {
+                          return AlertDialog(
+                            title: Text(I18n.of(context).save),
+                            content: ClipRRect(
+                              borderRadius: BorderRadius.circular(12),
+                              child: CachedNetworkImage(
+                                imageUrl: userStore
+                                    .userDetail!
+                                    .profile
+                                    .background_image_url!,
+                                fit: BoxFit.cover,
+                                cacheManager: pixivCacheManager,
+                                httpHeaders: Hoster.header(
+                                  url: userStore
+                                      .userDetail!
+                                      .profile
+                                      .background_image_url,
+                                ),
+                              ),
+                            ),
+                            actions: [
+                              TextButton(
+                                onPressed: () async {
+                                  Navigator.of(context).pop();
+                                },
+                                child: Text(I18n.of(context).cancel),
+                              ),
+                              TextButton(
+                                onPressed: () async {
+                                  Navigator.of(context).pop();
+                                  await _saveUserBg(
+                                    userStore
+                                        .userDetail!
+                                        .profile
+                                        .background_image_url!,
+                                  );
+                                },
+                                child: Text(I18n.of(context).ok),
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                    },
+                    child: CachedNetworkImage(
+                      imageUrl:
+                          userStore.userDetail!.profile.background_image_url!,
+                      fit: BoxFit.fitWidth,
+                      cacheManager: pixivCacheManager,
+                      httpHeaders: Hoster.header(
+                        url: userStore.userDetail!.profile.background_image_url,
+                      ),
+                    ),
+                  )
+                : Container(color: Theme.of(context).colorScheme.secondary)
+          : Container(),
+    );
+  }
+
+  PopupMenuButton<int> _buildPopMenu(BuildContext context) {
+    return PopupMenuButton<int>(
+      onSelected: (index) async {
+        switch (index) {
+          case 0:
+            userStore.follow(needPrivate: true);
+            break;
+          case 1:
+            {
+              final result = await showDialog(
+                context: context,
+                builder: (context) {
+                  return AlertDialog(
+                    title: Text('${I18n.of(context).block_user}?'),
+                    actions: <Widget>[
+                      TextButton(
+                        child: Text("OK"),
+                        onPressed: () {
+                          Navigator.of(context).pop("OK");
+                        },
+                      ),
+                      TextButton(
+                        child: Text("CANCEL"),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                    ],
+                  );
+                },
+              );
+              if (result == "OK") {
+                await muteStore.insertBanUserId(
+                  widget.id.toString(),
+                  userStore.userDetail!.user.name,
+                );
+                Navigator.of(context).pop();
+              }
+            }
+            break;
+          case 2:
+            {
+              Clipboard.setData(
+                ClipboardData(
+                  text:
+                      'painter:${userStore.userDetail?.user.name ?? ''}\npid:${widget.id}',
+                ),
+              );
+              BotToast.showText(text: I18n.of(context).copied_to_clipboard);
+              break;
+            }
+          case 3:
+            {
+              Reporter.show(
+                context,
+                () async => await muteStore.insertBanUserId(
+                  widget.id.toString(),
+                  userStore.userDetail!.user.name,
+                ),
+              );
+              break;
+            }
+          case 4:
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (BuildContext context) {
+                  return NovelUsersPage(id: widget.id);
+                },
+              ),
+            );
+          default:
+        }
+      },
+      itemBuilder: (context) {
+        return [
+          if (!userStore.isFollow)
+            PopupMenuItem<int>(
+              value: 0,
+              child: Text(I18n.of(context).quietly_follow),
+            ),
+          PopupMenuItem<int>(
+            value: 1,
+            child: Text(I18n.of(context).block_user),
+          ),
+          PopupMenuItem<int>(
+            value: 2,
+            child: Text(I18n.of(context).copymessage),
+          ),
+          PopupMenuItem<int>(value: 3, child: Text(I18n.of(context).report)),
+          PopupMenuItem<int>(
+            value: 4,
+            child: Text(I18n.of(context).novel_page),
+          ),
+        ];
+      },
+    );
+  }
+
+  Widget _buildFakeNameFollow(BuildContext context) {
+    return Container(
+      width: MediaQuery.of(context).size.width,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Text(
+              userStore.user?.name ?? "",
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
+            Text(
+              userStore.userDetail == null
+                  ? ""
+                  : '${userStore.userDetail!.profile.total_follow_users} ${I18n.of(context).follow}',
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildNameFollow(BuildContext context) {
+    return Container(
+      color: Theme.of(context).cardColor,
+      width: MediaQuery.of(context).size.width,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            NullHero(
+              tag: userStore.user?.name ?? "" + widget.heroTag.toString(),
+              child: Text(
+                userStore.user?.name ?? "",
+                style: Theme.of(context).textTheme.titleLarge,
+              ),
+            ),
+            InkWell(
+              borderRadius: BorderRadius.circular(12.0),
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (BuildContext context) {
+                      return Scaffold(
+                        appBar: AppBar(title: Text(I18n.of(context).followed)),
+                        body: FollowList(id: widget.id),
+                      );
+                    },
+                  ),
+                );
+              },
+              child: Text(
+                userStore.userDetail == null
+                    ? ""
+                    : '${userStore.userDetail!.profile.total_follow_users} ${I18n.of(context).follow}',
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildComment(BuildContext context) {
+    return Container(
+      color: Theme.of(context).cardColor,
+      width: MediaQuery.of(context).size.width,
+      height: 60,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 16.0),
+        child: SelectionArea(
+          child: SingleChildScrollView(
+            child: Text(
+              userStore.userDetail == null
+                  ? ""
+                  : '${userStore.userDetail!.user.comment}',
+              style: Theme.of(context).textTheme.bodySmall,
+              overflow: TextOverflow.ellipsis,
+            ),
           ),
         ),
       ),
@@ -334,22 +745,24 @@ class _UsersPageState extends State<UsersPage>
   }
 
   Widget _buildHeader(BuildContext context) {
-    final follow = () {
-      if (accountStore.now == null) return;
-
-      if (int.parse(accountStore.now!.userId) != widget.id) {
-        userStore.follow(needPrivate: false);
-      } else {
-        displayInfoBar(
-          context,
-          builder: (context, VoidCallback) => InfoBar(
-            title: Text('Who is the most beautiful person in the world?'),
+    Widget w = _buildAvatarFollow(context);
+    return Stack(
+      children: <Widget>[
+        Container(
+          padding: EdgeInsets.only(top: 25),
+          alignment: Alignment.bottomCenter,
+          child: SizedBox(
+            height: 55.0,
+            child: Container(color: Theme.of(context).cardColor),
           ),
-        );
-      }
-    };
+        ),
+        Align(child: w, alignment: Alignment.bottomCenter),
+      ],
+    );
+  }
 
-    Widget w = Container(
+  Container _buildAvatarFollow(BuildContext context) {
+    return Container(
       child: Observer(
         builder: (_) => Row(
           mainAxisSize: MainAxisSize.max,
@@ -372,16 +785,27 @@ class _UsersPageState extends State<UsersPage>
                     showDialog(
                       context: context,
                       builder: (context) {
-                        return ContentDialog(
+                        return AlertDialog(
                           title: Text(I18n.of(context).save_painter_avatar),
+                          content: ClipRRect(
+                            borderRadius: BorderRadius.circular(12),
+                            child: CachedNetworkImage(
+                              imageUrl: userStore.user!.profileImageUrls.medium,
+                              fit: BoxFit.cover,
+                              cacheManager: pixivCacheManager,
+                              httpHeaders: Hoster.header(
+                                url: userStore.user!.profileImageUrls.medium,
+                              ),
+                            ),
+                          ),
                           actions: [
-                            Button(
+                            TextButton(
                               onPressed: () async {
                                 Navigator.of(context).pop();
                               },
                               child: Text(I18n.of(context).cancel),
                             ),
-                            FilledButton(
+                            TextButton(
                               onPressed: () async {
                                 Navigator.of(context).pop();
                                 await _saveUserC();
@@ -401,41 +825,27 @@ class _UsersPageState extends State<UsersPage>
               child: userStore.userDetail == null
                   ? Container(
                       padding: const EdgeInsets.only(right: 16.0, bottom: 4.0),
-                      child: ProgressRing(),
+                      child: CircularProgressIndicator(
+                        color: Theme.of(context).colorScheme.secondary,
+                      ),
                     )
                   : Padding(
                       padding: const EdgeInsets.only(right: 16.0, bottom: 4.0),
-                      child: userStore.isFollow
-                          ? FilledButton(
-                              onPressed: follow,
-                              child: Text(I18n.of(context).followed),
-                            )
-                          : OutlinedButton(
-                              onPressed: follow,
-                              child: Text(I18n.of(context).follow),
-                            ),
+                      child: UserFollowButton(
+                        id: widget.id,
+                        followed: userStore.isFollow,
+                        onPressed: () async {
+                          await userStore.follow(needPrivate: false);
+                        },
+                        onConfirm: (follow, restrict) {
+                          userStore.followWithRestrict(follow, restrict);
+                        },
+                      ),
                     ),
             ),
           ],
         ),
       ),
-    );
-    return Stack(
-      children: <Widget>[
-        Container(
-          padding: EdgeInsets.only(top: 25),
-          alignment: Alignment.bottomCenter,
-          child: SizedBox(
-            height: 60.0,
-            child: Container(
-              color: FluentTheme.of(
-                context,
-              ).acrylicBackgroundColor.withValues(alpha: 255 * .5),
-            ),
-          ),
-        ),
-        Align(child: w, alignment: Alignment.bottomCenter),
-      ],
     );
   }
 
@@ -531,94 +941,43 @@ class _UsersPageState extends State<UsersPage>
       print(e);
     }
   }
+}
 
-  _buildBackground(BuildContext context) {
-    return ContextMenu(
-      child: CachedNetworkImage(
-        imageUrl: userStore.userDetail!.profile.background_image_url!,
-        fit: BoxFit.fitWidth,
-        cacheManager: pixivCacheManager,
-        httpHeaders: Hoster.header(
-          url: userStore.userDetail!.profile.background_image_url,
-        ),
-      ),
-      items: [
-        MenuFlyoutItem(
-          text: Text(I18n.of(context).show),
-          onPressed: () async {
-            await Leader.push(
-              context,
-              ZoomPage(
-                url: userStore.userDetail!.profile.background_image_url!,
-              ),
-              icon: Icon(FluentIcons.picture),
-              title: Text(
-                I18n.of(context).painter +
-                    (userStore.userDetail?.user.id.toString() ?? ''),
-              ),
-            );
-          },
-        ),
-        MenuFlyoutItem(
-          text: Text(I18n.of(context).save),
-          onPressed: () async {
-            await _saveUserBg(
-              userStore.userDetail!.profile.background_image_url!,
-            );
-          },
-        ),
-      ],
-    );
-  }
+class StickyTabBarDelegate extends SliverPersistentHeaderDelegate {
+  final TabBar child;
 
-  _buildDetail(BuildContext context) => LayoutBuilder(
-    builder: (context, constraints) {
-      final width = constraints.maxWidth;
-      const height = 300.0;
-      final nobg = userStore.userDetail?.profile.background_image_url == null;
-
-      final background = nobg
-          ? Container(color: FluentTheme.of(context).accentColor)
-          : _buildBackground(context);
-
-      return ListView(
-        children: [
-          Container(
-            height: height * (nobg ? .55 : 1),
-            color: FluentTheme.of(context).cardColor,
-            child: Stack(
-              children: <Widget>[
-                Container(
-                  width: width,
-                  height: height * (nobg ? .3 : .75),
-                  child: background,
-                ),
-                Align(
-                  alignment: Alignment.bottomCenter,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      _buildHeader(context),
-                      Container(
-                        height: height * .25,
-                        color: FluentTheme.of(context).cardColor,
-                        child: _buildNameFollow(context),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-          userStore.userDetail != null
-              ? UserDetailPage(userDetail: userStore.userDetail!)
-              : Container(),
-        ],
-      );
-    },
-  );
+  StickyTabBarDelegate({required this.child});
 
   @override
-  bool get wantKeepAlive => true;
+  Widget build(
+    BuildContext context,
+    double shrinkOffset,
+    bool overlapsContent,
+  ) {
+    return Container(child: this.child, color: Theme.of(context).cardColor);
+  }
+
+  @override
+  double get maxExtent => this.child.preferredSize.height;
+
+  @override
+  double get minExtent => this.child.preferredSize.height;
+
+  @override
+  bool shouldRebuild(SliverPersistentHeaderDelegate oldDelegate) {
+    return false;
+  }
+}
+
+class ColoredTabBar extends Container implements PreferredSizeWidget {
+  ColoredTabBar(this.color, this.tabBar);
+
+  final Color color;
+  final TabBar tabBar;
+
+  @override
+  Size get preferredSize => tabBar.preferredSize;
+
+  @override
+  Widget build(BuildContext context) => Container(color: color, child: tabBar);
 }

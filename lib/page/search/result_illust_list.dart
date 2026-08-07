@@ -161,6 +161,7 @@ class _ResultIllustListState extends State<ResultIllustList> {
             children: <Widget>[
               Expanded(
                 child: InkWell(
+                  borderRadius: BorderRadius.circular(12.0),
                   onTap: () {
                     Navigator.of(context).push(MaterialPageRoute(
                         builder: (context) => SearchSuggestionPage(
@@ -187,6 +188,7 @@ class _ResultIllustListState extends State<ResultIllustList> {
                   child: Row(
                     children: [
                       InkWell(
+                          borderRadius: BorderRadius.circular(12.0),
                           child: Padding(
                             padding: const EdgeInsets.all(4.0),
                             child: Icon(Icons.date_range),
@@ -204,6 +206,7 @@ class _ResultIllustListState extends State<ResultIllustList> {
                         child: _buildStar(),
                       ),
                       InkWell(
+                          borderRadius: BorderRadius.circular(12.0),
                           child: Padding(
                             padding: const EdgeInsets.all(4.0),
                             child: Icon(Icons.filter_alt_outlined),
