@@ -173,38 +173,32 @@ class _PlatformPageState extends State<PlatformPage> {
               ),
               Observer(
                 builder: (context) {
-                  return Card(
-                    clipBehavior: Clip.antiAlias,
+                  return SwitchListTile(
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
-                    child: SwitchListTile(
-                      secondary: Icon(Icons.folder_shared),
-                      onChanged: (bool value) async {
-                        if (value) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text("可能会造成保存等待时间过长")));
-                        }
-                        await userSetting.setSingleFolder(value);
-                      },
-                      title: Text(I18n.of(context).separate_folder),
-                      subtitle: Text(I18n.of(context).separate_folder_message),
-                      value: userSetting.singleFolder,
-                    ),
+                    secondary: Icon(Icons.folder_shared),
+                    onChanged: (bool value) async {
+                      if (value) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text("可能会造成保存等待时间过长")));
+                      }
+                      await userSetting.setSingleFolder(value);
+                    },
+                    title: Text(I18n.of(context).separate_folder),
+                    subtitle: Text(I18n.of(context).separate_folder_message),
+                    value: userSetting.singleFolder,
                   );
                 },
               ),
               Observer(
                 builder: (context) {
-                  return Card(
-                    clipBehavior: Clip.antiAlias,
+                  return SwitchListTile(
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
-                    child: SwitchListTile(
-                      secondary: Icon(Icons.folder_open),
-                      onChanged: (bool value) async {
-                        await userSetting.setOverSanityLevelFolder(value);
-                      },
-                      title: Text("Sanity Single Folder"),
-                      value: userSetting.overSanityLevelFolder,
-                    ),
+                    secondary: Icon(Icons.folder_open),
+                    onChanged: (bool value) async {
+                      await userSetting.setOverSanityLevelFolder(value);
+                    },
+                    title: Text("Sanity Single Folder"),
+                    value: userSetting.overSanityLevelFolder,
                   );
                 },
               ),
@@ -260,25 +254,21 @@ class _PlatformPageState extends State<PlatformPage> {
               ),
               Observer(
                 builder: (context) {
-                  return Card(
-                    clipBehavior: Clip.antiAlias,
+                  return SwitchListTile(
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
-                    child: SwitchListTile(
-                      secondary: Icon(Icons.photo_album),
-                      onChanged: (bool value) async {
-                        await userSetting.setImagePickerType(value ? 1 : 0);
+                    secondary: Icon(Icons.photo_album),
+                    onChanged: (bool value) async {
+                      await userSetting.setImagePickerType(value ? 1 : 0);
+                    },
+                    title: GestureDetector(
+                      onTap: () {
+                        launchUrlString(
+                            "https://developer.android.com/training/data-storage/shared/photopicker");
                       },
-                      title: InkWell(
-                        borderRadius: BorderRadius.circular(12.0),
-                        child: Text(I18n.of(context).photo_picker),
-                        onTap: () {
-                          launchUrlString(
-                              "https://developer.android.com/training/data-storage/shared/photopicker");
-                        },
-                      ),
-                      subtitle: Text(I18n.of(context).photo_picker_subtitle),
-                      value: userSetting.imagePickerType == 1,
+                      child: Text(I18n.of(context).photo_picker),
                     ),
+                    subtitle: Text(I18n.of(context).photo_picker_subtitle),
+                    value: userSetting.imagePickerType == 1,
                   );
                 },
               ),
