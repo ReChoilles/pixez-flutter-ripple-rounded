@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:bot_toast/bot_toast.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:path_provider/path_provider.dart';
@@ -177,9 +176,10 @@ class DataExportPage extends HookConsumerWidget {
             ],
           ),
           SettingsSection(
+            title: const Text('数据管理'),
             tiles: [
               SettingsTile(
-                leading: Icons.cleaning_services,
+                leading: Icons.cleaning_services_rounded,
                 title: Text(I18n.of(context).clear_all_cache),
                 onPressed: (ctx) async {
                   try {

@@ -83,24 +83,29 @@ class _AccountEditPageState extends State<AccountEditPage> {
                     child: Card(
                       clipBehavior: Clip.antiAlias,
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 14),
                         child: Row(
+                          mainAxisSize: MainAxisSize.min,
                           children: [
                             Container(
                               width: 40,
                               height: 40,
                               decoration: BoxDecoration(
-                                color: colorScheme.secondaryContainer.withValues(alpha: 0.6),
+                                color: colorScheme.errorContainer,
                                 borderRadius: BorderRadius.circular(12),
                               ),
-                              child: Icon(Icons.error, size: 20, color: colorScheme.onSecondaryContainer),
+                              child: Icon(Icons.error_outline_rounded,
+                                  size: 20,
+                                  color: colorScheme.onErrorContainer),
                             ),
                             const SizedBox(width: 16),
-                            Expanded(
-                              child: Text(
-                                "Email format error",
-                                style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: colorScheme.onSurface),
-                              ),
+                            Text(
+                              "Email format error",
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyLarge
+                                  ?.copyWith(color: colorScheme.onSurface),
                             ),
                           ],
                         ),
@@ -161,7 +166,9 @@ class _AccountEditPageState extends State<AccountEditPage> {
                 obscureText: _obscureText,
                 suffixIcon: IconButton(
                   icon: Icon(
-                    _obscureText ? Icons.visibility_rounded : Icons.visibility_off_rounded,
+                    _obscureText
+                        ? Icons.visibility_rounded
+                        : Icons.visibility_off_rounded,
                   ),
                   onPressed: _toggle,
                 ),
@@ -185,64 +192,34 @@ class _AccountEditPageState extends State<AccountEditPage> {
           if (accountStore.now != null &&
               accountStore.now!.isMailAuthorized == 1)
             SettingsSection(
+              title: const Text('安全'),
               tiles: [
-                InkWell(
-                  borderRadius: BorderRadius.circular(4),
-                  onTap: () async {
-                    Clipboard.setData(
+                SettingsTile(
+                  leading: Icons.key_rounded,
+                  title: const Text('Token export'),
+                  onPressed: (ctx) async {
+                    await Clipboard.setData(
                         ClipboardData(text: accountStore.now!.refreshToken));
-                    BotToast.showText(text: I18n.of(context).copied_to_clipboard);
+                    BotToast.showText(
+                        text: I18n.of(context).copied_to_clipboard);
                   },
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-                    child: Row(
-                      children: [
-                        Container(
-                          width: 40,
-                          height: 40,
-                          decoration: BoxDecoration(
-                            color: colorScheme.secondaryContainer.withValues(alpha: 0.6),
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: Icon(
-                            Icons.key_rounded,
-                            size: 20,
-                            color: colorScheme.onSecondaryContainer,
-                          ),
-                        ),
-                        const SizedBox(width: 16),
-                        Expanded(
-                          child: Text(
-                            "Token export",
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyLarge
-                                ?.copyWith(color: colorScheme.onSurface),
-                          ),
-                        ),
-                        Icon(
-                          Icons.chevron_right_rounded,
-                          size: 20,
-                          color: colorScheme.onSurfaceVariant.withValues(alpha: 0.5),
-                        ),
-                      ],
-                    ),
-                  ),
                 ),
               ],
             ),
           SettingsSection(
+            title: const Text('危险区域'),
             tiles: [
-              InkWell(
-                borderRadius: BorderRadius.circular(4),
-                onTap: () {
+              SettingsTile(
+                leading: Icons.delete_forever_rounded,
+                title: Text(I18n.of(context).account_deletion),
+                onPressed: (ctx) {
                   showDialog(
                       context: context,
                       builder: (ctx) {
                         return AlertDialog(
                           title: Text("${I18n.of(ctx).account_deletion}?"),
-                          content:
-                              Text("${I18n.of(ctx).account_deletion_subtitle}"),
+                          content: Text(
+                              "${I18n.of(ctx).account_deletion_subtitle}"),
                           actions: [
                             TextButton(
                                 onPressed: () async {
@@ -262,41 +239,6 @@ class _AccountEditPageState extends State<AccountEditPage> {
                         );
                       });
                 },
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-                  child: Row(
-                    children: [
-                      Container(
-                        width: 40,
-                        height: 40,
-                        decoration: BoxDecoration(
-                          color: colorScheme.errorContainer.withValues(alpha: 0.6),
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Icon(
-                          Icons.delete_forever_rounded,
-                          size: 20,
-                          color: colorScheme.onErrorContainer,
-                        ),
-                      ),
-                      const SizedBox(width: 16),
-                      Expanded(
-                        child: Text(
-                          I18n.of(context).account_deletion,
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyLarge
-                              ?.copyWith(color: colorScheme.onSurface),
-                        ),
-                      ),
-                      Icon(
-                        Icons.chevron_right_rounded,
-                        size: 20,
-                        color: colorScheme.onSurfaceVariant.withValues(alpha: 0.5),
-                      ),
-                    ],
-                  ),
-                ),
               ),
             ],
           ),
@@ -316,7 +258,7 @@ class _AccountEditPageState extends State<AccountEditPage> {
     Widget? suffixIcon,
   }) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
       child: Row(
         children: [
           Container(
@@ -337,10 +279,18 @@ class _AccountEditPageState extends State<AccountEditPage> {
               decoration: InputDecoration(
                 labelText: label,
                 border: InputBorder.none,
-                labelStyle: TextStyle(color: colorScheme.onSurfaceVariant),
+                labelStyle: TextStyle(
+                  color: enabled
+                      ? colorScheme.onSurfaceVariant
+                      : colorScheme.onSurface.withValues(alpha: 0.38),
+                ),
                 suffixIcon: suffixIcon,
               ),
-              style: TextStyle(color: colorScheme.onSurface),
+              style: TextStyle(
+                color: enabled
+                    ? colorScheme.onSurface
+                    : colorScheme.onSurface.withValues(alpha: 0.38),
+              ),
             ),
           ),
         ],
