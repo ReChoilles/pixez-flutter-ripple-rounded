@@ -263,7 +263,7 @@ class _JobPageState extends State<JobPage> with SingleTickerProviderStateMixin {
                           ),
                           SettingsTile(
                             title: Text(I18n.of(context).retry_seed_task),
-                            leading: Icons.seed_rounded,
+                            leading: Icons.autorenew_rounded,
                             onPressed: (ctx) async {
                               final results =
                                   await taskPersistProvider.getAllAccount();

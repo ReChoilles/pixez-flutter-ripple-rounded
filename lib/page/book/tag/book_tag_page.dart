@@ -125,7 +125,7 @@ class _BookTagPageState extends State<BookTagPage>
           child: SettingsList(
             sections: [
               SettingsSection(
-                title: Text(I18n.of(context).tags),
+                title: Text(I18n.of(context).tag),
                 tiles: [
                   for (var j in bookTagStore.bookTagList)
                     SettingsTile(

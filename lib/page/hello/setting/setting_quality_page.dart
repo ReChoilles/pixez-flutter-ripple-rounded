@@ -213,7 +213,7 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                     ),
                   ),
                   SettingsTile(
-                    leading: Icons.layers_outlined_rounded,
+                    leading: Icons.layers_rounded,
                     title: Text(I18n.of(context).layout_mode),
                     trailing: SettingSelectMenu(
                       index: userSetting.padMode,
