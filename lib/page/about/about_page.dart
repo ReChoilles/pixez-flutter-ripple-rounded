@@ -115,9 +115,7 @@ class _AboutPageState extends State<AboutPage> {
       appBar: AppBar(
         title: Text(I18n.of(context).about),
       ),
-      body: SelectionArea(
-        child: _buildInfo(context),
-      ),
+      body: _buildInfo(context),
     );
   }
 

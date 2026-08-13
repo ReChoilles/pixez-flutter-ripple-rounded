@@ -210,50 +210,129 @@ final List<Map<String, dynamic>> _colorThemes = [
   {'color': Colors.blueGrey, 'label': '蓝灰'},
 ];
 
-class PaletteCard extends StatefulWidget {
+class _PaletteCard extends StatefulWidget {
   final Color color;
   final bool selected;
 
-  const PaletteCard({
-    super.key,
+  const _PaletteCard({
     required this.color,
     required this.selected,
   });
 
   @override
-  State<StatefulWidget> createState() => _PaletteCardState();
+  State<_PaletteCard> createState() => _PaletteCardState();
 }
 
-class _PaletteCardState extends State<PaletteCard> {
+class _PaletteCardState extends State<_PaletteCard>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _scaleAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 200),
+      vsync: this,
+    );
+    _scaleAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeOutBack),
+    );
+    if (widget.selected) {
+      _controller.value = 1.0;
+    }
+  }
+
+  @override
+  void didUpdateWidget(_PaletteCard oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.selected && !oldWidget.selected) {
+      _controller.forward();
+    } else if (!widget.selected && oldWidget.selected) {
+      _controller.reverse();
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    return Container(
-      width: 56,
-      height: 56,
-      decoration: BoxDecoration(
-        color: widget.color,
-        shape: BoxShape.circle,
-        border: widget.selected
-            ? Border.all(color: colorScheme.primary, width: 3)
-            : null,
-        boxShadow: [
-          BoxShadow(
-            color: widget.color.withValues(alpha: 0.3),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
+    return SizedBox(
+      width: 64,
+      height: 64,
+      child: Card(
+        elevation: 0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+          side: widget.selected
+              ? BorderSide(
+                  color: colorScheme.primary,
+                  width: 2,
+                )
+              : BorderSide.none,
+        ),
+        color: colorScheme.surfaceContainerHighest,
+        child: Stack(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8),
+              child: ClipOval(
+                child: Column(
+                  children: [
+                    Expanded(
+                      child: Container(
+                        color: widget.color.withValues(alpha: 0.7),
+                      ),
+                    ),
+                    Expanded(
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Container(
+                              color: widget.color
+                                  .withValues(alpha: 0.5),
+                            ),
+                          ),
+                          Expanded(
+                            child: Container(
+                              color: widget.color
+                                  .withValues(alpha: 0.3),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            if (widget.selected)
+              Center(
+                child: ScaleTransition(
+                  scale: _scaleAnimation,
+                  child: Container(
+                    width: 24,
+                    height: 24,
+                    decoration: BoxDecoration(
+                      color: colorScheme.primary,
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(
+                      Icons.check_rounded,
+                      color: colorScheme.surfaceContainerLow,
+                      size: 14,
+                    ),
+                  ),
+                ),
+              ),
+          ],
+        ),
       ),
-      child: widget.selected
-          ? Icon(
-              Icons.check_rounded,
-              color: widget.color.computeLuminance() > 0.5
-                  ? Colors.black87
-                  : Colors.white,
-              size: 24,
-            )
-          : null,
     );
   }
 }
@@ -428,7 +507,7 @@ class _ThemePageState extends State<ThemePage> {
                             child: Column(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                PaletteCard(
+                                _PaletteCard(
                                   color: color,
                                   selected: selected,
                                 ),
