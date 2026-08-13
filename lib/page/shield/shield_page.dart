@@ -105,105 +105,104 @@ class _ShieldPageState extends State<ShieldPage> {
                   ],
                 ),
                 Divider(),
-                  Row(
-                    children: [
-                      Text(I18n.of(context).tag),
-                      IconButton(
-                        onPressed: () {
-                          _showBanTagAddDialog(context);
-                        },
-                        icon: Icon(Icons.add),
-                      ),
-                    ],
-                  ),
-                  Container(
-                    child: Wrap(
-                      spacing: 2.0,
-                      runSpacing: 2.0,
-                      direction: Axis.horizontal,
-                      children: <Widget>[
-                        ...sortedBanTags
-                            .map(
-                              (f) => GestureDetector(
-                                onLongPress: () {
-                                  HapticUtil.heavy();
-                                  Clipboard.setData(
-                                    ClipboardData(text: f.name),
-                                  );
-                                  BotToast.showText(
-                                    text: I18n.of(context).copied_to_clipboard,
-                                  );
-                                },
-                                child: ActionChip(
-                                  onPressed: () => deleteTag(context, f),
-                                  label: Text(f.name),
-                                ),
-                              ),
-                            )
-                            .toList(),
-                      ],
+                Row(
+                  children: [
+                    Text(I18n.of(context).tag),
+                    IconButton(
+                      onPressed: () {
+                        _showBanTagAddDialog(context);
+                      },
+                      icon: Icon(Icons.add),
                     ),
-                  ),
-                  Divider(),
-                  Row(
-                    children: [
-                      Text(I18n.of(context).painter),
-                      Opacity(
-                        child: IconButton(
-                          onPressed: () {},
-                          icon: Icon(Icons.add),
-                        ),
-                        opacity: 0.0,
-                      ),
-                    ],
-                  ),
-                  Container(
-                    child: Wrap(
-                      spacing: 2.0,
-                      runSpacing: 2.0,
-                      direction: Axis.horizontal,
-                      children: muteStore.banUserIds
+                  ],
+                ),
+                Container(
+                  child: Wrap(
+                    spacing: 2.0,
+                    runSpacing: 2.0,
+                    direction: Axis.horizontal,
+                    children: <Widget>[
+                      ...sortedBanTags
                           .map(
-                            (f) => ActionChip(
-                              onPressed: () => _deleteUserIdTag(context, f),
-                              label: Text(f.name ?? ""),
+                            (f) => GestureDetector(
+                              onLongPress: () {
+                                HapticUtil.heavy();
+                                Clipboard.setData(
+                                  ClipboardData(text: f.name),
+                                );
+                                BotToast.showText(
+                                  text: I18n.of(context).copied_to_clipboard,
+                                );
+                              },
+                              child: ActionChip(
+                                onPressed: () => deleteTag(context, f),
+                                label: Text(f.name),
+                              ),
                             ),
                           )
                           .toList(),
-                    ),
-                  ),
-                  Divider(),
-                  Row(
-                    children: [
-                      Text(I18n.of(context).illust),
-                      Opacity(
-                        child: IconButton(
-                          onPressed: () {},
-                          icon: Icon(Icons.add),
-                        ),
-                        opacity: 0.0,
-                      ),
                     ],
                   ),
-                  Container(
-                    child: Wrap(
-                      spacing: 2.0,
-                      runSpacing: 2.0,
-                      direction: Axis.horizontal,
-                      children: <Widget>[
-                        ...muteStore.banillusts
-                            .map(
-                              (f) => ActionChip(
-                                onPressed: () => _deleteIllust(context, f),
-                                label: Text(f.name),
-                              ),
-                            )
-                            .toList(),
-                      ],
+                ),
+                Divider(),
+                Row(
+                  children: [
+                    Text(I18n.of(context).painter),
+                    Opacity(
+                      child: IconButton(
+                        onPressed: () {},
+                        icon: Icon(Icons.add),
+                      ),
+                      opacity: 0.0,
                     ),
+                  ],
+                ),
+                Container(
+                  child: Wrap(
+                    spacing: 2.0,
+                    runSpacing: 2.0,
+                    direction: Axis.horizontal,
+                    children: muteStore.banUserIds
+                        .map(
+                          (f) => ActionChip(
+                            onPressed: () => _deleteUserIdTag(context, f),
+                            label: Text(f.name ?? ""),
+                          ),
+                        )
+                        .toList(),
                   ),
-                ],
-              ),
+                ),
+                Divider(),
+                Row(
+                  children: [
+                    Text(I18n.of(context).illust),
+                    Opacity(
+                      child: IconButton(
+                        onPressed: () {},
+                        icon: Icon(Icons.add),
+                      ),
+                      opacity: 0.0,
+                    ),
+                  ],
+                ),
+                Container(
+                  child: Wrap(
+                    spacing: 2.0,
+                    runSpacing: 2.0,
+                    direction: Axis.horizontal,
+                    children: <Widget>[
+                      ...muteStore.banillusts
+                          .map(
+                            (f) => ActionChip(
+                              onPressed: () => _deleteIllust(context, f),
+                              label: Text(f.name),
+                            ),
+                          )
+                          .toList(),
+                    ],
+                  ),
+                ),
+              ],
             ),
           ),
         );
