@@ -17,6 +17,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/component/painter_avatar.dart';
+import 'package:pixez/component/settings_list.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/account.dart';
@@ -36,40 +37,85 @@ class _AccountSelectPageState extends State<AccountSelectPage> {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
     return Observer(builder: (context) {
       return Scaffold(
-        body: Container(
-          child: ListView.builder(
-            itemBuilder: (context, index) {
-              AccountPersist accountPersist = accountStore.accounts[index];
-              return ListTile(
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
-                leading: PainterAvatar(
-                  url: accountStore.accounts[index].userImage,
-                  id: int.parse(accountStore.accounts[index].userId),
-                ),
-                title: Text(accountPersist.name),
-                subtitle: Text(accountPersist.mailAddress),
-                trailing:
-                    accountStore.accounts.indexOf(accountStore.now) == index
-                        ? Icon(Icons.check)
-                        : IconButton(
-                            icon: Icon(Icons.delete),
+        body: SettingsList(
+          sections: [
+            SettingsSection(
+              tiles: List.generate(accountStore.accounts.length, (index) {
+                AccountPersist accountPersist = accountStore.accounts[index];
+                final isCurrent =
+                    accountStore.accounts.indexOf(accountStore.now) == index;
+                return InkWell(
+                  onTap: isCurrent
+                      ? null
+                      : () async {
+                          await accountStore.select(index);
+                          setState(() {});
+                        },
+                  borderRadius: BorderRadius.circular(4),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 16, vertical: 14),
+                    child: Row(
+                      children: [
+                        PainterAvatar(
+                          url: accountStore.accounts[index].userImage,
+                          id: int.parse(
+                              accountStore.accounts[index].userId),
+                        ),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              DefaultTextStyle.merge(
+                                style: textTheme.bodyLarge?.copyWith(
+                                  color: colorScheme.onSurface,
+                                ),
+                                child: Text(accountPersist.name),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(top: 2),
+                                child: DefaultTextStyle.merge(
+                                  style: textTheme.bodySmall?.copyWith(
+                                    color: colorScheme.onSurfaceVariant,
+                                  ),
+                                  child: Text(accountPersist.mailAddress),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        if (isCurrent)
+                          Icon(Icons.check, color: colorScheme.primary)
+                        else ...[
+                          IconButton(
+                            icon: Icon(Icons.delete, size: 20),
                             onPressed: () {
                               accountStore.deleteSingle(accountPersist.id!);
                             },
+                            constraints: const BoxConstraints(
+                                minWidth: 36, minHeight: 36),
+                            padding: EdgeInsets.zero,
                           ),
-                onTap: () async {
-                  if (accountStore.accounts.indexOf(accountStore.now) !=
-                      index) {
-                    await accountStore.select(index);
-                    setState(() {});
-                  }
-                },
-              );
-            },
-            itemCount: accountStore.accounts.length,
-          ),
+                          Icon(
+                            Icons.chevron_right_rounded,
+                            size: 20,
+                            color: colorScheme.onSurfaceVariant
+                                .withValues(alpha: 0.5),
+                          ),
+                        ],
+                      ],
+                    ),
+                  ),
+                );
+              }),
+            ),
+          ],
         ),
         appBar: AppBar(
           title: Text(I18n.of(context).account_change),

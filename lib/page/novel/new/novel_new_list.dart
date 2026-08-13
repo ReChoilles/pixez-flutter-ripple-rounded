@@ -1,6 +1,7 @@
 
 
 import 'package:flutter/material.dart';
+import 'package:pixez/component/bottom_sheet_tile.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/lighting/lighting_store.dart';
 import 'package:pixez/network/api_client.dart';
@@ -40,8 +41,7 @@ class _NovelNewListState extends State<NovelNewList> {
                           child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          ListTile(
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
+                          BottomSheetTile(
                             title: Text(I18n.of(context).public),
                             onTap: () {
                               setState(() {
@@ -50,8 +50,7 @@ class _NovelNewListState extends State<NovelNewList> {
                               });
                             },
                           ),
-                          ListTile(
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
+                          BottomSheetTile(
                               title: Text(I18n.of(context).private),
                               onTap: () {
                                 setState(() {

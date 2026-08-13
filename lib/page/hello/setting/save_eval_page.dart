@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:pixez/component/settings_list.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/illust.dart';
@@ -110,26 +111,25 @@ function eval(illust, index, mime) {
               icon: Icon(Icons.check))
         ],
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Container(
-              height: 12,
-            ),
-            ListTile(
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28.0)),
-              title: Text(I18n.of(context).script_page_hint),
-            ),
-            ListTile(
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28.0)),
-              title: Text("Example output file name:"),
-              subtitle: Text(_fileName ?? "undefined"),
-            ),
-            Container(
-              height: 200,
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: TextField(
+      body: SettingsList(
+        sections: [
+          SettingsSection(
+            tiles: [
+              SettingsTile(title: Text(I18n.of(context).script_page_hint)),
+              SettingsTile(
+                title: Text("Example output file name:"),
+                description: Text(_fileName ?? "undefined"),
+              ),
+            ],
+          ),
+          SettingsSection(
+            title: Text("Code"),
+            tiles: [
+              SizedBox(
+                height: 200,
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: TextField(
                     expands: true,
                     maxLines: null,
                     keyboardType: TextInputType.multiline,
@@ -138,46 +138,48 @@ function eval(illust, index, mime) {
                       border: OutlineInputBorder(),
                       hintText: 'Input Code here',
                       labelText: 'Code',
-                    )),
+                    ),
+                  ),
+                ),
               ),
-            ),
-            ListTile(
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28.0)),
-              leading: Icon(Icons.read_more),
-              title: Text("Read script from scheme"),
-              onTap: () {
-                Clipboard.getData("text/plain").then((value) {
-                  if (value == null || value.text == null) return;
-                  if (!value.text!.startsWith("pixez")) return;
-                  final link = Uri.tryParse(value.text!);
-                  if (link == null) return;
-                  final base64 = link.queryParameters["code"];
-                  if (base64 == null) return;
-                  final result = String.fromCharCodes(base64Decode(base64));
-                  run(result);
-                });
-              },
-            ),
-            ListTile(
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28.0)),
-              leading: Icon(Icons.play_arrow),
-              title: Text("Run and test"),
-              onTap: () async {
-                final text = _textEditingController.text.trim();
-                if (text.isEmpty) return;
-                run(text);
-              },
-            ),
-            ListTile(
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28.0)),
-              title: Text("Example illust json:"),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: Text(_exampleJson),
-            )
-          ],
-        ),
+            ],
+          ),
+          SettingsSection(
+            tiles: [
+              SettingsTile(
+                leading: Icons.read_more,
+                title: Text("Read script from scheme"),
+                onPressed: (ctx) {
+                  Clipboard.getData("text/plain").then((value) {
+                    if (value == null || value.text == null) return;
+                    if (!value.text!.startsWith("pixez")) return;
+                    final link = Uri.tryParse(value.text!);
+                    if (link == null) return;
+                    final base64 = link.queryParameters["code"];
+                    if (base64 == null) return;
+                    final result = String.fromCharCodes(base64Decode(base64));
+                    run(result);
+                  });
+                },
+              ),
+              SettingsTile(
+                leading: Icons.play_arrow,
+                title: Text("Run and test"),
+                onPressed: (ctx) async {
+                  final text = _textEditingController.text.trim();
+                  if (text.isEmpty) return;
+                  run(text);
+                },
+              ),
+            ],
+          ),
+          SettingsSection(
+            tiles: [
+              SettingsTile(title: Text("Example illust json:")),
+            ],
+            bottomInfo: Text(_exampleJson),
+          ),
+        ],
       ),
     );
   }

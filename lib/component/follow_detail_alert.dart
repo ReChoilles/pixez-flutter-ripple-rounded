@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:pixez/component/bottom_sheet_tile.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/network/api_client.dart';
 
@@ -80,7 +81,7 @@ class _State extends ConsumerState<FollowDetailAlert> {
                     : Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          SwitchListTile(
+                          BottomSheetSwitchTile(
                             value: _restrict == 'private',
                             title: Text(I18n.of(context).quietly_follow),
                             onChanged: (value) {
@@ -88,9 +89,6 @@ class _State extends ConsumerState<FollowDetailAlert> {
                                 _restrict = value ? 'private' : 'public';
                               });
                             },
-                          ),
-                          Divider(
-                            height: 1,
                           ),
                           if (_isFollowed)
                             Container(

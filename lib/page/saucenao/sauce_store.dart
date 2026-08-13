@@ -33,6 +33,7 @@ import 'package:pixez/er/lprinter.dart';
 import 'package:pixez/er/prefer.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
+import 'package:pixez/component/bottom_sheet_tile.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 part 'sauce_store.g.dart';
@@ -73,8 +74,8 @@ abstract class SauceStoreBase with Store {
                   children: [
                     Observer(
                       builder: (context) {
-                        return SwitchListTile(
-                          secondary: Icon(Icons.photo_album),
+                        return BottomSheetSwitchTile(
+                          leading: Icon(Icons.photo_album),
                           onChanged: (bool value) async {
                             await userSetting.setImagePickerType(value ? 1 : 0);
                           },
@@ -93,7 +94,6 @@ abstract class SauceStoreBase with Store {
                         );
                       },
                     ),
-                    Divider(),
                     InkWell(
                       borderRadius: BorderRadius.circular(12.0),
                       child: Center(

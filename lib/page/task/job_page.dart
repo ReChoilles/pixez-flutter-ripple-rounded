@@ -18,6 +18,7 @@ import 'dart:async';
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:pixez/component/pixiv_image.dart';
+import 'package:pixez/component/settings_list.dart';
 import 'package:pixez/component/sort_group.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
@@ -242,52 +243,55 @@ class _JobPageState extends State<JobPage> with SingleTickerProviderStateMixin {
                       BorderRadius.vertical(top: Radius.circular(16.0))),
               builder: (_) {
                 return SafeArea(
-                  child: Column(
-                    children: <Widget>[
-                      ListTile(
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
-                        title: Text(I18n.of(context).retry_failed_tasks),
-                        onTap: () async {
-                          final results =
-                              await taskPersistProvider.getAllAccount();
-                          results.forEach((element) {
-                            if (element.status == 3) {
-                              _retryJob(element);
-                            }
-                          });
-                          Navigator.of(context).pop();
-                        },
+                  child: SettingsList(
+                    sections: [
+                      SettingsSection(
+                        tiles: [
+                          SettingsTile(
+                            title: Text(I18n.of(context).retry_failed_tasks),
+                            leading: Icons.refresh_rounded,
+                            onPressed: (ctx) async {
+                              final results =
+                                  await taskPersistProvider.getAllAccount();
+                              results.forEach((element) {
+                                if (element.status == 3) {
+                                  _retryJob(element);
+                                }
+                              });
+                              Navigator.of(context).pop();
+                            },
+                          ),
+                          SettingsTile(
+                            title: Text(I18n.of(context).retry_seed_task),
+                            leading: Icons.seed_rounded,
+                            onPressed: (ctx) async {
+                              final results =
+                                  await taskPersistProvider.getAllAccount();
+                              results.forEach((element) {
+                                if (element.status == 0) {
+                                  _retryJob(element);
+                                }
+                              });
+                              Navigator.of(context).pop();
+                            },
+                          ),
+                          SettingsTile(
+                            title: Text(I18n.of(context).clear_completed_tasks),
+                            leading: Icons.cleaning_services_rounded,
+                            onPressed: (ctx) async {
+                              final results =
+                                  await taskPersistProvider.getAllAccount();
+                              results.forEach((element) {
+                                if (element.status == 2) {
+                                  _deleteJob(element);
+                                }
+                              });
+                              Navigator.of(context).pop();
+                            },
+                          ),
+                        ],
                       ),
-                      ListTile(
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
-                        title: Text(I18n.of(context).retry_seed_task),
-                        onTap: () async {
-                          final results =
-                              await taskPersistProvider.getAllAccount();
-                          results.forEach((element) {
-                            if (element.status == 0) {
-                              _retryJob(element);
-                            }
-                          });
-                          Navigator.of(context).pop();
-                        },
-                      ),
-                      ListTile(
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
-                        title: Text(I18n.of(context).clear_completed_tasks),
-                        onTap: () async {
-                          final results =
-                              await taskPersistProvider.getAllAccount();
-                          results.forEach((element) {
-                            if (element.status == 2) {
-                              _deleteJob(element);
-                            }
-                          });
-                          Navigator.of(context).pop();
-                        },
-                      )
                     ],
-                    mainAxisSize: MainAxisSize.min,
                   ),
                 );
               });

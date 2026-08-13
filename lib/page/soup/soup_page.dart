@@ -19,6 +19,7 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/component/null_hero.dart';
 import 'package:pixez/component/painter_avatar.dart';
 import 'package:pixez/component/pixiv_image.dart';
+import 'package:pixez/component/settings_list.dart';
 import 'package:pixez/models/amwork.dart';
 import 'package:pixez/models/spotlight_response.dart';
 import 'package:pixez/page/picture/illust_lighting_page.dart';
@@ -109,6 +110,8 @@ class _SoupPageState extends State<SoupPage> {
             );
           }
           AmWork amWork = _soupStore.amWorks[index - 1];
+          final colorScheme = Theme.of(context).colorScheme;
+          final textTheme = Theme.of(context).textTheme;
           return InkWell(
             onTap: () {
               int id = int.parse(Uri.parse(amWork.arworkLink!).pathSegments[
@@ -125,14 +128,53 @@ class _SoupPageState extends State<SoupPage> {
               clipBehavior: Clip.antiAlias,
               child: Column(
                 children: <Widget>[
-                  ListTile(
-                    leading: PainterAvatar(
-                      url: amWork.userImage!,
-                      id: int.parse(Uri.parse(amWork.userLink!).pathSegments[
-                          Uri.parse(amWork.userLink!).pathSegments.length - 1]),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 16, vertical: 14),
+                    child: Row(
+                      children: [
+                        PainterAvatar(
+                          url: amWork.userImage!,
+                          id: int.parse(
+                              Uri.parse(amWork.userLink!).pathSegments[
+                                  Uri.parse(amWork.userLink!)
+                                          .pathSegments
+                                          .length -
+                                      1]),
+                        ),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              DefaultTextStyle.merge(
+                                style: textTheme.bodyLarge?.copyWith(
+                                  color: colorScheme.onSurface,
+                                ),
+                                child: Text(amWork.title!),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(top: 2),
+                                child: DefaultTextStyle.merge(
+                                  style: textTheme.bodySmall?.copyWith(
+                                    color: colorScheme.onSurfaceVariant,
+                                  ),
+                                  child: Text(amWork.user!),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Icon(
+                          Icons.chevron_right_rounded,
+                          size: 20,
+                          color: colorScheme.onSurfaceVariant
+                              .withValues(alpha: 0.5),
+                        ),
+                      ],
                     ),
-                    title: Text(amWork.title!),
-                    subtitle: Text(amWork.user!),
                   ),
                   PixivImage(amWork.showImage!),
                 ],

@@ -24,6 +24,7 @@ import 'package:pixez/component/comment_emoji_text.dart';
 import 'package:pixez/component/painter_avatar.dart';
 import 'package:pixez/component/pixez_default_header.dart';
 import 'package:pixez/component/pixiv_image.dart';
+import 'package:pixez/component/settings_list.dart';
 import 'package:pixez/er/leader.dart';
 import 'package:pixez/exts.dart';
 import 'package:pixez/i18n.dart';
@@ -514,31 +515,31 @@ class _CommentPageState extends State<CommentPage> {
                         ),
                       ),
                       builder: (context) {
-                        return Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            ListTile(
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
-                              title: Text(I18n.of(context).ban),
-                              onTap: () async {
-                                Navigator.of(context).pop();
-                                await muteStore.insertComment(comment);
-                              },
+                        return SettingsList(
+                          sections: [
+                            SettingsSection(
+                              tiles: [
+                                SettingsTile(
+                                  leading: Icons.block_rounded,
+                                  title: Text(I18n.of(context).ban),
+                                  onPressed: (ctx) async {
+                                    Navigator.of(ctx).pop();
+                                    await muteStore.insertComment(comment);
+                                  },
+                                ),
+                                SettingsTile(
+                                  leading: Icons.flag_rounded,
+                                  title: Text(I18n.of(context).report),
+                                  onPressed: (ctx) {
+                                    Navigator.of(ctx).pop();
+                                    Reporter.show(
+                                        context,
+                                        () async => await muteStore
+                                            .insertComment(comment));
+                                  },
+                                ),
+                              ],
                             ),
-                            ListTile(
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
-                              title: Text(I18n.of(context).report),
-                              onTap: () {
-                                Navigator.of(context).pop();
-                                Reporter.show(
-                                    context,
-                                    () async =>
-                                        await muteStore.insertComment(comment));
-                              },
-                            ),
-                            Container(
-                              height: MediaQuery.of(context).padding.bottom,
-                            )
                           ],
                         );
                       });

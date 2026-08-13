@@ -1,5 +1,6 @@
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
+import 'package:pixez/component/settings_list.dart';
 import 'package:pixez/i18n.dart';
 
 class ReportItemsPage extends StatefulWidget {
@@ -38,25 +39,30 @@ class _ReportItemsPageState extends State<ReportItemsPage> {
       appBar: AppBar(title: Text(I18n.of(context).report)),
       body: Stack(
         children: [
-          ListView.builder(
-              itemBuilder: (context, index) {
-                final title = items[index];
-                return Container(
-                  color: index == _selectItem
-                      ? Theme.of(context).primaryColor.withValues(alpha: 0.5)
-                      : Colors.transparent,
-                  child: ListTile(
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
-                    title: Text(title),
-                    onTap: () {
+          SettingsList(
+            sections: [
+              SettingsSection(
+                title: Text(I18n.of(context).report),
+                tiles: List.generate(items.length, (index) {
+                  final isSelected = index == _selectItem;
+                  return SettingsTile(
+                    leading: Icons.report_rounded,
+                    title: Text(items[index]),
+                    trailing: isSelected
+                        ? Icon(Icons.check_circle_rounded,
+                            size: 20,
+                            color: Theme.of(context).colorScheme.primary)
+                        : null,
+                    onPressed: (ctx) {
                       setState(() {
                         _selectItem = index;
                       });
                     },
-                  ),
-                );
-              },
-              itemCount: items.length),
+                  );
+                }),
+              ),
+            ],
+          ),
           Align(
             alignment: Alignment.bottomCenter,
             child: Padding(
@@ -64,14 +70,15 @@ class _ReportItemsPageState extends State<ReportItemsPage> {
                   const EdgeInsets.symmetric(vertical: 32.0, horizontal: 16),
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  minimumSize: const Size.fromHeight(40), // NEW
+                  minimumSize: const Size.fromHeight(40),
                 ),
                 onPressed: () async {
                   BotToast.showLoading();
                   await widget.onSubmit();
                   BotToast.closeAllLoading();
                   Navigator.of(context).pop();
-                  BotToast.showText(text: I18n.ofContext().thanks_for_your_feedback);
+                  BotToast.showText(
+                      text: I18n.ofContext().thanks_for_your_feedback);
                 },
                 child: Text(I18n.ofContext().submit),
               ),

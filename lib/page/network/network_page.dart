@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/component/pixiv_image.dart';
+import 'package:pixez/component/settings_list.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/network/network_mode.dart';
@@ -72,94 +73,52 @@ class _NetworkPageState extends State<NetworkPage> {
               ),
               Visibility(
                 visible: userSetting.networkMode.allowsImageSource,
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Card(
-                    clipBehavior: Clip.antiAlias,
-                    child: Column(
-                      children: [
-                        ListTile(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12.0),
-                          ),
-                          title: Text(
-                            I18n.of(context).image_site,
-                            style: TextStyle(
-                              color: Theme.of(
-                                context,
-                              ).textTheme.bodyLarge!.color,
-                            ),
-                          ),
-                          trailing: IconButton(
-                            icon: Icon(Icons.refresh_outlined),
-                            onPressed: () async {
-                              userSetting.setPictureSource(ImageHost);
-                              splashStore.setHost(ImageHost);
-                              splashStore.helloWord = "= w =";
-                              splashStore.maybeFetch();
-                            },
-                          ),
-                        ),
-                        ListTile(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12.0),
-                          ),
-                          title: Text(
-                            I18n.of(context).default_title,
-                            style: TextStyle(
-                              color: Theme.of(
-                                context,
-                              ).textTheme.bodyLarge!.color,
-                            ),
-                          ),
-                          selected: userSetting.pictureSource == ImageHost,
-                          selectedTileColor: Theme.of(
-                            context,
-                          ).colorScheme.secondary,
-                          onTap: () async {
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    SettingsSection(
+                      title: Text(I18n.of(context).image_site),
+                      tiles: [
+                        SettingsTile(
+                          leading: Icons.refresh_rounded,
+                          title: Text(I18n.of(context).image_site),
+                          description: Text(I18n.of(context).default_title),
+                          onPressed: (ctx) async {
                             userSetting.setPictureSource(ImageHost);
                             splashStore.setHost(ImageHost);
                             splashStore.helloWord = "= w =";
                             splashStore.maybeFetch();
                           },
                         ),
-                        ListTile(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12.0),
-                          ),
-                          title: Text(
-                            ImageCatHost,
-                            style: TextStyle(
-                              color: Theme.of(
-                                context,
-                              ).textTheme.bodyLarge!.color,
-                            ),
-                          ),
-                          selected: userSetting.pictureSource == ImageCatHost,
-                          selectedTileColor: Theme.of(
-                            context,
-                          ).colorScheme.secondary,
-                          onTap: () async {
+                        SettingsTile(
+                          leading: Icons.image_rounded,
+                          title: Text(ImageCatHost),
+                          onPressed: (ctx) async {
                             userSetting.setPictureSource(ImageCatHost);
                             splashStore.setHost(ImageCatHost);
                           },
                         ),
-                        ListTile(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12.0),
-                          ),
-                          selected:
-                              userSetting.pictureSource != ImageHost &&
-                              userSetting.pictureSource != ImageCatHost,
-                          selectedTileColor: Theme.of(
-                            context,
-                          ).colorScheme.secondary,
-                          title: Theme(
-                            data: Theme.of(context).copyWith(
-                              primaryColor: Theme.of(
-                                context,
-                              ).colorScheme.secondary,
+                      ],
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+                            child: Text(
+                              I18n.of(context).custom_host,
+                              style: Theme.of(context).textTheme.titleSmall
+                                  ?.copyWith(color: Theme.of(context).colorScheme.primary, fontWeight: FontWeight.w600),
                             ),
+                          ),
+                          Container(
+                            decoration: BoxDecoration(
+                              color: Theme.of(context).colorScheme.surfaceContainerLow,
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                             child: TextField(
                               maxLines: 1,
                               controller: _textEditingController,
@@ -195,10 +154,10 @@ class _NetworkPageState extends State<NetworkPage> {
                               ),
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
+                  ],
                 ),
               ),
             ],
@@ -209,76 +168,57 @@ class _NetworkPageState extends State<NetworkPage> {
   }
 
   Widget _buildNetworkModeSetting(BuildContext context) {
-    return Card(
-      clipBehavior: Clip.antiAlias,
-      child: Column(
-        children: [
-          ListTile(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12.0),
-            ),
-            title: Text(I18n.of(context).network_mode),
-            subtitle: Text(I18n.of(context).network_mode_restart_may_required),
-          ),
-          _buildModeGroup(
-            context,
-            title: I18n.of(context).network_mode_oauth,
-            groupValue: userSetting.oauthNetworkMode,
-            onChanged: (NetworkMode value) async {
-              await userSetting.setOAuthNetworkMode(value);
-            },
-          ),
-          Divider(height: 1),
-          _buildModeGroup(
-            context,
-            title: I18n.of(context).network_mode_api_service,
-            groupValue: userSetting.networkMode,
-            onChanged: (NetworkMode value) async {
-              await userSetting.setNetworkMode(value);
-            },
-          ),
-        ],
-      ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        SettingsRadioSection<NetworkMode>(
+          title: Text(I18n.of(context).network_mode_oauth),
+          groupValue: userSetting.oauthNetworkMode,
+          onChanged: (value) {
+            if (value != null) {
+              userSetting.setOAuthNetworkMode(value);
+            }
+          },
+          tiles: NetworkMode.selectableValues.map((mode) {
+            return SettingsTile.radioTile(
+              leading: _networkModeIcon(mode),
+              title: Text(_networkModeTitle(context, mode)),
+              description: Text(_networkModeMessage(context, mode)),
+              radioValue: mode,
+            );
+          }).toList(),
+        ),
+        const SizedBox(height: 8),
+        SettingsRadioSection<NetworkMode>(
+          title: Text(I18n.of(context).network_mode_api_service),
+          groupValue: userSetting.networkMode,
+          onChanged: (value) {
+            if (value != null) {
+              userSetting.setNetworkMode(value);
+            }
+          },
+          tiles: NetworkMode.selectableValues.map((mode) {
+            return SettingsTile.radioTile(
+              leading: _networkModeIcon(mode),
+              title: Text(_networkModeTitle(context, mode)),
+              description: Text(_networkModeMessage(context, mode)),
+              radioValue: mode,
+            );
+          }).toList(),
+        ),
+      ],
     );
   }
 
-  Widget _buildModeGroup(
-    BuildContext context, {
-    required String title,
-    required NetworkMode groupValue,
-    required Future<void> Function(NetworkMode value) onChanged,
-  }) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-          child: Text(
-            title,
-            style: TextStyle(
-              color: Theme.of(context).textTheme.bodyLarge?.color,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-        ),
-        ...NetworkMode.selectableValues.map((mode) {
-          return RadioListTile<NetworkMode>(
-            value: mode,
-            groupValue: groupValue,
-            onChanged: (value) {
-              if (value != null && value != groupValue) {
-                onChanged(value);
-              }
-            },
-            title: Text(_networkModeTitle(context, mode)),
-            subtitle: Text(_networkModeMessage(context, mode)),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12.0),
-            ),
-          );
-        }).toList(),
-      ],
-    );
+  IconData _networkModeIcon(NetworkMode mode) {
+    switch (mode) {
+      case NetworkMode.compat:
+        return Icons.bolt_rounded;
+      case NetworkMode.ech:
+        return Icons.lock_rounded;
+      case NetworkMode.standard:
+        return Icons.public_rounded;
+    }
   }
 
   String _networkModeTitle(BuildContext context, NetworkMode mode) {

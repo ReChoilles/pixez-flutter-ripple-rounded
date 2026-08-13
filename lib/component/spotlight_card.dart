@@ -17,6 +17,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:pixez/component/bottom_sheet_tile.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/er/hoster.dart';
 import 'package:pixez/models/spotlight_response.dart';
@@ -53,18 +54,30 @@ class SpotlightCard extends StatelessWidget {
                       borderRadius: BorderRadius.all(Radius.circular(8.0))),
                   child: Align(
                     alignment: AlignmentDirectional.bottomCenter,
-                    child: ListTile(
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
-                        title: Text(
-                          spotlight.title,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
+                    child: InkWell(
+                        borderRadius: BorderRadius.circular(12),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                spotlight.title,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: Theme.of(context).textTheme.bodyLarge,
+                              ),
+                              Text(
+                                spotlight.pureTitle,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: Theme.of(context).textTheme.bodySmall,
+                              ),
+                            ],
+                          ),
                         ),
-                        subtitle: Text(
-                          spotlight.pureTitle,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        )),
+                      ),
                   ),
                 ),
               ),

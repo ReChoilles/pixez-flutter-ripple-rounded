@@ -35,6 +35,7 @@ import 'package:pixez/page/platform/platform_page.dart';
 import 'package:pixez/store/welcome_page_type.dart';
 import 'package:pixez/utils/haptic_util.dart';
 import 'package:url_launcher/url_launcher_string.dart';
+import 'package:pixez/component/settings_list.dart';
 
 class SettingQualityPage extends StatefulWidget {
   @override
@@ -102,332 +103,310 @@ class _SettingQualityPageState extends State<SettingQualityPage>
       appBar: AppBar(title: Text(I18n.of(context).quality_setting)),
       body: Observer(
         builder: (context) {
-          return Container(
-            child: ListView(
-              children: [
-                if (Platform.isAndroid)
-                  ListTile(
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28.0)),
-                    leading: Icon(Icons.android),
-                    trailing: const Icon(Icons.arrow_right),
-                    title: Text(I18n.of(context).platform_special_setting),
-                    subtitle: Text(
-                      "For Android",
-                      style: TextStyle(color: Colors.green),
+          return SettingsList(
+            sections: [
+              SettingsSection(
+                tiles: [
+                  if (Platform.isAndroid)
+                    SettingsTile(
+                      leading: Icons.android_rounded,
+                      title: Text(I18n.of(context).platform_special_setting),
+                      description: Text(
+                        "For Android",
+                        style: TextStyle(color: Colors.green),
+                      ),
+                      onPressed: (ctx) {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => PlatformPage(),
+                          ),
+                        );
+                      },
                     ),
-                    onTap: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(builder: (context) => PlatformPage()),
-                      );
-                    },
+                  SettingsTile(
+                    leading: Icons.network_check_rounded,
+                    title: Text(I18n.of(context).network),
+                    onPressed: (ctx) => Leader.push(
+                      context,
+                      NetworkPage(automaticallyImplyLeading: true),
+                    ),
                   ),
-                ListTile(
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28.0)),
-                  leading: const Icon(Icons.network_check),
-                  title: Text(I18n.of(context).network),
-                  trailing: const Icon(Icons.arrow_right),
-                  onTap: () => Leader.push(
-                    context,
-                    NetworkPage(automaticallyImplyLeading: true),
+                  SettingsTile(
+                    leading: Icons.info_outline_rounded,
+                    title: Text(I18n.of(context).share_info_format),
+                    onPressed: (ctx) => Leader.push(context, CopyTextPage()),
                   ),
-                ),
-                ListTile(
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28.0)),
-                  leading: const Icon(Icons.info_outline),
-                  title: Text(I18n.of(context).share_info_format),
-                  trailing: const Icon(Icons.arrow_right),
-                  onTap: () => Leader.push(context, CopyTextPage()),
-                ),
-                _buildLanguageSelect(),
-                Divider(),
-                ListTile(
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28.0)),
-                  leading: const Icon(Icons.feed),
-                  title: Text(I18n.of(context).feed_preview_quality),
-                  trailing: SettingSelectMenu(
-                    index: userSetting.feedPreviewQuality,
-                    items: [
-                      I18n.of(context).medium,
-                      I18n.of(context).large,
-                      I18n.of(context).source,
-                    ],
-                    onChange: (index) {
-                      userSetting.changeFeedPreviewQuality(index);
-                    },
-                  ),
-                ),
-                ListTile(
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28.0)),
-                  leading: const Icon(Icons.photo),
-                  title: Text(
-                    I18n.of(context).illustration_detail_page_quality,
-                  ),
-                  trailing: SettingSelectMenu(
-                    index: userSetting.pictureQuality,
-                    items: [
-                      I18n.of(context).medium,
-                      I18n.of(context).large,
-                      I18n.of(context).source,
-                    ],
-                    onChange: (index) {
-                      userSetting.setPictureQuality(index);
-                    },
-                  ),
-                ),
-                ListTile(
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28.0)),
-                  leading: const Icon(Icons.photo_album),
-                  title: Text(I18n.of(context).manga_detail_page_quality),
-                  trailing: SettingSelectMenu(
-                    index: userSetting.mangaQuality,
-                    items: [
-                      I18n.of(context).medium,
-                      I18n.of(context).large,
-                      I18n.of(context).source,
-                    ],
-                    onChange: (index) {
-                      userSetting.setMangaQuality(index);
-                    },
-                  ),
-                ),
-                ListTile(
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28.0)),
-                  leading: const Icon(Icons.zoom_out_map),
-                  title: Text(I18n.of(context).large_preview_zoom_quality),
-                  trailing: SettingSelectMenu(
-                    index: userSetting.zoomQuality,
-                    items: [I18n.of(context).large, I18n.of(context).source],
-                    onChange: (index) {
-                      userSetting.change(index);
-                    },
-                  ),
-                ),
-                ListTile(
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28.0)),
-                  leading: const Icon(Icons.home),
-                  title: Text(I18n.of(context).welcome_page),
-                  trailing: SettingSelectMenu(
-                    index: userSetting.materialWelcomePageIndex,
-                    items: userSetting.materialWelcomePages
-                        .map((type) => _welcomePageLabel(context, type))
-                        .toList(),
-                    onChange: (index) {
-                      userSetting.setMaterialWelcomePageIndex(index);
-                    },
-                  ),
-                ),
-                ListTile(
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28.0)),
-                  leading: const Icon(Icons.layers_outlined),
-                  title: Text(I18n.of(context).layout_mode),
-                  trailing: SettingSelectMenu(
-                    index: userSetting.padMode,
-                    items: ["V:H", "V:V", "H:H"],
-                    onChange: (index) {
-                      userSetting.setPadMode(index);
-                    },
-                  ),
-                ),
-                ListTile(
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28.0)),
-                  leading: const Icon(Icons.stay_primary_portrait),
-                  title: Text(I18n.of(context).crosscount),
-                  trailing: SettingSelectMenu(
-                    index: userSetting.crossAdapt
-                        ? 3
-                        : userSetting.crossCount - 2,
-                    items: ['2', '3', '4', "Adapt"],
-                    onChange: (index) async {
-                      if (index == 3) {
-                        await userSetting.setCrossAdapt(true);
-                        Leader.push(context, SettingCrossAdpaterPage(h: false));
-                        return;
-                      }
-                      await userSetting.setCrossAdapt(false);
-                      await userSetting.setCrossCount(index + 2);
-                      BotToast.showText(
-                        text: I18n.of(context).need_to_restart_app,
-                      );
-                    },
-                  ),
-                ),
-                ListTile(
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28.0)),
-                  leading: const Icon(Icons.stay_primary_landscape),
-                  title: Text(I18n.of(context).crosscount),
-                  trailing: SettingSelectMenu(
-                    index: userSetting.hCrossAdapt
-                        ? 3
-                        : userSetting.hCrossCount - 2,
-                    items: ['2', '3', '4', "Adapt"],
-                    onChange: (index) async {
-                      if (index == 3) {
-                        await userSetting.setHCrossAdapt(true);
-                        Leader.push(context, SettingCrossAdpaterPage(h: true));
-                        return;
-                      }
-                      userSetting.setHCrossCount(index + 2);
-                      BotToast.showText(
-                        text: I18n.of(context).need_to_restart_app,
-                      );
-                    },
-                  ),
-                ),
-                ListTile(
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28.0)),
-                  leading: const Icon(Icons.task),
-                  title: Text(I18n.of(context).max_download_task_running_count),
-                  trailing: SettingSelectMenu(
-                    index: userSetting.maxRunningTask - 1,
-                    items: [
-                      ...List<String>.generate(10, (i) => "${i + 1}").toList(),
-                    ],
-                    onChange: (index) {
-                      userSetting.setMaxRunningTask(index + 1);
-                    },
-                  ),
-                ),
-                if (_widgetTypeIndex != -1)
-                  ListTile(
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28.0)),
-                    leading: const Icon(Icons.widgets),
-                    title: Text(I18n.of(context).appwidget_recommend_type),
+                  _buildLanguageSelect(),
+                ],
+              ),
+              SettingsSection(
+                tiles: [
+                  SettingsTile(
+                    leading: Icons.feed_rounded,
+                    title: Text(I18n.of(context).feed_preview_quality),
                     trailing: SettingSelectMenu(
-                      index: _widgetTypeIndex,
+                      index: userSetting.feedPreviewQuality,
                       items: [
-                        I18n.of(context).recommend,
-                        I18n.of(context).rank,
-                        I18n.of(context).news,
+                        I18n.of(context).medium,
+                        I18n.of(context).large,
+                        I18n.of(context).source,
                       ],
-                      onChange: (index) async {
-                        final type = _typeList[index];
-                        setState(() {
-                          _widgetTypeIndex = index;
-                        });
-                        await _saveWidgetIllustType(type);
+                      onChange: (index) {
+                        userSetting.changeFeedPreviewQuality(index);
                       },
                     ),
                   ),
-                Divider(),
-                ListTile(
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28.0)),
-                  title: Text(I18n.of(context).special_shaped_screen),
-                  trailing: Switch(
-                    value: userSetting.isBangs,
-                    onChanged: (value) => userSetting.setIsBangs(value),
-                  ),
-                  onTap: () => userSetting.setIsBangs(!userSetting.isBangs),
-                ),
-                ListTile(
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28.0)),
-                  title: Text(I18n.of(context).long_press_save_confirm),
-                  trailing: Switch(
-                    value: userSetting.longPressSaveConfirm,
-                    onChanged: (value) => userSetting.setLongPressSaveConfirm(value),
-                  ),
-                  onTap: () => userSetting.setLongPressSaveConfirm(!userSetting.longPressSaveConfirm),
-                ),
-                ListTile(
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28.0)),
-                  title: Text('H是不行的！'),
-                  trailing: Switch(
-                    value: userSetting.hIsNotAllow,
-                    onChanged: (value) {
-                      if (!value) BotToast.showText(text: 'H是可以的！(ˉ﹃ˉ)');
-                      userSetting.setHIsNotAllow(value);
-                    },
-                  ),
-                  onTap: () {
-                    if (userSetting.hIsNotAllow) BotToast.showText(text: 'H是可以的！(ˉ﹃ˉ)');
-                    userSetting.setHIsNotAllow(!userSetting.hIsNotAllow);
-                  },
-                ),
-                ListTile(
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28.0)),
-                  title: Text(I18n.of(context).return_again_to_exit),
-                  trailing: Switch(
-                    value: userSetting.isReturnAgainToExit,
-                    onChanged: (value) => userSetting.setIsReturnAgainToExit(value),
-                  ),
-                  onTap: () => userSetting.setIsReturnAgainToExit(!userSetting.isReturnAgainToExit),
-                ),
-                ListTile(
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28.0)),
-                  title: Text(I18n.of(context).swipe_to_switch_artworks),
-                  trailing: Switch(
-                    value: userSetting.swipeChangeArtwork,
-                    onChanged: (value) => userSetting.setSwipeChangeArtwork(value),
-                  ),
-                  onTap: () => userSetting.setSwipeChangeArtwork(!userSetting.swipeChangeArtwork),
-                ),
-                if (Platform.isAndroid || Platform.isIOS)
-                  ListTile(
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28.0)),
-                    title: Text(I18n.of(context).haptic_feedback),
-                    trailing: Switch(
-                      value: userSetting.hapticFeedback,
-                      onChanged: (value) {
-                        userSetting.setHapticFeedback(value);
-                        if (value) HapticUtil.medium();
-                      },
-                    ),
-                    onTap: () {
-                      userSetting.setHapticFeedback(!userSetting.hapticFeedback);
-                      if (!userSetting.hapticFeedback) HapticUtil.medium();
-                    },
-                  ),
-                if (Platform.isAndroid || Platform.isIOS)
-                  ListTile(
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28.0)),
+                  SettingsTile(
+                    leading: Icons.photo_rounded,
                     title: Text(
-                      Platform.isIOS
-                          ? I18n.of(context).recent_screen_mask
-                          : I18n.of(context).secure_window,
+                      I18n.of(context).illustration_detail_page_quality,
                     ),
-                    trailing: Switch(
-                      value: userSetting.nsfwMask,
-                      onChanged: (value) => userSetting.changeNsfwMask(value),
+                    trailing: SettingSelectMenu(
+                      index: userSetting.pictureQuality,
+                      items: [
+                        I18n.of(context).medium,
+                        I18n.of(context).large,
+                        I18n.of(context).source,
+                      ],
+                      onChange: (index) {
+                        userSetting.setPictureQuality(index);
+                      },
                     ),
-                    onTap: () => userSetting.changeNsfwMask(!userSetting.nsfwMask),
                   ),
-                if (!Platform.isIOS)
-                  ListTile(
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28.0)),
-                    title: Text(I18n.of(context).open_saucenao_using_webview),
-                    trailing: Switch(
-                      value: userSetting.useSaunceNaoWebview,
-                      onChanged: (value) => userSetting.setUseSaunceNaoWebview(value),
+                  SettingsTile(
+                    leading: Icons.photo_album_rounded,
+                    title: Text(I18n.of(context).manga_detail_page_quality),
+                    trailing: SettingSelectMenu(
+                      index: userSetting.mangaQuality,
+                      items: [
+                        I18n.of(context).medium,
+                        I18n.of(context).large,
+                        I18n.of(context).source,
+                      ],
+                      onChange: (index) {
+                        userSetting.setMangaQuality(index);
+                      },
                     ),
-                    onTap: () => userSetting.setUseSaunceNaoWebview(!userSetting.useSaunceNaoWebview),
                   ),
-                ListTile(
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28.0)),
-                  title: Text(I18n.of(context).illust_detail_save_skip_confirm),
-                  trailing: Switch(
-                    value: userSetting.illustDetailSaveSkipLongPress,
-                    onChanged: (value) => userSetting.setIllustDetailSaveSkipLongPress(value),
+                  SettingsTile(
+                    leading: Icons.zoom_out_map_rounded,
+                    title: Text(I18n.of(context).large_preview_zoom_quality),
+                    trailing: SettingSelectMenu(
+                      index: userSetting.zoomQuality,
+                      items: [I18n.of(context).large, I18n.of(context).source],
+                      onChange: (index) {
+                        userSetting.change(index);
+                      },
+                    ),
                   ),
-                  onTap: () => userSetting.setIllustDetailSaveSkipLongPress(!userSetting.illustDetailSaveSkipLongPress),
-                ),
-                ListTile(
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28.0)),
-                  title: Text(I18n.of(context).show_feed_ai_badge),
-                  trailing: Switch(
-                    value: userSetting.feedAIBadge,
-                    onChanged: (value) => userSetting.setFeedAIBadge(value),
+                  SettingsTile(
+                    leading: Icons.home_rounded,
+                    title: Text(I18n.of(context).welcome_page),
+                    trailing: SettingSelectMenu(
+                      index: userSetting.materialWelcomePageIndex,
+                      items: userSetting.materialWelcomePages
+                          .map((type) => _welcomePageLabel(context, type))
+                          .toList(),
+                      onChange: (index) {
+                        userSetting.setMaterialWelcomePageIndex(index);
+                      },
+                    ),
                   ),
-                  onTap: () => userSetting.setFeedAIBadge(!userSetting.feedAIBadge),
-                ),
-                if (!Constants.isGooglePlay && !Platform.isIOS)
-                  ListTile(
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28.0)),
-                    title: Text(I18n.of(context).ignore_current_version_update),
-                    trailing: Switch(
-                      value: Updater.result == Result.yes &&
+                  SettingsTile(
+                    leading: Icons.layers_outlined_rounded,
+                    title: Text(I18n.of(context).layout_mode),
+                    trailing: SettingSelectMenu(
+                      index: userSetting.padMode,
+                      items: ["V:H", "V:V", "H:H"],
+                      onChange: (index) {
+                        userSetting.setPadMode(index);
+                      },
+                    ),
+                  ),
+                  SettingsTile(
+                    leading: Icons.stay_primary_portrait_rounded,
+                    title: Text(I18n.of(context).crosscount),
+                    trailing: SettingSelectMenu(
+                      index: userSetting.crossAdapt
+                          ? 3
+                          : userSetting.crossCount - 2,
+                      items: ['2', '3', '4', "Adapt"],
+                      onChange: (index) async {
+                        if (index == 3) {
+                          await userSetting.setCrossAdapt(true);
+                          Leader.push(
+                            context,
+                            SettingCrossAdpaterPage(h: false),
+                          );
+                          return;
+                        }
+                        await userSetting.setCrossAdapt(false);
+                        await userSetting.setCrossCount(index + 2);
+                        BotToast.showText(
+                          text: I18n.of(context).need_to_restart_app,
+                        );
+                      },
+                    ),
+                  ),
+                  SettingsTile(
+                    leading: Icons.stay_primary_landscape_rounded,
+                    title: Text(I18n.of(context).crosscount),
+                    trailing: SettingSelectMenu(
+                      index: userSetting.hCrossAdapt
+                          ? 3
+                          : userSetting.hCrossCount - 2,
+                      items: ['2', '3', '4', "Adapt"],
+                      onChange: (index) async {
+                        if (index == 3) {
+                          await userSetting.setHCrossAdapt(true);
+                          Leader.push(
+                            context,
+                            SettingCrossAdpaterPage(h: true),
+                          );
+                          return;
+                        }
+                        userSetting.setHCrossCount(index + 2);
+                        BotToast.showText(
+                          text: I18n.of(context).need_to_restart_app,
+                        );
+                      },
+                    ),
+                  ),
+                  SettingsTile(
+                    leading: Icons.task_rounded,
+                    title:
+                        Text(I18n.of(context).max_download_task_running_count),
+                    trailing: SettingSelectMenu(
+                      index: userSetting.maxRunningTask - 1,
+                      items: [
+                        ...List<String>.generate(10, (i) => "${i + 1}")
+                            .toList(),
+                      ],
+                      onChange: (index) {
+                        userSetting.setMaxRunningTask(index + 1);
+                      },
+                    ),
+                  ),
+                  if (_widgetTypeIndex != -1)
+                    SettingsTile(
+                      leading: Icons.widgets_rounded,
+                      title: Text(I18n.of(context).appwidget_recommend_type),
+                      trailing: SettingSelectMenu(
+                        index: _widgetTypeIndex,
+                        items: [
+                          I18n.of(context).recommend,
+                          I18n.of(context).rank,
+                          I18n.of(context).news,
+                        ],
+                        onChange: (index) async {
+                          final type = _typeList[index];
+                          setState(() {
+                            _widgetTypeIndex = index;
+                          });
+                          await _saveWidgetIllustType(type);
+                        },
+                      ),
+                    ),
+                ],
+              ),
+              SettingsSection(
+                tiles: [
+                  SettingsTile.switchTile(
+                    leading: Icons.screen_rotation_alt_rounded,
+                    title: Text(I18n.of(context).special_shaped_screen),
+                    initialValue: userSetting.isBangs,
+                    onToggle: (value) =>
+                        userSetting.setIsBangs(value ?? false),
+                  ),
+                  SettingsTile.switchTile(
+                    leading: Icons.save_alt_rounded,
+                    title: Text(I18n.of(context).long_press_save_confirm),
+                    initialValue: userSetting.longPressSaveConfirm,
+                    onToggle: (value) => userSetting
+                        .setLongPressSaveConfirm(value ?? false),
+                  ),
+                  SettingsTile.switchTile(
+                    leading: Icons.block_rounded,
+                    title: Text('H是不行的！'),
+                    initialValue: userSetting.hIsNotAllow,
+                    onToggle: (value) {
+                      if (!(value ?? false)) {
+                        BotToast.showText(text: 'H是可以的！(ˉ﹃ˉ)');
+                      }
+                      userSetting.setHIsNotAllow(value ?? false);
+                    },
+                  ),
+                  SettingsTile.switchTile(
+                    leading: Icons.exit_to_app_rounded,
+                    title: Text(I18n.of(context).return_again_to_exit),
+                    initialValue: userSetting.isReturnAgainToExit,
+                    onToggle: (value) =>
+                        userSetting.setIsReturnAgainToExit(value ?? false),
+                  ),
+                  SettingsTile.switchTile(
+                    leading: Icons.swipe_rounded,
+                    title: Text(I18n.of(context).swipe_to_switch_artworks),
+                    initialValue: userSetting.swipeChangeArtwork,
+                    onToggle: (value) =>
+                        userSetting.setSwipeChangeArtwork(value ?? false),
+                  ),
+                  if (Platform.isAndroid || Platform.isIOS)
+                    SettingsTile.switchTile(
+                      leading: Icons.vibration_rounded,
+                      title: Text(I18n.of(context).haptic_feedback),
+                      initialValue: userSetting.hapticFeedback,
+                      onToggle: (value) {
+                        userSetting.setHapticFeedback(value ?? false);
+                        if (value ?? false) HapticUtil.medium();
+                      },
+                    ),
+                  if (Platform.isAndroid || Platform.isIOS)
+                    SettingsTile.switchTile(
+                      leading: Icons.security_rounded,
+                      title: Text(
+                        Platform.isIOS
+                            ? I18n.of(context).recent_screen_mask
+                            : I18n.of(context).secure_window,
+                      ),
+                      initialValue: userSetting.nsfwMask,
+                      onToggle: (value) =>
+                          userSetting.changeNsfwMask(value ?? false),
+                    ),
+                  if (!Platform.isIOS)
+                    SettingsTile.switchTile(
+                      leading: Icons.open_in_browser_rounded,
+                      title:
+                          Text(I18n.of(context).open_saucenao_using_webview),
+                      initialValue: userSetting.useSaunceNaoWebview,
+                      onToggle: (value) => userSetting
+                          .setUseSaunceNaoWebview(value ?? false),
+                    ),
+                  SettingsTile.switchTile(
+                    leading: Icons.skip_next_rounded,
+                    title:
+                        Text(I18n.of(context).illust_detail_save_skip_confirm),
+                    initialValue: userSetting.illustDetailSaveSkipLongPress,
+                    onToggle: (value) => userSetting
+                        .setIllustDetailSaveSkipLongPress(value ?? false),
+                  ),
+                  SettingsTile.switchTile(
+                    leading: Icons.auto_awesome_rounded,
+                    title: Text(I18n.of(context).show_feed_ai_badge),
+                    initialValue: userSetting.feedAIBadge,
+                    onToggle: (value) =>
+                        userSetting.setFeedAIBadge(value ?? false),
+                  ),
+                  if (!Constants.isGooglePlay && !Platform.isIOS)
+                    SettingsTile.switchTile(
+                      leading: Icons.system_update_rounded,
+                      title:
+                          Text(I18n.of(context).ignore_current_version_update),
+                      initialValue: Updater.result == Result.yes &&
                           Updater.latestVersion != null &&
-                          userSetting.ignoreUpdateVersion == Updater.latestVersion,
-                      onChanged: (value) async {
-                        if (value) {
+                          userSetting.ignoreUpdateVersion ==
+                              Updater.latestVersion,
+                      onToggle: (value) async {
+                        if (value ?? false) {
                           if (Updater.latestVersion == null) {
                             await Updater.check();
                           }
@@ -442,80 +421,54 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                         }
                       },
                     ),
-                    onTap: () async {
-                      final value = !(Updater.result == Result.yes &&
-                          Updater.latestVersion != null &&
-                          userSetting.ignoreUpdateVersion == Updater.latestVersion);
-                      if (value) {
-                        if (Updater.latestVersion == null) {
-                          await Updater.check();
-                        }
-                        if (Updater.result == Result.yes &&
-                            Updater.latestVersion != null) {
-                          await userSetting.setIgnoreUpdateVersion(
-                            Updater.latestVersion,
-                          );
-                        }
-                      } else {
-                        await userSetting.setIgnoreUpdateVersion(null);
-                      }
-                    },
+                ],
+              ),
+              SettingsSection(
+                tiles: [
+                  SettingsTile.switchTile(
+                    leading: Icons.star_border_rounded,
+                    title: Text(I18n.of(context).follow_after_star),
+                    initialValue: userSetting.followAfterStar,
+                    onToggle: (value) =>
+                        userSetting.setFollowAfterStar(value ?? false),
                   ),
-                Divider(),
-                ListTile(
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28.0)),
-                  title: Text(I18n.of(context).follow_after_star),
-                  trailing: Switch(
-                    value: userSetting.followAfterStar,
-                    onChanged: (value) => userSetting.setFollowAfterStar(value),
+                  SettingsTile.switchTile(
+                    leading: Icons.lock_outline_rounded,
+                    title: Text(I18n.of(context).private_like_by_default),
+                    initialValue: userSetting.defaultPrivateLike,
+                    onToggle: (value) =>
+                        userSetting.setDefaultPrivateLike(value ?? false),
                   ),
-                  onTap: () => userSetting.setFollowAfterStar(!userSetting.followAfterStar),
-                ),
-                ListTile(
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28.0)),
-                  title: Text(I18n.of(context).private_like_by_default),
-                  trailing: Switch(
-                    value: userSetting.defaultPrivateLike,
-                    onChanged: (value) => userSetting.setDefaultPrivateLike(value),
+                  SettingsTile.switchTile(
+                    leading: Icons.download_rounded,
+                    title: Text(
+                      I18n.of(context).automatically_download_when_bookmarking,
+                    ),
+                    initialValue: userSetting.saveAfterStar,
+                    onToggle: (value) =>
+                        userSetting.setSaveAfterStar(value ?? false),
                   ),
-                  onTap: () => userSetting.setDefaultPrivateLike(!userSetting.defaultPrivateLike),
-                ),
-                ListTile(
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28.0)),
-                  title: Text(
-                    I18n.of(context).automatically_download_when_bookmarking,
+                  SettingsTile.switchTile(
+                    leading: Icons.bookmark_border_rounded,
+                    title: Text(
+                      I18n.of(context).automatically_bookmark_when_downloading,
+                    ),
+                    initialValue: userSetting.starAfterSave,
+                    onToggle: (value) =>
+                        userSetting.setStarAfterSave(value ?? false),
                   ),
-                  trailing: Switch(
-                    value: userSetting.saveAfterStar,
-                    onChanged: (value) => userSetting.setSaveAfterStar(value),
+                  SettingsTile.switchTile(
+                    leading: Icons.label_outline_rounded,
+                    title: Text(
+                      I18n.of(context).automatically_tag_when_bookmarking,
+                    ),
+                    initialValue: userSetting.autoTagWhenStar,
+                    onToggle: (value) =>
+                        userSetting.setAutoTagWhenStar(value ?? false),
                   ),
-                  onTap: () => userSetting.setSaveAfterStar(!userSetting.saveAfterStar),
-                ),
-                ListTile(
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28.0)),
-                  title: Text(
-                    I18n.of(context).automatically_bookmark_when_downloading,
-                  ),
-                  trailing: Switch(
-                    value: userSetting.starAfterSave,
-                    onChanged: (value) => userSetting.setStarAfterSave(value),
-                  ),
-                  onTap: () => userSetting.setStarAfterSave(!userSetting.starAfterSave),
-                ),
-                ListTile(
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28.0)),
-                  title: Text(
-                    I18n.of(context).automatically_tag_when_bookmarking,
-                  ),
-                  trailing: Switch(
-                    value: userSetting.autoTagWhenStar,
-                    onChanged: (value) => userSetting.setAutoTagWhenStar(value),
-                  ),
-                  onTap: () => userSetting.setAutoTagWhenStar(!userSetting.autoTagWhenStar),
-                ),
-                Divider(),
-              ],
-            ),
+                ],
+              ),
+            ],
           );
         },
       ),
@@ -523,86 +476,104 @@ class _SettingQualityPageState extends State<SettingQualityPage>
   }
 
   Widget _buildLanguageSelect() {
-    return Container(
-      child: Column(
-        children: [
-          ListTile(
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28.0)),
-            leading: Icon(Icons.translate),
-            title: Text("Language"),
-            trailing: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                SettingSelectMenu(
-                  index: userSetting.languageNum,
-                  items: [...Languages.map((e) => e.language).toList()],
-                  onChange: (index) async {
-                    await userSetting.setLanguageNum(index);
-                  },
-                ),
-              ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  Languages.map(
-                    (e) => e.language,
-                  ).toList()[userSetting.languageNum],
-                ),
-                _buildLanguageTranlators(),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildLanguageTranlators() {
+    final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
     final langsponsors = Languages[userSetting.languageNum].sponsors ?? [];
-    if (langsponsors.isEmpty) {
-      return const SizedBox.shrink();
-    }
-    return Row(
+    return Column(
+      mainAxisSize: MainAxisSize.min,
       children: [
-        for (final langsponsor in langsponsors)
-          InkWell(
-            borderRadius: BorderRadius.circular(28.0),
-            onTap: () {
-              try {
-                if (Platform.isAndroid && !Constants.isGooglePlay) {
-                  if (langsponsor.uri.isNotEmpty) {
-                    launchUrlString(langsponsor.uri);
-                  }
-                }
-              } catch (e) {}
-            },
-            child: Row(
-              children: <Widget>[
-                SizedBox(
-                  width: 30,
-                  height: 30,
-                  child: CircleAvatar(
-                    backgroundImage: (langsponsor.avatar.isNotEmpty)
-                        ? NetworkImage(langsponsor.avatar)
-                        : null,
-                  ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+          child: Row(
+            children: [
+              Container(
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                  color: colorScheme.secondaryContainer.withValues(alpha: 0.6),
+                  borderRadius: BorderRadius.circular(12),
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(langsponsor.name ?? ''),
-                ),
-              ],
-            ),
+                child: Icon(Icons.translate_rounded,
+                    size: 20, color: colorScheme.onSecondaryContainer),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Text("Language",
+                    style: textTheme.bodyLarge
+                        ?.copyWith(color: colorScheme.onSurface)),
+              ),
+              SettingSelectMenu(
+                index: userSetting.languageNum,
+                items: [...Languages.map((e) => e.language).toList()],
+                onChange: (index) async {
+                  await userSetting.setLanguageNum(index);
+                },
+              ),
+            ],
           ),
+        ),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                Languages.map((e) => e.language)
+                    .toList()[userSetting.languageNum],
+                style: textTheme.bodySmall
+                    ?.copyWith(color: colorScheme.onSurfaceVariant),
+              ),
+              if (langsponsors.isNotEmpty)
+                Row(
+                  children: langsponsors
+                      .map(
+                        (langsponsor) => InkWell(
+                          borderRadius: BorderRadius.circular(28.0),
+                          onTap: () {
+                            try {
+                              if (Platform.isAndroid &&
+                                  !Constants.isGooglePlay) {
+                                if (langsponsor.uri.isNotEmpty) {
+                                  launchUrlString(langsponsor.uri);
+                                }
+                              }
+                            } catch (e) {}
+                          },
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: <Widget>[
+                              SizedBox(
+                                width: 24,
+                                height: 24,
+                                child: CircleAvatar(
+                                  backgroundImage:
+                                      (langsponsor.avatar.isNotEmpty)
+                                          ? NetworkImage(langsponsor.avatar)
+                                          : null,
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(4.0),
+                                child: Text(
+                                  langsponsor.name ?? '',
+                                  style: textTheme.bodySmall?.copyWith(
+                                      color: colorScheme.onSurfaceVariant),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      )
+                      .toList(),
+                ),
+            ],
+          ),
+        ),
       ],
     );
   }
-}
+
+  }
 
 class SettingSelectMenu extends StatefulWidget {
   final int index;

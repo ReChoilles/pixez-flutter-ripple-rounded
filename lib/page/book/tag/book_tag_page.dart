@@ -15,6 +15,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:pixez/component/settings_list.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/page/search/result_illust_list.dart';
@@ -121,17 +122,22 @@ class _BookTagPageState extends State<BookTagPage>
           child: Icon(Icons.close),
         ),
         endDrawer: Drawer(
-          child: ListView(
-            children: [
-              for (var j in bookTagStore.bookTagList)
-                ListTile(
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
-                  title: Text(j),
-                  onTap: () {
-                    _tabController
-                        .animateTo(bookTagStore.bookTagList.indexOf(j));
-                  },
-                )
+          child: SettingsList(
+            sections: [
+              SettingsSection(
+                title: Text(I18n.of(context).tags),
+                tiles: [
+                  for (var j in bookTagStore.bookTagList)
+                    SettingsTile(
+                      title: Text(j),
+                      leading: Icons.label_rounded,
+                      onPressed: (ctx) {
+                        _tabController
+                            .animateTo(bookTagStore.bookTagList.indexOf(j));
+                      },
+                    ),
+                ],
+              ),
             ],
           ),
         ),
@@ -159,10 +165,10 @@ class _BookTagPageState extends State<BookTagPage>
               color: Colors.red,
               child: Icon(Icons.delete),
             ),
-            child: ListTile(
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
+            child: SettingsTile(
               key: Key('$index'),
               title: Text('${_items[index]}'),
+              leading: Icons.label_rounded,
             ),
           ),
       ],

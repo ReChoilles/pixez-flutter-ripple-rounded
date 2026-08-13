@@ -18,6 +18,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
+import 'package:pixez/component/bottom_sheet_tile.dart';
 import 'package:pixez/page/about/languages.dart';
 
 class InitPage extends StatefulWidget {
@@ -67,24 +68,30 @@ class _InitPageState extends State<InitPage> {
                           return AnimatedOpacity(
                             duration: Duration(milliseconds: 300),
                             opacity: userSetting.languageNum == index ? 1 : 0.3,
-                            child: ListTile(
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
-                              title: Text(
-                                title,
-                                style: Theme.of(context).textTheme.titleSmall,
-                              ),
+                            child: InkWell(
+                              borderRadius: BorderRadius.circular(12),
                               onTap: () async {
                                 await userSetting.setLanguageNum(index);
                                 setState(() {});
                               },
-                              trailing: Icon(
-                                Icons.check,
-                                color:
-                                    userSetting.languageNum == index
-                                        ? Theme.of(
-                                          context,
-                                        ).textTheme.bodyLarge!.color
-                                        : Colors.transparent,
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                      child: Text(
+                                        title,
+                                        style: Theme.of(context).textTheme.titleSmall,
+                                      ),
+                                    ),
+                                    Icon(
+                                      Icons.check,
+                                      color: userSetting.languageNum == index
+                                          ? Theme.of(context).textTheme.bodyLarge!.color
+                                          : Colors.transparent,
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                           );

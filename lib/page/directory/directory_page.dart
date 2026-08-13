@@ -21,6 +21,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:mobx/mobx.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:pixez/component/settings_list.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/page/directory/directory_store.dart';
 
@@ -135,14 +136,22 @@ class _DirectoryPageState extends State<DirectoryPage> {
         mainAxisSize: MainAxisSize.max,
         children: <Widget>[
           Observer(builder: (_) {
-            return ListTile(
-              title: Text(directoryStore.path ?? ""),
+            final colorScheme = Theme.of(context).colorScheme;
+            final textTheme = Theme.of(context).textTheme;
+            return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+              child: Text(
+                directoryStore.path ?? "",
+                style: textTheme.bodyLarge?.copyWith(
+                  color: colorScheme.onSurface,
+                ),
+              ),
             );
           }),
-          ListTile(
-            leading: Icon(Icons.arrow_upward),
+          SettingsTile(
+            leading: Icons.arrow_upward,
             title: Text("..."),
-            onTap: () {
+            onPressed: (ctx) {
               directoryStore.backFolder();
             },
           ),
@@ -156,22 +165,61 @@ class _DirectoryPageState extends State<DirectoryPage> {
                         itemCount: list.length,
                         itemBuilder: (context, index) {
                           FileSystemEntity fileSystemEntity = list[index];
-                          return Visibility(
-                            visible: !(fileSystemEntity.path
-                                    .split("/")
-                                    .last
-                                    .startsWith(".")),
-                            child: ListTile(
-                              leading: fileSystemEntity is Directory
-                                  ? Icon(Icons.folder)
-                                  : Icon(Icons.attach_file),
-                              title:
-                                  Text(fileSystemEntity.path.split("/").last),
-                              onTap: () {
-                                if (fileSystemEntity is Directory) {
-                                  directoryStore.enterFolder(fileSystemEntity);
-                                }
-                              },
+                          final colorScheme = Theme.of(context).colorScheme;
+                          final textTheme = Theme.of(context).textTheme;
+                          final isHidden = fileSystemEntity.path
+                              .split("/")
+                              .last
+                              .startsWith(".");
+                          if (isHidden) return const SizedBox.shrink();
+                          return InkWell(
+                            onTap: () {
+                              if (fileSystemEntity is Directory) {
+                                directoryStore.enterFolder(fileSystemEntity);
+                              }
+                            },
+                            borderRadius: BorderRadius.circular(4),
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 16, vertical: 14),
+                              child: Row(
+                                children: [
+                                  Container(
+                                    width: 40,
+                                    height: 40,
+                                    decoration: BoxDecoration(
+                                      color: colorScheme.secondaryContainer
+                                          .withValues(alpha: 0.6),
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                    child: Icon(
+                                      fileSystemEntity is Directory
+                                          ? Icons.folder
+                                          : Icons.attach_file,
+                                      size: 20,
+                                      color:
+                                          colorScheme.onSecondaryContainer,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 16),
+                                  Expanded(
+                                    child: DefaultTextStyle.merge(
+                                      style: textTheme.bodyLarge?.copyWith(
+                                        color: colorScheme.onSurface,
+                                      ),
+                                      child: Text(
+                                          fileSystemEntity.path.split("/").last),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 8),
+                                  Icon(
+                                    Icons.chevron_right_rounded,
+                                    size: 20,
+                                    color: colorScheme.onSurfaceVariant
+                                        .withValues(alpha: 0.5),
+                                  ),
+                                ],
+                              ),
                             ),
                           );
                         }));

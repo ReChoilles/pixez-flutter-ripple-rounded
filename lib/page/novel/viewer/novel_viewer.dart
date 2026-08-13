@@ -23,6 +23,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:mobx/mobx.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:pixez/component/bottom_sheet_tile.dart';
 import 'package:pixez/component/painter_avatar.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/component/selectable_html.dart';
@@ -607,10 +608,9 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              ListTile(
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
-                subtitle: Text(_novelStore.novel!.user.name, maxLines: 2),
+              BottomSheetTile(
                 title: Text(_novelStore.novel!.title, maxLines: 2),
+                subtitle: Text(_novelStore.novel!.user.name, maxLines: 2),
                 leading: Container(
                   child: PainterAvatar(
                     url: _novelStore.novel!.user.profileImageUrls.medium,
@@ -646,16 +646,14 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
                 _novelStore.novelTextResponse!.seriesNavigation?.nextNovel,
               ),
               if (Platform.isAndroid)
-                ListTile(
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
+                BottomSheetTile(
                   title: Text(I18n.of(context).export),
                   leading: Icon(Icons.folder_zip),
                   onTap: () {
                     _export();
                   },
                 ),
-              ListTile(
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
+              BottomSheetTile(
                 title: Text(I18n.of(context).setting),
                 leading: Icon(Icons.settings),
                 onTap: () {
@@ -665,8 +663,7 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
               ),
               Builder(
                 builder: (context) {
-                  return ListTile(
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
+                  return BottomSheetTile(
                     title: Text(I18n.of(context).share),
                     leading: Icon(Icons.share),
                     onTap: () {
@@ -692,9 +689,8 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
   }
 
   Widget buildListTile(PrevNovel? series) {
-    if (series == null) return ListTile(title: Text("no more"));
-    return ListTile(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
+    if (series == null) return BottomSheetTile(title: Text("no more"));
+    return BottomSheetTile(
       title: Text(
         series.title ?? series.contentOrder,
         maxLines: 2,

@@ -19,6 +19,7 @@ import 'package:pixez/er/prefer.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:pixez/component/bottom_sheet_tile.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 part 'sauce_notifier.freezed.dart';
@@ -74,8 +75,8 @@ class Sauce extends _$Sauce {
                 children: [
                   Observer(
                     builder: (context) {
-                      return SwitchListTile(
-                        secondary: Icon(Icons.photo_album),
+                      return BottomSheetSwitchTile(
+                        leading: Icon(Icons.photo_album),
                         onChanged: (bool value) async {
                           await userSetting.setImagePickerType(value ? 1 : 0);
                         },
@@ -93,7 +94,6 @@ class Sauce extends _$Sauce {
                       );
                     },
                   ),
-                  Divider(),
                   InkWell(
                     borderRadius: BorderRadius.circular(12.0),
                     child: Center(

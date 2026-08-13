@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/models/show_ai_response.dart';
 import 'package:pixez/network/api_client.dart';
+import 'package:pixez/component/settings_list.dart';
 
 class UserShowAISetting extends StatefulWidget {
   final bool showAI;
@@ -47,27 +48,37 @@ class _UserShowAISettingState extends State<UserShowAISetting> {
       appBar: AppBar(
         title: Text(I18n.of(context).ai_work_display_settings),
       ),
-      body: ListView(
-        children: [
-          ListTile(
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
-            title: Text(I18n.of(context).show),
-            trailing: !_showAI ? null : Icon(Icons.check),
-            onTap: () {
-              if (!_showAI) {
-                _changeShowAI(true);
-              }
-            },
-          ),
-          ListTile(
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
-            title: Text(I18n.of(context).partially_hidden),
-            trailing: _showAI ? null : Icon(Icons.check),
-            onTap: () {
-              if (_showAI) {
-                _changeShowAI(false);
-              }
-            },
+      body: SettingsList(
+        sections: [
+          SettingsSection(
+            tiles: [
+              SettingsTile(
+                leading: Icons.visibility_rounded,
+                title: Text(I18n.of(context).show),
+                trailing: _showAI
+                    ? Icon(Icons.check_rounded,
+                        color: Theme.of(context).colorScheme.primary)
+                    : null,
+                onPressed: (ctx) {
+                  if (!_showAI) {
+                    _changeShowAI(true);
+                  }
+                },
+              ),
+              SettingsTile(
+                leading: Icons.visibility_off_rounded,
+                title: Text(I18n.of(context).partially_hidden),
+                trailing: !_showAI
+                    ? Icon(Icons.check_rounded,
+                        color: Theme.of(context).colorScheme.primary)
+                    : null,
+                onPressed: (ctx) {
+                  if (_showAI) {
+                    _changeShowAI(false);
+                  }
+                },
+              ),
+            ],
           ),
         ],
       ),

@@ -14,6 +14,7 @@
  */
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:pixez/component/settings_list.dart';
 import 'package:pixez/er/leader.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
@@ -33,6 +34,8 @@ class _NovelHistoryState extends State<NovelHistory> {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
     return Observer(builder: (_) {
       return Scaffold(
         appBar: AppBar(
@@ -69,23 +72,85 @@ class _NovelHistoryState extends State<NovelHistory> {
           },
         ),
         body: novelHistoryStore.data.isNotEmpty
-            ? ListView.builder(
-                itemBuilder: (context, index) {
-                  final novel = novelHistoryStore.data[index];
-                  return ListTile(
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
-                    title: Text(novel.title),
-                    subtitle: Text(novel.userName),
-                    onTap: () => Leader.push(
-                        context, NovelViewerPage(id: novel.novelId)),
-                    trailing: IconButton(
-                        icon: Icon(Icons.delete),
-                        onPressed: () {
-                          novelHistoryStore.delete(novel.novelId);
-                        }),
-                  );
-                },
-                itemCount: novelHistoryStore.data.length,
+            ? SettingsList(
+                sections: [
+                  SettingsSection(
+                    tiles: List.generate(novelHistoryStore.data.length,
+                        (index) {
+                      final novel = novelHistoryStore.data[index];
+                      return InkWell(
+                        onTap: () => Leader.push(
+                            context, NovelViewerPage(id: novel.novelId)),
+                        borderRadius: BorderRadius.circular(4),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 14),
+                          child: Row(
+                            children: [
+                              Container(
+                                width: 40,
+                                height: 40,
+                                decoration: BoxDecoration(
+                                  color: colorScheme.secondaryContainer
+                                      .withValues(alpha: 0.6),
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: Icon(
+                                  Icons.history_rounded,
+                                  size: 20,
+                                  color: colorScheme.onSecondaryContainer,
+                                ),
+                              ),
+                              const SizedBox(width: 16),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment.start,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    DefaultTextStyle.merge(
+                                      style: textTheme.bodyLarge?.copyWith(
+                                        color: colorScheme.onSurface,
+                                      ),
+                                      child: Text(novel.title),
+                                    ),
+                                    Padding(
+                                      padding:
+                                          const EdgeInsets.only(top: 2),
+                                      child: DefaultTextStyle.merge(
+                                        style:
+                                            textTheme.bodySmall?.copyWith(
+                                          color:
+                                              colorScheme.onSurfaceVariant,
+                                        ),
+                                        child: Text(novel.userName),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              IconButton(
+                                icon: Icon(Icons.delete, size: 20),
+                                onPressed: () {
+                                  novelHistoryStore.delete(novel.novelId);
+                                },
+                                constraints: const BoxConstraints(
+                                    minWidth: 36, minHeight: 36),
+                                padding: EdgeInsets.zero,
+                              ),
+                              Icon(
+                                Icons.chevron_right_rounded,
+                                size: 20,
+                                color: colorScheme.onSurfaceVariant
+                                    .withValues(alpha: 0.5),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    }),
+                  ),
+                ],
               )
             : Container(),
       );

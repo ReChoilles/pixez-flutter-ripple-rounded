@@ -82,10 +82,29 @@ class _AccountEditPageState extends State<AccountEditPage> {
                     alignment: Alignment(0, 0.8),
                     child: Card(
                       clipBehavior: Clip.antiAlias,
-                      child: ListTile(
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
-                          leading: Icon(Icons.error),
-                          title: Text("Email format error")),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                        child: Row(
+                          children: [
+                            Container(
+                              width: 40,
+                              height: 40,
+                              decoration: BoxDecoration(
+                                color: colorScheme.secondaryContainer.withValues(alpha: 0.6),
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: Icon(Icons.error, size: 20, color: colorScheme.onSecondaryContainer),
+                            ),
+                            const SizedBox(width: 16),
+                            Expanded(
+                              child: Text(
+                                "Email format error",
+                                style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: colorScheme.onSurface),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
                   ),
                 );

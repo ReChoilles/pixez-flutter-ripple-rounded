@@ -21,6 +21,7 @@ import 'package:pixez/component/pixez_default_header.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/page/user/bookmark/tag/bookmark_tag_store.dart';
+import 'package:pixez/component/bottom_sheet_tile.dart';
 import 'package:pixez/utils/haptic_util.dart';
 
 class UserBookmarkTagPage extends StatefulWidget {
@@ -211,34 +212,61 @@ class _NewWidgetState extends State<NewWidget> {
           footer: PixezDefault.footer(context),
           child: ListView(
             children: [
-              ListTile(
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
-                title: Text(I18n.of(context).all),
+              InkWell(
+                borderRadius: BorderRadius.circular(12),
                 onTap: () {
                   Navigator.pop(context, {"tag": null, "restrict": restrict});
                 },
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Text(I18n.of(context).all, style: Theme.of(context).textTheme.bodyLarge),
+                      ),
+                    ],
+                  ),
+                ),
               ),
-              ListTile(
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
-                title: Text(I18n.of(context).unclassified),
+              InkWell(
+                borderRadius: BorderRadius.circular(12),
                 onTap: () {
                   Navigator.pop(context, {
                     "tag": "未分類",
                     "restrict": restrict,
                   }); //日语
                 },
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Text(I18n.of(context).unclassified, style: Theme.of(context).textTheme.bodyLarge),
+                      ),
+                    ],
+                  ),
+                ),
               ),
               for (var bookmarkTag in _bookMarkTagStore.bookmarkTags)
-                ListTile(
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
-                  title: Text(bookmarkTag.name),
-                  trailing: Text(bookmarkTag.count.toString()),
+                InkWell(
+                  borderRadius: BorderRadius.circular(12),
                   onTap: () {
                     Navigator.pop(context, {
                       "tag": bookmarkTag.name,
                       "restrict": restrict,
                     });
                   },
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Text(bookmarkTag.name, style: Theme.of(context).textTheme.bodyLarge),
+                        ),
+                        Text(bookmarkTag.count.toString()),
+                      ],
+                    ),
+                  ),
                 ),
             ],
           ),

@@ -16,6 +16,7 @@
 
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
+import 'package:pixez/component/bottom_sheet_tile.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/component/pixez_default_header.dart';
 import 'package:pixez/component/pixiv_image.dart';
@@ -240,8 +241,7 @@ class _NovelUserBookmarkPageState extends State<NovelUserBookmarkPage> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
-                ListTile(
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
+                BottomSheetTile(
                   title: Text(I18n.of(context).public),
                   onTap: () {
                     setState(() {
@@ -253,8 +253,7 @@ class _NovelUserBookmarkPageState extends State<NovelUserBookmarkPage> {
                     Navigator.of(context).pop();
                   },
                 ),
-                ListTile(
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
+                BottomSheetTile(
                   title: Text(I18n.of(context).private),
                   onTap: () {
                     setState(() {

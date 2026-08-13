@@ -17,6 +17,7 @@
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:pixez/component/settings_list.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
 
@@ -102,73 +103,86 @@ class _SaveFormatPageState extends State<SaveFormatPage> {
               }),
         ],
       ),
-      body: Container(
-        child: ListView(children: [
-          // 修复：将注释掉的 ListTile 完全删除或正确注释
-          // 原代码在这里有一个未闭合的 ListTile
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextField(
-                controller: _textEditingController,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  hintText: 'Input File Name Format',
-                  labelText: 'File Name Format',
-                )),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Wrap(
-              spacing: 4.0,
-              children: <Widget>[
-                _buildActionText("title"),
-                _buildActionText("_"),
-                _buildActionText("part"),
-                _buildActionText("illust_id"),
-                _buildActionText("user_id"),
-                _buildActionText("user_name"),
-              ],
-            ),
-          ),
-          Observer(builder: (_) {
-            return SwitchListTile(
-              title: Text(I18n.of(context).clear_old_format_file),
-              subtitle: Text(I18n.of(context).clear_old_format_file_message),
-              onChanged: (bool value) {
-                userSetting.setIsClearnOldFormatFile(value);
-              },
-              value: userSetting.isClearOldFormatFile,
-            );
-          }),
-          DataTable(
-            columns: <DataColumn>[
-              DataColumn(label: Text("Name")),
-              DataColumn(label: Text("Result")),
+      body: SettingsList(
+        sections: [
+          SettingsSection(
+            title: Text("Format"),
+            tiles: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextField(
+                    controller: _textEditingController,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      hintText: 'Input File Name Format',
+                      labelText: 'File Name Format',
+                    )),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Wrap(
+                  spacing: 4.0,
+                  children: <Widget>[
+                    _buildActionText("title"),
+                    _buildActionText("_"),
+                    _buildActionText("part"),
+                    _buildActionText("illust_id"),
+                    _buildActionText("user_id"),
+                    _buildActionText("user_name"),
+                  ],
+                ),
+              ),
             ],
-            rows: <DataRow>[
-              DataRow(cells: [
-                DataCell(Text('{illust_id}')),
-                DataCell(Text(I18n.of(context).illust_id)),
-              ]),
-              DataRow(cells: [
-                DataCell(Text('{title}')),
-                DataCell(Text(I18n.of(context).title)),
-              ]),
-              DataRow(cells: [
-                DataCell(Text('{user_id}')),
-                DataCell(Text(I18n.of(context).painter_id)),
-              ]),
-              DataRow(cells: [
-                DataCell(Text('{user_name}')),
-                DataCell(Text(I18n.of(context).painter_name)),
-              ]),
-              DataRow(cells: [
-                DataCell(Text('{part}')),
-                DataCell(Text(I18n.of(context).which_part)),
-              ]),
+          ),
+          SettingsSection(
+            tiles: [
+              Observer(builder: (_) {
+                return SettingsTile.switchTile(
+                  title: Text(I18n.of(context).clear_old_format_file),
+                  description:
+                      Text(I18n.of(context).clear_old_format_file_message),
+                  initialValue: userSetting.isClearOldFormatFile,
+                  onToggle: (value) {
+                    userSetting.setIsClearnOldFormatFile(value ?? false);
+                  },
+                );
+              }),
             ],
-          )
-        ]),
+          ),
+          SettingsSection(
+            title: Text("Reference"),
+            tiles: [
+              DataTable(
+                columns: <DataColumn>[
+                  DataColumn(label: Text("Name")),
+                  DataColumn(label: Text("Result")),
+                ],
+                rows: <DataRow>[
+                  DataRow(cells: [
+                    DataCell(Text('{illust_id}')),
+                    DataCell(Text(I18n.of(context).illust_id)),
+                  ]),
+                  DataRow(cells: [
+                    DataCell(Text('{title}')),
+                    DataCell(Text(I18n.of(context).title)),
+                  ]),
+                  DataRow(cells: [
+                    DataCell(Text('{user_id}')),
+                    DataCell(Text(I18n.of(context).painter_id)),
+                  ]),
+                  DataRow(cells: [
+                    DataCell(Text('{user_name}')),
+                    DataCell(Text(I18n.of(context).painter_name)),
+                  ]),
+                  DataRow(cells: [
+                    DataCell(Text('{part}')),
+                    DataCell(Text(I18n.of(context).which_part)),
+                  ]),
+                ],
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }

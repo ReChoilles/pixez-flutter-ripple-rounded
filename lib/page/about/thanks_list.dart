@@ -15,23 +15,27 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:pixez/component/settings_list.dart';
 import 'package:pixez/page/about/thanks_peoples.dart';
 
 class ThanksList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      children: <Widget>[
-        ListTile(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
-          title: Text(
-              '    一路做到现在的flutter版也过了好久了，虽然多次下架，版本包名甚至名称多次变更，但是在这些时间里，我得到了很多人的帮助，支持与鼓励，积累了许多开发经验还有社会教训，还能够有机会与想法出色、技术出众、审美出彩的用户、开发者、设计师交流，还可以顺便安利自己喜欢的歌曲，真是太棒了，非常感谢你们的支持:'),
+    return SettingsList(
+      sections: [
+        SettingsSection(
+          tiles: [
+            SettingsTile(
+              title: Text(
+                  '    一路做到现在的flutter版也过了好久了，虽然多次下架，版本包名甚至名称多次变更，但是在这些时间里，我得到了很多人的帮助，支持与鼓励，积累了许多开发经验还有社会教训，还能够有机会与想法出色、技术出众、审美出彩的用户、开发者、设计师交流，还可以顺便安利自己喜欢的歌曲，真是太棒了，非常感谢你们的支持:'),
+            ),
+            ...peoples.map(
+              (e) => SettingsTile(
+                title: Text(e),
+              ),
+            ),
+          ],
         ),
-        Divider(),
-        ...peoples.map((e) => ListTile(
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
-              title: Text(e),
-            )),
       ],
     );
   }

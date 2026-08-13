@@ -52,6 +52,7 @@ import 'package:pixez/page/user/user_store.dart';
 import 'package:pixez/page/user/users_page.dart';
 import 'package:pixez/page/zoom/photo_zoom_page.dart';
 import 'package:pixez/supportor_plugin.dart';
+import 'package:pixez/component/bottom_sheet_tile.dart';
 import 'package:share_plus/share_plus.dart';
 
 class IllustLightingPage extends StatefulWidget {
@@ -1001,8 +1002,7 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               illust.metaPages.isNotEmpty
-                  ? ListTile(
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
+                  ? BottomSheetTile(
                       title: Text(I18n.of(context).muti_choice_save),
                       leading: Icon(Icons.save),
                       onTap: () async {
@@ -1011,22 +1011,22 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
                       },
                     )
                   : Container(),
-              ListTile(
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
-                leading: Icon(Icons.save_alt),
-                onTap: () async {
-                  Navigator.of(context).pop();
-                  saveStore.saveImage(illust, index: index);
-                  await _autoBookmarkAfterSave(illust);
-                },
+              GestureDetector(
                 onLongPress: () async {
                   Navigator.of(context).pop();
                   saveStore.saveImage(illust, index: index);
                 },
-                title: Text(I18n.of(context).save),
+                child: BottomSheetTile(
+                  leading: Icon(Icons.save_alt),
+                  title: Text(I18n.of(context).save),
+                  onTap: () async {
+                    Navigator.of(context).pop();
+                    saveStore.saveImage(illust, index: index);
+                    await _autoBookmarkAfterSave(illust);
+                  },
+                ),
               ),
-              ListTile(
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
+              BottomSheetTile(
                 leading: Icon(Icons.cancel),
                 onTap: () => Navigator.of(context).pop(),
                 title: Text(I18n.of(context).cancel),
@@ -1124,8 +1124,7 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
                         ),
                       ),
                     ),
-                    ListTile(
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
+                    BottomSheetTile(
                       leading: Icon(
                         !allOn
                             ? Icons.check_circle_outline
@@ -1140,8 +1139,7 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
                         setDialogState(() {});
                       },
                     ),
-                    ListTile(
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
+                    BottomSheetTile(
                       leading: Icon(Icons.save),
                       title: Text(I18n.of(context).save),
                       onTap: () async {
@@ -1203,8 +1201,7 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
                   children: <Widget>[
                     _buildNameAvatar(context, illusts),
                     if (illusts.metaPages.isNotEmpty)
-                      ListTile(
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
+                      BottomSheetTile(
                         title: Text(I18n.of(context).muti_choice_save),
                         leading: Icon(Icons.save),
                         onTap: () async {
@@ -1212,8 +1209,7 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
                           _showMutiChoiceDialog(illusts, context);
                         },
                       ),
-                    ListTile(
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
+                    BottomSheetTile(
                       title: Text(I18n.of(context).copymessage),
                       leading: Icon(Icons.local_library),
                       onTap: () async {
@@ -1227,8 +1223,7 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
                     ),
                     Builder(
                       builder: (context) {
-                        return ListTile(
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
+                        return BottomSheetTile(
                           title: Text(I18n.of(context).share),
                           leading: Icon(Icons.share),
                           onTap: () {
@@ -1249,8 +1244,7 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
                         );
                       },
                     ),
-                    ListTile(
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
+                    BottomSheetTile(
                       leading: Icon(Icons.link),
                       title: Text(I18n.of(context).link),
                       onTap: () async {
@@ -1265,8 +1259,7 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
                         Navigator.of(context).pop();
                       },
                     ),
-                    ListTile(
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
+                    BottomSheetTile(
                       title: Text(I18n.of(context).ban),
                       leading: Icon(Icons.brightness_auto),
                       onTap: () {
@@ -1279,8 +1272,7 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
                         Navigator.pop(context);
                       },
                     ),
-                    ListTile(
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
+                    BottomSheetTile(
                       title: Text(I18n.of(context).report),
                       leading: Icon(Icons.report),
                       onTap: () async {

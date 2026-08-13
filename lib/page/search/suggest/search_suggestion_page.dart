@@ -18,6 +18,7 @@ import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:pixez/component/bottom_sheet_tile.dart';
 import 'package:pixez/er/leader.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/page/picture/illust_lighting_page.dart';
@@ -125,42 +126,66 @@ class _SearchSuggestionPageState extends State<SearchSuggestionPage> {
                       delegate: SliverChildBuilderDelegate(
                         (context, index) {
                           if (index == 0) {
-                            return ListTile(
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12.0),
-                              ),
-                              title: Text(_filter.text),
-                              subtitle: Text(I18n.of(context).illust_id),
+                            return InkWell(
+                              borderRadius: BorderRadius.circular(12),
                               onTap: () {
                                 Navigator.of(context).push(MaterialPageRoute(
                                     builder: (context) => IllustLightingPage(
                                           id: int.tryParse(_filter.text)!,
                                         )));
                               },
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                                child: Row(
+                                  children: [
+                                    Icon(Icons.history, size: 20, color: Theme.of(context).textTheme.bodyLarge?.color),
+                                    const SizedBox(width: 16),
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(_filter.text, style: Theme.of(context).textTheme.bodyLarge),
+                                          Text(I18n.of(context).illust_id, style: Theme.of(context).textTheme.bodySmall),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
                             );
                           }
                           if (index == 1) {
-                            return ListTile(
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12.0),
-                              ),
-                              title: Text(_filter.text),
-                              subtitle: Text(I18n.of(context).painter_id),
+                            return InkWell(
+                              borderRadius: BorderRadius.circular(12),
                               onTap: () {
                                 Navigator.of(context).push(MaterialPageRoute(
                                     builder: (context) => UsersPage(
                                           id: int.tryParse(_filter.text)!,
                                         )));
                               },
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                                child: Row(
+                                  children: [
+                                    Icon(Icons.history, size: 20, color: Theme.of(context).textTheme.bodyLarge?.color),
+                                    const SizedBox(width: 16),
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(_filter.text, style: Theme.of(context).textTheme.bodyLarge),
+                                          Text(I18n.of(context).painter_id, style: Theme.of(context).textTheme.bodySmall),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
                             );
                           }
                           if (index == 2 && _filter.text.length < 5) {
-                            return ListTile(
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12.0),
-                              ),
-                              title: Text(_filter.text),
-                              subtitle: Text("Pixivision Id"),
+                            return InkWell(
+                              borderRadius: BorderRadius.circular(12),
                               onTap: () {
                                 Navigator.of(context).push(MaterialPageRoute(
                                     builder: (context) => SoupPage(
@@ -168,9 +193,27 @@ class _SearchSuggestionPageState extends State<SearchSuggestionPage> {
                                           spotlight: null,
                                         )));
                               },
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                                child: Row(
+                                  children: [
+                                    Icon(Icons.history, size: 20, color: Theme.of(context).textTheme.bodyLarge?.color),
+                                    const SizedBox(width: 16),
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(_filter.text, style: Theme.of(context).textTheme.bodyLarge),
+                                          const Text("Pixivision Id", style: TextStyle()),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
                             );
                           }
-                          return const ListTile();
+                          return const SizedBox.shrink();
                         },
                         childCount: 3,
                       ),
@@ -191,10 +234,8 @@ class _SearchSuggestionPageState extends State<SearchSuggestionPage> {
                               BotToast.showText(
                                   text: I18n.of(context).copied_to_clipboard);
                             },
-                            child: ListTile(
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12.0),
-                              ),
+                            child: InkWell(
+                              borderRadius: BorderRadius.circular(12),
                               onTap: () {
                                 if (tagGroup.length > 1) {
                                   tagGroup.last = tags[index].name;
@@ -215,8 +256,22 @@ class _SearchSuggestionPageState extends State<SearchSuggestionPage> {
                                   }));
                                 }
                               },
-                              title: Text(tags[index].name),
-                              subtitle: Text(tags[index].translated_name ?? ""),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(tags[index].name, style: Theme.of(context).textTheme.bodyLarge),
+                                          Text(tags[index].translated_name ?? "", style: Theme.of(context).textTheme.bodySmall),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
                             ),
                           );
                         },

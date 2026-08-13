@@ -20,6 +20,7 @@ import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/component/ugoira_painter.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/models/illust.dart';
+import 'package:pixez/component/bottom_sheet_tile.dart';
 import 'package:pixez/page/picture/ugoira_store.dart';
 import 'package:pixez/utils/haptic_util.dart';
 
@@ -71,26 +72,22 @@ class _UgoiraLoaderState extends State<UgoiraLoader> {
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            ListTile(
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
+                            BottomSheetTile(
                               title: Text(I18n.of(context).encode_message),
                             ),
-                            ListTile(
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
+                            BottomSheetTile(
                               title: Text(I18n.of(context).encode),
                               onTap: () {
                                 Navigator.of(context).pop('OK');
                               },
                             ),
-                            ListTile(
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
+                            BottomSheetTile(
                               title: Text(I18n.of(context).export),
                               onTap: () {
                                 Navigator.of(context).pop('EXPORT');
                               },
                             ),
-                            ListTile(
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
+                            BottomSheetTile(
                               title: Text(I18n.of(context).cancel),
                               onTap: () {
                                 Navigator.of(context).pop('SOURCE');

@@ -18,6 +18,7 @@ import 'dart:async';
 
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
+import 'package:pixez/component/bottom_sheet_tile.dart';
 import 'package:pixez/er/prefer.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/lighting/lighting_page.dart';
@@ -581,7 +582,7 @@ class _ResultIllustSortWidgetState extends State<ResultIllustSortWidget> {
                     ],
                   ),
                 ),
-                SwitchListTile(
+                BottomSheetSwitchTile(
                   value: searchAIType != 1,
                   onChanged: (v) {
                     setState(() {
@@ -590,7 +591,7 @@ class _ResultIllustSortWidgetState extends State<ResultIllustSortWidget> {
                   },
                   title: Text(I18n.of(context).ai_generated),
                 ),
-                SwitchListTile(
+                BottomSheetSwitchTile(
                   value: recordRememberCurrentSelection,
                   onChanged: (v) async {
                     await Prefer.setBool(rememberKey, v);

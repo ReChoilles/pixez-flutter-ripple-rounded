@@ -17,6 +17,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:pixez/component/bottom_sheet_tile.dart';
 import 'package:pixez/component/sort_group.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/lighting/lighting_page.dart';
@@ -128,8 +129,7 @@ class _NewIllustPageState extends State<NewIllustPage> {
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: <Widget>[
-                          ListTile(
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
+                          BottomSheetTile(
                             title: Text(I18n.of(context).all),
                             onTap: () {
                               Navigator.of(context).pop();
@@ -141,8 +141,7 @@ class _NewIllustPageState extends State<NewIllustPage> {
                               });
                             },
                           ),
-                          ListTile(
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
+                          BottomSheetTile(
                             title: Text(I18n.of(context).public),
                             onTap: () {
                               Navigator.of(context).pop();
@@ -154,8 +153,7 @@ class _NewIllustPageState extends State<NewIllustPage> {
                               });
                             },
                           ),
-                          ListTile(
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
+                          BottomSheetTile(
                             title: Text(I18n.of(context).private),
                             onTap: () {
                               Navigator.of(context).pop();

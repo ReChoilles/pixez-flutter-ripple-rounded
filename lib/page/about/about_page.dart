@@ -610,6 +610,7 @@ class _AboutPageState extends State<AboutPage> {
   }
 
   void _showRepoSheet(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     showModalBottomSheet(
       context: context,
       shape: RoundedRectangleBorder(
@@ -625,15 +626,12 @@ class _AboutPageState extends State<AboutPage> {
                 height: 4,
                 margin: const EdgeInsets.only(top: 12, bottom: 8),
                 decoration: BoxDecoration(
-                  color: Theme.of(context)
-                      .colorScheme
-                      .onSurfaceVariant
-                      .withValues(alpha: 0.3),
+                  color: colorScheme.onSurfaceVariant.withValues(alpha: 0.3),
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
-              ListTile(
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              _buildSettingsTile(
+                leading: Icons.link_rounded,
                 title: Text('Version ${Constants.tagName}'),
                 subtitle: Text(I18n.of(context).go_to_project_address),
                 onTap: () {
@@ -643,29 +641,17 @@ class _AboutPageState extends State<AboutPage> {
                     );
                   } catch (e) {}
                 },
-                trailing: IconButton(
-                  icon: Icon(Icons.link),
-                  onPressed: () {
-                    try {
-                      launchUrlString(
-                        'https://github.com/Notsfsssf/pixez-flutter',
-                      );
-                    } catch (e) {}
-                  },
-                ),
               ),
-              ListTile(
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              _buildSettingsTile(
+                leading: Icons.update_rounded,
                 title: Text(I18n.of(context).check_for_updates),
                 onTap: () {
                   Navigator.of(context).push(
                     MaterialPageRoute(builder: (_) => UpdatePage()),
                   );
                 },
-                trailing: Icon(Icons.update),
               ),
-              ListTile(
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              _buildSettingsTile(
                 leading: CircleAvatar(
                   backgroundImage: NetworkImage(
                     'https://avatars1.githubusercontent.com/u/9017470?s=400&v=4',

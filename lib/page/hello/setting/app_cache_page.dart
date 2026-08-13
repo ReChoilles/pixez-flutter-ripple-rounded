@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pixez/component/settings_list.dart';
 import 'package:pixez/i18n.dart';
 
 class AppCachePage extends StatefulWidget {
@@ -13,11 +14,15 @@ class _AppCachePageState extends State<AppCachePage> {
       appBar: AppBar(
         title: Text('App Cache'),
       ),
-      body: ListView(
-        children: [
-          ListTile(
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28.0)),
-            title: Text(I18n.of(context).clear_all_cache),
+      body: SettingsList(
+        sections: [
+          SettingsSection(
+            tiles: [
+              SettingsTile(
+                title: Text(I18n.of(context).clear_all_cache),
+                leading: Icons.delete_sweep_rounded,
+              ),
+            ],
           ),
         ],
       ),

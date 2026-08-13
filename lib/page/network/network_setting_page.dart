@@ -5,6 +5,7 @@ import 'package:dio/io.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pixez/component/pixiv_image.dart';
+import 'package:pixez/component/settings_list.dart';
 import 'package:pixez/er/hoster.dart';
 import 'package:pixez/er/pixiv_image_source.dart';
 import 'package:pixez/main.dart';
@@ -97,19 +98,36 @@ class _NetworkSettingPageState extends State<NetworkSettingPage> {
     return Scaffold(
       body: ListView(
         children: [
-          ListTile(
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28.0)),
-            title: Text("app-api.pixiv.net"),
-            subtitle: Text("Host:" + ApiClient.BASE_API_URL_HOST),
-            trailing: _buildCheckIcon(apiStatus),
+          SettingsList(
+            sections: [
+              SettingsSection(
+                title: Text('Network Check'),
+                tiles: [
+                  SettingsTile(
+                    leading: Icons.dns_rounded,
+                    title: Text("app-api.pixiv.net"),
+                    description: Text("Host:" + ApiClient.BASE_API_URL_HOST),
+                    trailing: _buildCheckIcon(apiStatus),
+                  ),
+                  SettingsTile(
+                    leading: Icons.image_rounded,
+                    title: Text(ImageHost),
+                    description: Text("Host:" + splashStore.host),
+                    trailing: _buildCheckIcon(imgStatus),
+                  ),
+                ],
+              ),
+            ],
           ),
-          ListTile(
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28.0)),
-            title: Text(ImageHost),
-            subtitle: Text("Host:" + splashStore.host),
-            trailing: _buildCheckIcon(imgStatus),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: TextField(
+              controller: editingController,
+              decoration: const InputDecoration(
+                labelText: 'Custom Host',
+              ),
+            ),
           ),
-          TextField(controller: editingController),
           TextButton(
             onPressed: () {
               host = editingController.text;
@@ -117,7 +135,10 @@ class _NetworkSettingPageState extends State<NetworkSettingPage> {
             },
             child: Text("apply"),
           ),
-          Text(message),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: Text(message),
+          ),
         ],
       ),
     );

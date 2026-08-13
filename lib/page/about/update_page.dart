@@ -16,6 +16,7 @@
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:pixez/component/settings_list.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/page/about/last_release.dart';
 import 'package:url_launcher/url_launcher_string.dart';
@@ -67,31 +68,34 @@ class _UpdatePageState extends State<UpdatePage> {
                     : Container(child: Center(child: Text(error.toString())));
               },
             )
-          : ListView(
-              children: <Widget>[
-                ListTile(
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
-                  title: Text(I18n.of(context).latest_version),
-                  subtitle: Text(lastRelease!.tagName ?? ''),
-                ),
-                ListTile(
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
-                  title: Text(I18n.of(context).download_address),
-                  subtitle: SelectableText(
-                    lastRelease!.assets?.first.browserDownloadUrl ?? '',
-                  ),
-                  onTap: () {
-                    try {
-                      launchUrlString(
+          : SettingsList(
+              sections: [
+                SettingsSection(
+                  tiles: [
+                    SettingsTile(
+                      title: Text(I18n.of(context).latest_version),
+                      description: Text(lastRelease!.tagName ?? ''),
+                    ),
+                    SettingsTile(
+                      title: Text(I18n.of(context).download_address),
+                      description: SelectableText(
                         lastRelease!.assets?.first.browserDownloadUrl ?? '',
-                      );
-                    } catch (e) {}
-                  },
-                ),
-                ListTile(
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
-                  title: Text(I18n.of(context).new_version_update_information),
-                  subtitle: Text(lastRelease!.body ?? ''),
+                      ),
+                      onPressed: (ctx) {
+                        try {
+                          launchUrlString(
+                            lastRelease!.assets?.first.browserDownloadUrl ??
+                                '',
+                          );
+                        } catch (e) {}
+                      },
+                    ),
+                    SettingsTile(
+                      title:
+                          Text(I18n.of(context).new_version_update_information),
+                      description: Text(lastRelease!.body ?? ''),
+                    ),
+                  ],
                 ),
               ],
             ),

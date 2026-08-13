@@ -19,6 +19,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:pixez/component/settings_list.dart';
 import 'package:pixez/er/leader.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
@@ -64,48 +65,46 @@ class _ShieldPageState extends State<ShieldPage> {
               //     icon: Icon(Icons.expand_circle_down_outlined))
             ],
           ),
-          body: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: <Widget>[
-                  ListTile(
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
-                    title: Text(I18n.of(context).ai_work_display_settings),
-                    onTap: () async {
-                      try {
-                        BotToast.showLoading();
-                        Response response = await apiClient.getUserAISettings();
-                        var showAIResponse = ShowAIResponse.fromJson(
-                          response.data,
-                        );
-                        Leader.push(
-                          context,
-                          UserShowAISetting(showAI: showAIResponse.showAI),
-                        );
-                      } catch (e) {
-                      } finally {
-                        BotToast.closeAllLoading();
-                      }
-                    },
-                  ),
-                  ListTile(
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
-                    title: Text(
-                      I18n.of(
-                        context,
-                      ).make_works_with_ai_generated_flags_invisible,
-                    ),
-                    trailing: Switch(
-                      value: muteStore.banAIIllust,
-                      onChanged: (v) {
-                        muteStore.changeBanAI(v);
+          body: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: <Widget>[
+                SettingsSection(
+                  tiles: [
+                    SettingsTile(
+                      leading: Icons.shield_rounded,
+                      title: Text(I18n.of(context).ai_work_display_settings),
+                      onPressed: (ctx) async {
+                        try {
+                          BotToast.showLoading();
+                          Response response = await apiClient.getUserAISettings();
+                          var showAIResponse = ShowAIResponse.fromJson(
+                            response.data,
+                          );
+                          Leader.push(
+                            ctx,
+                            UserShowAISetting(showAI: showAIResponse.showAI),
+                          );
+                        } catch (e) {
+                        } finally {
+                          BotToast.closeAllLoading();
+                        }
                       },
                     ),
-                  ),
-                  Divider(),
+                    SettingsTile.switchTile(
+                      leading: Icons.auto_awesome_rounded,
+                      title: Text(
+                        I18n.of(context).make_works_with_ai_generated_flags_invisible,
+                      ),
+                      initialValue: muteStore.banAIIllust,
+                      onToggle: (v) {
+                        muteStore.changeBanAI(v ?? false);
+                      },
+                    ),
+                  ],
+                ),
+                Divider(),
                   Row(
                     children: [
                       Text(I18n.of(context).tag),
