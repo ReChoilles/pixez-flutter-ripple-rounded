@@ -142,7 +142,7 @@ class _AboutPageState extends State<AboutPage> {
               title: const Text('社区'),
               tiles: [
                 SettingsTile(
-                  leading: _tileIcon(context, Icons.rate_review_rounded),
+                  leadingWidget: _tileIcon(context, Icons.rate_review_rounded),
                   title: Text(I18n.of(context).rate_title),
                   description: Text(I18n.of(context).rate_message),
                   onPressed: (ctx) async {
@@ -156,7 +156,7 @@ class _AboutPageState extends State<AboutPage> {
                 ),
                 if (Platform.isAndroid || kDebugMode) [
                   SettingsTile(
-                    leading: _tileIcon(context, Icons.device_hub_rounded),
+                    leadingWidget: _tileIcon(context, Icons.device_hub_rounded),
                     title: Text(I18n.of(context).repo_address),
                     description: const Text('github.com/Notsfsssf/pixez-flutter'),
                     trailing: Visibility(
@@ -170,7 +170,7 @@ class _AboutPageState extends State<AboutPage> {
                   ),
                 ],
                 SettingsTile(
-                  leading: _tileIcon(context, Icons.share_rounded),
+                  leadingWidget: _tileIcon(context, Icons.share_rounded),
                   title: Text(I18n.of(context).share),
                   description: Text(I18n.of(context).share_this_app_link),
                   onPressed: (ctx) {
@@ -184,7 +184,7 @@ class _AboutPageState extends State<AboutPage> {
                   },
                 ),
                 SettingsTile(
-                  leading: _tileIcon(context, FontAwesomeIcons.telegram),
+                  leadingWidget: _tileIcon(context, FontAwesomeIcons.telegram),
                   title: const Text("Group"),
                   description: const Text('t.me/PixEzChannel'),
                 ),
@@ -194,17 +194,17 @@ class _AboutPageState extends State<AboutPage> {
               title: const Text('联系与支持'),
               tiles: [
                 SettingsTile(
-                  leading: _tileIcon(context, Icons.email_rounded),
+                  leadingWidget: _tileIcon(context, Icons.email_rounded),
                   title: Text(I18n.of(context).feedback),
                   description: const Text('PxezFeedBack@outlook.com'),
                 ),
                 SettingsTile(
-                  leading: _tileIcon(context, Icons.stars_rounded),
+                  leadingWidget: _tileIcon(context, Icons.stars_rounded),
                   title: Text(I18n.of(context).support),
                   description: Text(I18n.of(context).support_message),
                 ),
                 SettingsTile(
-                  leading: _tileIcon(context, Icons.favorite_rounded),
+                  leadingWidget: _tileIcon(context, Icons.favorite_rounded),
                   title: Text(I18n.of(context).thanks),
                   description: const Text('感谢帮助我测试的弹幕委员会群友们\n感谢pixiv cat站主提供的图床'),
                   onPressed: (ctx) {
@@ -224,17 +224,17 @@ class _AboutPageState extends State<AboutPage> {
                 title: const Text('捐赠'),
                 tiles: [
                   SettingsTile(
-                    leading: _tileIcon(context, Icons.volunteer_activism_rounded),
+                    leadingWidget: _tileIcon(context, Icons.volunteer_activism_rounded),
                     title: Text(I18n.of(context).donate_title),
                     description: Text(I18n.of(context).donate_message),
                   ),
                   SettingsTile(
-                    leading: _tileIcon(context, Icons.payments_rounded),
+                    leadingWidget: _tileIcon(context, Icons.payments_rounded),
                     title: const Text('AliPay'),
                     description: const Text('912756674@qq.com'),
                   ),
                   SettingsTile(
-                    leading: _tileIcon(context, Icons.payments_rounded),
+                    leadingWidget: _tileIcon(context, Icons.payments_rounded),
                     title: const Text('Wechat Pay'),
                     description: const Text('tap'),
                     onPressed: (ctx) {
@@ -259,7 +259,7 @@ class _AboutPageState extends State<AboutPage> {
                 title: const Text('支持开发者'),
                 tiles: [
                   SettingsTile(
-                    leading: _tileIcon(context, Icons.favorite_rounded),
+                    leadingWidget: _tileIcon(context, Icons.favorite_rounded),
                     title: const Text('支持开发者工作'),
                     description: const Text('如果你觉得这个应用还不错，支持一下开发者吧!'),
                     trailing: const Text('12￥'),
@@ -279,7 +279,7 @@ class _AboutPageState extends State<AboutPage> {
                     },
                   ),
                   SettingsTile(
-                    leading: _tileIcon(context, Icons.favorite_rounded),
+                    leadingWidget: _tileIcon(context, Icons.favorite_rounded),
                     title: const Text('支持开发者工作'),
                     description: const Text('如果你觉得这个应用非常不错，支持一下开发者吧！'),
                     trailing: const Text('25￥'),
@@ -306,7 +306,7 @@ class _AboutPageState extends State<AboutPage> {
                 title: const Text('支持开发者'),
                 tiles: products.map((i) {
                   return SettingsTile(
-                    leading: _tileIcon(context, FontAwesomeIcons.mugSaucer),
+                    leadingWidget: _tileIcon(context, FontAwesomeIcons.mugSaucer),
                     title: Text(i.description),
                     description: Text(i.price),
                     onPressed: (ctx) {
@@ -330,7 +330,7 @@ class _AboutPageState extends State<AboutPage> {
   Widget _buildPerolTile(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     return SettingsTile(
-      leading: ClipRRect(
+      leadingWidget: ClipRRect(
         borderRadius: BorderRadius.circular(14),
         child: Image.asset(
           'assets/images/me.jpg',
@@ -381,7 +381,7 @@ class _AboutPageState extends State<AboutPage> {
   Widget _buildRightNowTile(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     return SettingsTile(
-      leading: ClipRRect(
+      leadingWidget: ClipRRect(
         borderRadius: BorderRadius.circular(14),
         child: Image.asset(
           'assets/images/right_now.jpg',
@@ -514,7 +514,7 @@ class _AboutPageState extends State<AboutPage> {
                 ),
               ),
               SettingsTile(
-                leading: _tileIcon(context, Icons.link_rounded),
+                leadingWidget: _tileIcon(context, Icons.link_rounded),
                 title: Text('Version ${Constants.tagName}'),
                 description: Text(I18n.of(context).go_to_project_address),
                 onPressed: (ctx) {
@@ -526,7 +526,7 @@ class _AboutPageState extends State<AboutPage> {
                 },
               ),
               SettingsTile(
-                leading: _tileIcon(context, Icons.update_rounded),
+                leadingWidget: _tileIcon(context, Icons.update_rounded),
                 title: Text(I18n.of(context).check_for_updates),
                 onPressed: (ctx) {
                   Navigator.of(ctx).push(
@@ -535,7 +535,7 @@ class _AboutPageState extends State<AboutPage> {
                 },
               ),
               SettingsTile(
-                leading: CircleAvatar(
+                leadingWidget: CircleAvatar(
                   backgroundImage: NetworkImage(
                     'https://avatars1.githubusercontent.com/u/9017470?s=400&v=4',
                   ),
