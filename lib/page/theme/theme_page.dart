@@ -289,7 +289,7 @@ class _PaletteCardState extends State<PaletteCard> {
               ),
             ),
         ],
-      ],
+      ),
     );
   }
 }
