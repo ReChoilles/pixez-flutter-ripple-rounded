@@ -122,31 +122,30 @@ class _AboutPageState extends State<AboutPage> {
   }
 
   Widget _buildInfo(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
     return Observer(
       builder: (context) {
         return SettingsList(
           sections: [
             SettingsSection(
               tiles: [
-                _buildPerolTile(context, colorScheme),
-                _buildRightNowTile(context, colorScheme),
+                _buildPerolTile(context),
+                _buildRightNowTile(context),
               ],
             ),
             SettingsSection(
               title: const Text('Contributors'),
               tiles: [
-                _buildContributors(context, colorScheme),
+                _buildContributors(context),
               ],
             ),
             SettingsSection(
               title: const Text('社区'),
               tiles: [
-                _buildSettingsTile(
-                  leading: Icons.rate_review_rounded,
+                SettingsTile(
+                  leading: _tileIcon(context, Icons.rate_review_rounded),
                   title: Text(I18n.of(context).rate_title),
-                  subtitle: Text(I18n.of(context).rate_message),
-                  onTap: () async {
+                  description: Text(I18n.of(context).rate_message),
+                  onPressed: (ctx) async {
                     if (Platform.isIOS) {
                       var url = 'https://apps.apple.com/cn/app/pixez/id1494435126';
                       try {
@@ -155,26 +154,25 @@ class _AboutPageState extends State<AboutPage> {
                     }
                   },
                 ),
-                if (Platform.isAndroid || kDebugMode) ...[
-                  _buildSettingsTile(
-                    leading: Icons.device_hub_rounded,
+                if (Platform.isAndroid || kDebugMode) ...[                  SettingsTile(
+                    leading: _tileIcon(context, Icons.device_hub_rounded),
                     title: Text(I18n.of(context).repo_address),
-                    subtitle: const Text('github.com/Notsfsssf/pixez-flutter'),
+                    description: const Text('github.com/Notsfsssf/pixez-flutter'),
                     trailing: Visibility(
                       child: NewVersionChip(),
                       visible: hasNewVersion,
                     ),
-                    onTap: () {
+                    onPressed: (ctx) {
                       if (!Constants.isGooglePlay)
-                        _showRepoSheet(context);
+                        _showRepoSheet(ctx);
                     },
                   ),
                 ],
-                _buildSettingsTile(
-                  leading: Icons.share_rounded,
+                SettingsTile(
+                  leading: _tileIcon(context, Icons.share_rounded),
                   title: Text(I18n.of(context).share),
-                  subtitle: Text(I18n.of(context).share_this_app_link),
-                  onTap: () {
+                  description: Text(I18n.of(context).share_this_app_link),
+                  onPressed: (ctx) {
                     if (Platform.isIOS) {
                       SharePlus.instance.share(
                         ShareParams(
@@ -184,33 +182,33 @@ class _AboutPageState extends State<AboutPage> {
                     }
                   },
                 ),
-                _buildSettingsTile(
-                  leading: FontAwesomeIcons.telegram,
+                SettingsTile(
+                  leading: _tileIcon(context, FontAwesomeIcons.telegram),
                   title: const Text("Group"),
-                  subtitle: const Text('t.me/PixEzChannel'),
+                  description: const Text('t.me/PixEzChannel'),
                 ),
               ],
             ),
             SettingsSection(
               title: const Text('联系与支持'),
               tiles: [
-                _buildSettingsTile(
-                  leading: Icons.email_rounded,
+                SettingsTile(
+                  leading: _tileIcon(context, Icons.email_rounded),
                   title: Text(I18n.of(context).feedback),
-                  subtitle: const Text('PxezFeedBack@outlook.com'),
+                  description: const Text('PxezFeedBack@outlook.com'),
                 ),
-                _buildSettingsTile(
-                  leading: Icons.stars_rounded,
+                SettingsTile(
+                  leading: _tileIcon(context, Icons.stars_rounded),
                   title: Text(I18n.of(context).support),
-                  subtitle: Text(I18n.of(context).support_message),
+                  description: Text(I18n.of(context).support_message),
                 ),
-                _buildSettingsTile(
-                  leading: Icons.favorite_rounded,
+                SettingsTile(
+                  leading: _tileIcon(context, Icons.favorite_rounded),
                   title: Text(I18n.of(context).thanks),
-                  subtitle: const Text('感谢帮助我测试的弹幕委员会群友们\n感谢pixiv cat站主提供的图床'),
-                  onTap: () {
+                  description: const Text('感谢帮助我测试的弹幕委员会群友们\n感谢pixiv cat站主提供的图床'),
+                  onPressed: (ctx) {
                     if (Platform.isAndroid)
-                      Navigator.of(context).push(
+                      Navigator.of(ctx).push(
                         MaterialPageRoute(
                           builder: (_) =>
                               Scaffold(appBar: AppBar(), body: ThanksList()),
@@ -224,23 +222,23 @@ class _AboutPageState extends State<AboutPage> {
               SettingsSection(
                 title: const Text('捐赠'),
                 tiles: [
-                  _buildSettingsTile(
-                    leading: Icons.volunteer_activism_rounded,
+                  SettingsTile(
+                    leading: _tileIcon(context, Icons.volunteer_activism_rounded),
                     title: Text(I18n.of(context).donate_title),
-                    subtitle: Text(I18n.of(context).donate_message),
+                    description: Text(I18n.of(context).donate_message),
                   ),
-                  _buildSettingsTile(
-                    leading: Icons.payments_rounded,
+                  SettingsTile(
+                    leading: _tileIcon(context, Icons.payments_rounded),
                     title: const Text('AliPay'),
-                    subtitle: const Text('912756674@qq.com'),
+                    description: const Text('912756674@qq.com'),
                   ),
-                  _buildSettingsTile(
-                    leading: Icons.payments_rounded,
+                  SettingsTile(
+                    leading: _tileIcon(context, Icons.payments_rounded),
                     title: const Text('Wechat Pay'),
-                    subtitle: const Text('tap'),
-                    onTap: () {
+                    description: const Text('tap'),
+                    onPressed: (ctx) {
                       showDialog(
-                        context: context,
+                        context: ctx,
                         builder: (_) {
                           return AlertDialog(
                             content: Image.asset(
@@ -255,16 +253,15 @@ class _AboutPageState extends State<AboutPage> {
                   ),
                 ],
               ),
-            if (Platform.isIOS) ...[
-              SettingsSection(
+            if (Platform.isIOS) ...[              SettingsSection(
                 title: const Text('支持开发者'),
                 tiles: [
-                  _buildSettingsTile(
-                    leading: Icons.favorite_rounded,
+                  SettingsTile(
+                    leading: _tileIcon(context, Icons.favorite_rounded),
                     title: const Text('支持开发者工作'),
-                    subtitle: const Text('如果你觉得这个应用还不错，支持一下开发者吧!'),
+                    description: const Text('如果你觉得这个应用还不错，支持一下开发者吧!'),
                     trailing: const Text('12￥'),
-                    onTap: () async {
+                    onPressed: (ctx) async {
                       BotToast.showText(text: 'try to Purchase');
                       for (var p in products) {
                         if (p.id == "support") {
@@ -279,12 +276,12 @@ class _AboutPageState extends State<AboutPage> {
                       }
                     },
                   ),
-                  _buildSettingsTile(
-                    leading: Icons.favorite_rounded,
+                  SettingsTile(
+                    leading: _tileIcon(context, Icons.favorite_rounded),
                     title: const Text('支持开发者工作'),
-                    subtitle: const Text('如果你觉得这个应用非常不错，支持一下开发者吧！'),
+                    description: const Text('如果你觉得这个应用非常不错，支持一下开发者吧！'),
                     trailing: const Text('25￥'),
-                    onTap: () async {
+                    onPressed: (ctx) async {
                       BotToast.showText(text: 'try to Purchase');
                       for (var p in products) {
                         if (p.id == "support1") {
@@ -306,11 +303,11 @@ class _AboutPageState extends State<AboutPage> {
               SettingsSection(
                 title: const Text('支持开发者'),
                 tiles: products.map((i) {
-                  return _buildSettingsTile(
-                    leading: FontAwesomeIcons.mugSaucer,
+                  return SettingsTile(
+                    leading: _tileIcon(context, FontAwesomeIcons.mugSaucer),
                     title: Text(i.description),
-                    subtitle: Text(i.price),
-                    onTap: () {
+                    description: Text(i.price),
+                    onPressed: (ctx) {
                       BotToast.showText(text: 'try to Purchase');
                       final PurchaseParam purchaseParam = PurchaseParam(
                         productDetails: i,
@@ -328,11 +325,31 @@ class _AboutPageState extends State<AboutPage> {
     );
   }
 
-  Widget _buildPerolTile(BuildContext context, ColorScheme colorScheme) {
-    return InkWell(
-      onTap: () {
+  Widget _buildPerolTile(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    return SettingsTile(
+      leading: ClipRRect(
+        borderRadius: BorderRadius.circular(14),
+        child: Image.asset(
+          'assets/images/me.jpg',
+          width: 48,
+          height: 48,
+          fit: BoxFit.cover,
+        ),
+      ),
+      title: Text(
+        'Perol_Notsfsssf',
+        style: const TextStyle(fontWeight: FontWeight.w600),
+      ),
+      description: Text(I18n.of(context).perol_message),
+      trailing: Icon(
+        Icons.chevron_right_rounded,
+        size: 20,
+        color: colorScheme.onSurfaceVariant.withValues(alpha: 0.5),
+      ),
+      onPressed: (ctx) {
         showModalBottomSheet(
-          context: context,
+          context: ctx,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
           ),
@@ -356,57 +373,34 @@ class _AboutPageState extends State<AboutPage> {
           },
         );
       },
-      borderRadius: BorderRadius.circular(4),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-        child: Row(
-          children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(14),
-              child: Image.asset(
-                'assets/images/me.jpg',
-                width: 48,
-                height: 48,
-                fit: BoxFit.cover,
-              ),
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Perol_Notsfsssf',
-                    style: Theme.of(context)
-                        .textTheme
-                        .titleMedium
-                        ?.copyWith(fontWeight: FontWeight.w600),
-                  ),
-                  Text(
-                    I18n.of(context).perol_message,
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: colorScheme.onSurfaceVariant,
-                        ),
-                  ),
-                ],
-              ),
-            ),
-            Icon(
-              Icons.chevron_right_rounded,
-              size: 20,
-              color: colorScheme.onSurfaceVariant.withValues(alpha: 0.5),
-            ),
-          ],
-        ),
-      ),
     );
   }
 
-  Widget _buildRightNowTile(BuildContext context, ColorScheme colorScheme) {
-    return InkWell(
-      onTap: () {
+  Widget _buildRightNowTile(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    return SettingsTile(
+      leading: ClipRRect(
+        borderRadius: BorderRadius.circular(14),
+        child: Image.asset(
+          'assets/images/right_now.jpg',
+          width: 48,
+          height: 48,
+          fit: BoxFit.cover,
+        ),
+      ),
+      title: Text(
+        'Right now',
+        style: const TextStyle(fontWeight: FontWeight.w600),
+      ),
+      description: Text(I18n.of(context).right_now_message),
+      trailing: Icon(
+        Icons.chevron_right_rounded,
+        size: 20,
+        color: colorScheme.onSurfaceVariant.withValues(alpha: 0.5),
+      ),
+      onPressed: (ctx) {
         showModalBottomSheet(
-          context: context,
+          context: ctx,
           builder: (BuildContext context) {
             return Container(
               height: 200.0,
@@ -415,53 +409,11 @@ class _AboutPageState extends State<AboutPage> {
           },
         );
       },
-      borderRadius: BorderRadius.circular(4),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-        child: Row(
-          children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(14),
-              child: Image.asset(
-                'assets/images/right_now.jpg',
-                width: 48,
-                height: 48,
-                fit: BoxFit.cover,
-              ),
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Right now',
-                    style: Theme.of(context)
-                        .textTheme
-                        .titleMedium
-                        ?.copyWith(fontWeight: FontWeight.w600),
-                  ),
-                  Text(
-                    I18n.of(context).right_now_message,
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: colorScheme.onSurfaceVariant,
-                        ),
-                  ),
-                ],
-              ),
-            ),
-            Icon(
-              Icons.chevron_right_rounded,
-              size: 20,
-              color: colorScheme.onSurfaceVariant.withValues(alpha: 0.5),
-            ),
-          ],
-        ),
-      ),
     );
   }
 
-  Widget _buildContributors(BuildContext context, ColorScheme colorScheme) {
+  Widget _buildContributors(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return SizedBox(
       height: 150,
       child: Padding(
@@ -521,91 +473,20 @@ class _AboutPageState extends State<AboutPage> {
     );
   }
 
-  Widget _buildSettingsTile({
-    required dynamic leading,
-    required Widget title,
-    Widget? subtitle,
-    Widget? trailing,
-    VoidCallback? onTap,
-  }) {
+  Widget _tileIcon(BuildContext context, IconData icon) {
     final colorScheme = Theme.of(context).colorScheme;
-
-    Widget iconWidget;
-    if (leading is IconData) {
-      iconWidget = Container(
-        width: 40,
-        height: 40,
-        decoration: BoxDecoration(
-          color: colorScheme.secondaryContainer.withValues(alpha: 0.6),
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: Icon(
-          leading,
-          size: 20,
-          color: colorScheme.onSecondaryContainer,
-        ),
-      );
-    } else {
-      iconWidget = leading;
-    }
-
-    final content = Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-      child: Row(
-        children: [
-          iconWidget,
-          const SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                DefaultTextStyle.merge(
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyLarge
-                      ?.copyWith(color: colorScheme.onSurface),
-                  child: title,
-                ),
-                if (subtitle != null)
-                  Padding(
-                    padding: const EdgeInsets.only(top: 2),
-                    child: DefaultTextStyle.merge(
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodySmall
-                          ?.copyWith(color: colorScheme.onSurfaceVariant),
-                      child: subtitle,
-                    ),
-                  ),
-              ],
-            ),
-          ),
-          if (trailing != null) ...[
-            const SizedBox(width: 8),
-            trailing!,
-          ],
-          if (onTap != null)
-            Icon(
-              Icons.chevron_right_rounded,
-              size: 20,
-              color: colorScheme.onSurfaceVariant.withValues(alpha: 0.5),
-            ),
-        ],
+    return Container(
+      width: 40,
+      height: 40,
+      decoration: BoxDecoration(
+        color: colorScheme.secondaryContainer.withValues(alpha: 0.6),
+        borderRadius: BorderRadius.circular(12),
       ),
-    );
-
-    if (onTap != null) {
-      return InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(4),
-        child: content,
-      );
-    }
-    return InkWell(
-      onTap: () {},
-      borderRadius: BorderRadius.circular(4),
-      child: content,
+      child: Icon(
+        icon,
+        size: 20,
+        color: colorScheme.onSecondaryContainer,
+      ),
     );
   }
 
@@ -630,11 +511,11 @@ class _AboutPageState extends State<AboutPage> {
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
-              _buildSettingsTile(
-                leading: Icons.link_rounded,
+              SettingsTile(
+                leading: _tileIcon(context, Icons.link_rounded),
                 title: Text('Version ${Constants.tagName}'),
-                subtitle: Text(I18n.of(context).go_to_project_address),
-                onTap: () {
+                description: Text(I18n.of(context).go_to_project_address),
+                onPressed: (ctx) {
                   try {
                     launchUrlString(
                       'https://github.com/Notsfsssf/pixez-flutter',
@@ -642,23 +523,23 @@ class _AboutPageState extends State<AboutPage> {
                   } catch (e) {}
                 },
               ),
-              _buildSettingsTile(
-                leading: Icons.update_rounded,
+              SettingsTile(
+                leading: _tileIcon(context, Icons.update_rounded),
                 title: Text(I18n.of(context).check_for_updates),
-                onTap: () {
-                  Navigator.of(context).push(
+                onPressed: (ctx) {
+                  Navigator.of(ctx).push(
                     MaterialPageRoute(builder: (_) => UpdatePage()),
                   );
                 },
               ),
-              _buildSettingsTile(
+              SettingsTile(
                 leading: CircleAvatar(
                   backgroundImage: NetworkImage(
                     'https://avatars1.githubusercontent.com/u/9017470?s=400&v=4',
                   ),
                 ),
                 title: Text('Skimige'),
-                subtitle: Text(I18n.of(context).skimige_message),
+                description: Text(I18n.of(context).skimige_message),
               ),
             ],
           ),
@@ -666,4 +547,4 @@ class _AboutPageState extends State<AboutPage> {
       },
     );
   }
-}
+description: Text(I18n.of(context).go_to_project_address),\n                onPressed: (ctx) {\n                  try {\n                    launchUrlString(\n                      'https://github.com/Notsfsssf/pixez-flutter',\n                    );\n                  } catch (e) {}\n                },\n              ),\n              SettingsTile(\n                leading: _tileIcon(context, Icons.update_rounded),\n                title: Text(I18n.of(context).check_for_updates),\n                onPressed: (ctx) {\n                  Navigator.of(ctx).push(\n                    MaterialPageRoute(builder: (_) => UpdatePage()),\n                  );\n                },\n              ),\n              SettingsTile(\n                leading: CircleAvatar(\n                  backgroundImage: NetworkImage(\n                    'https://avatars1.githubusercontent.com/u/9017470?s=400&v=4',\n                  ),\n                ),\n                title: Text('Skimige'),\n                description: Text(I18n.of(context).skimige_message),\n              ),\n            ],\n          ),\n        );\n      },\n    );\n  }\n}"}]

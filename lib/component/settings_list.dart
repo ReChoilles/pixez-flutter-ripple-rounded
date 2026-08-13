@@ -138,8 +138,7 @@ class SettingsSplitGroup extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        for (int i = 0; i < children.length; i++) ...[
-          if (i > 0) const SizedBox(height: _rowGap),
+        for (int i = 0; i < children.length; i++) ...[          if (i > 0) const SizedBox(height: _rowGap),
           _SplitRow(
             first: i == 0,
             last: i == children.length - 1,
@@ -239,7 +238,7 @@ class _TileLabel extends StatelessWidget {
   });
 
   final Widget title;
-  final IconData? leading;
+  final Widget? leading;
   final Widget? description;
   final bool enabled;
 
@@ -253,8 +252,7 @@ class _TileLabel extends StatelessWidget {
 
     return Row(
       children: [
-        if (leading != null) ...[
-          Icon(leading, size: 24, color: secondary),
+        if (leading != null) ...[          leading!,
           const SizedBox(width: 16),
         ],
         Expanded(
@@ -266,8 +264,7 @@ class _TileLabel extends StatelessWidget {
                 style: textTheme.bodyLarge?.copyWith(color: foreground),
                 child: title,
               ),
-              if (description != null) ...[
-                const SizedBox(height: 2),
+              if (description != null) ...[                const SizedBox(height: 2),
                 DefaultTextStyle.merge(
                   style: textTheme.bodySmall?.copyWith(color: secondary),
                   child: description!,
@@ -362,7 +359,7 @@ class SettingsSliderTile extends StatelessWidget {
   });
 
   final Widget title;
-  final IconData? leading;
+  final Widget? leading;
   final Widget? description;
   final String valueLabel;
   final double value;
@@ -468,7 +465,7 @@ class SettingsTile<T> extends StatelessWidget {
         initialValue = null;
 
   final Widget title;
-  final IconData? leading;
+  final Widget? leading;
   final Widget? description;
   final Widget? trailing;
   final Widget? value;
@@ -483,12 +480,18 @@ class SettingsTile<T> extends StatelessWidget {
     if (!enabled) return null;
     switch (_kind) {
       case _TileKind.plain:
-        return onPressed == null ? null : () => onPressed!(context);
+        return onPressed == null
+            ? () {}
+            : () => onPressed!(context);
       case _TileKind.toggle:
-        return onToggle == null ? null : () => onToggle!(null);
+        return onToggle == null
+            ? () {}
+            : () => onToggle!(null);
       case _TileKind.radio:
         final registry = RadioGroup.maybeOf<T>(context);
-        return registry == null ? null : () => registry.onChanged(radioValue);
+        return registry == null
+            ? () {}
+            : () => registry.onChanged(radioValue);
     }
   }
 
@@ -516,29 +519,25 @@ class SettingsTile<T> extends StatelessWidget {
                   enabled: enabled,
                 ),
               ),
-              if (value != null) ...[
-                const SizedBox(width: 12),
+              if (value != null) ...[                const SizedBox(width: 12),
                 DefaultTextStyle.merge(
                   style: textTheme.bodyMedium?.copyWith(color: secondary),
                   child: value!,
                 ),
               ],
-              if (trailing != null) ...[
-                const SizedBox(width: 8),
+              if (trailing != null) ...[                const SizedBox(width: 8),
                 IconTheme.merge(
                   data: IconThemeData(color: secondary),
                   child: trailing!,
                 ),
               ],
-              if (_kind == _TileKind.toggle) ...[
-                const SizedBox(width: 12),
+              if (_kind == _TileKind.toggle) ...[                const SizedBox(width: 12),
                 Switch(
                   value: initialValue ?? false,
                   onChanged: enabled ? onToggle : null,
                 ),
               ],
-              if (_kind == _TileKind.radio) ...[
-                const SizedBox(width: 12),
+              if (_kind == _TileKind.radio) ...[                const SizedBox(width: 12),
                 Radio<T>(value: radioValue as T, enabled: enabled),
               ],
             ],
