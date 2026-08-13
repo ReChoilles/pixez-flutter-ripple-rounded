@@ -154,8 +154,7 @@ class _AboutPageState extends State<AboutPage> {
                     }
                   },
                 ),
-                if (Platform.isAndroid || kDebugMode) [
-                  SettingsTile(
+                if (Platform.isAndroid || kDebugMode) ...[                  SettingsTile(
                     leadingWidget: _tileIcon(context, Icons.device_hub_rounded),
                     title: Text(I18n.of(context).repo_address),
                     description: const Text('github.com/Notsfsssf/pixez-flutter'),
@@ -254,8 +253,7 @@ class _AboutPageState extends State<AboutPage> {
                   ),
                 ],
               ),
-            if (Platform.isIOS) [
-              SettingsSection(
+            if (Platform.isIOS) ...[              SettingsSection(
                 title: const Text('支持开发者'),
                 tiles: [
                   SettingsTile(
@@ -475,7 +473,7 @@ class _AboutPageState extends State<AboutPage> {
     );
   }
 
-  Widget _tileIcon(BuildContext context, IconData icon) {
+  Widget _tileIcon(BuildContext context, dynamic iconData) {
     final colorScheme = Theme.of(context).colorScheme;
     return Container(
       width: 40,
@@ -484,8 +482,8 @@ class _AboutPageState extends State<AboutPage> {
         color: colorScheme.secondaryContainer.withValues(alpha: 0.6),
         borderRadius: BorderRadius.circular(12),
       ),
-      child: Icon(
-        icon,
+      child: FaIcon(
+        iconData,
         size: 20,
         color: colorScheme.onSecondaryContainer,
       ),
