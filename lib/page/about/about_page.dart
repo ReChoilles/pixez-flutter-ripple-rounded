@@ -111,13 +111,11 @@ class _AboutPageState extends State<AboutPage> {
 
   @override
   Widget build(BuildContext context) {
-    return SelectionArea(
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text(I18n.of(context).about),
-        ),
-        body: _buildInfo(context),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(I18n.of(context).about),
       ),
+      body: _buildInfo(context),
     );
   }
 
