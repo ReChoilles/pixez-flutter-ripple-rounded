@@ -26,7 +26,7 @@ class DataExportPage extends HookConsumerWidget {
             title: const Text('标签搜索历史'),
             tiles: [
               SettingsTile(
-                leading: Icons.file_upload_outline_rounded,
+                leading: Icons.upload_rounded,
                 title: Text(I18n.of(context).export_title),
                 description: Text(I18n.of(context).export_tag_history),
                 onPressed: (ctx) async {
@@ -38,7 +38,7 @@ class DataExportPage extends HookConsumerWidget {
                 },
               ),
               SettingsTile(
-                leading: Icons.file_download_outline_rounded,
+                leading: Icons.download_rounded,
                 title: Text(I18n.of(context).import_title),
                 description: Text(I18n.of(context).import_tag_history),
                 onPressed: (ctx) async {
@@ -56,7 +56,7 @@ class DataExportPage extends HookConsumerWidget {
             title: const Text('收藏标签'),
             tiles: [
               SettingsTile(
-                leading: Icons.file_upload_outline_rounded,
+                leading: Icons.upload_rounded,
                 title: Text(I18n.of(context).export_title),
                 description: Text(I18n.of(context).export_bookmark_tag),
                 onPressed: (ctx) async {
@@ -68,7 +68,7 @@ class DataExportPage extends HookConsumerWidget {
                 },
               ),
               SettingsTile(
-                leading: Icons.file_download_outline_rounded,
+                leading: Icons.download_rounded,
                 title: Text(I18n.of(context).import_title),
                 description: Text(I18n.of(context).import_bookmark_tag),
                 onPressed: (ctx) async {
@@ -86,7 +86,7 @@ class DataExportPage extends HookConsumerWidget {
             title: const Text('浏览历史（插画）'),
             tiles: [
               SettingsTile(
-                leading: Icons.file_upload_outline_rounded,
+                leading: Icons.upload_rounded,
                 title: Text(I18n.of(context).export_title),
                 description: Text(I18n.of(context).export_illust_history),
                 onPressed: (ctx) async {
@@ -99,7 +99,7 @@ class DataExportPage extends HookConsumerWidget {
                 },
               ),
               SettingsTile(
-                leading: Icons.file_download_outline_rounded,
+                leading: Icons.download_rounded,
                 title: Text(I18n.of(context).import_title),
                 description: Text(I18n.of(context).import_illust_history),
                 onPressed: (ctx) async {
@@ -118,7 +118,7 @@ class DataExportPage extends HookConsumerWidget {
             title: const Text('浏览历史（小说）'),
             tiles: [
               SettingsTile(
-                leading: Icons.file_upload_outline_rounded,
+                leading: Icons.upload_rounded,
                 title: Text(I18n.of(context).export_title),
                 description: Text(I18n.of(context).export_novel_history),
                 onPressed: (ctx) async {
@@ -131,7 +131,7 @@ class DataExportPage extends HookConsumerWidget {
                 },
               ),
               SettingsTile(
-                leading: Icons.file_download_outline_rounded,
+                leading: Icons.download_rounded,
                 title: Text(I18n.of(context).import_title),
                 description: Text(I18n.of(context).import_novel_history),
                 onPressed: (ctx) async {
@@ -150,7 +150,7 @@ class DataExportPage extends HookConsumerWidget {
             title: const Text('屏蔽数据'),
             tiles: [
               SettingsTile(
-                leading: Icons.file_upload_outline_rounded,
+                leading: Icons.upload_rounded,
                 title: Text(I18n.of(context).export_title),
                 description: Text(I18n.of(context).export_mute_data),
                 onPressed: (ctx) async {
@@ -162,7 +162,7 @@ class DataExportPage extends HookConsumerWidget {
                 },
               ),
               SettingsTile(
-                leading: Icons.file_download_outline_rounded,
+                leading: Icons.download_rounded,
                 title: Text(I18n.of(context).import_title),
                 description: Text(I18n.of(context).import_mute_data),
                 onPressed: (ctx) async {
@@ -179,7 +179,7 @@ class DataExportPage extends HookConsumerWidget {
           SettingsSection(
             tiles: [
               SettingsTile(
-                leading: Icons.cleaning_services_rounded,
+                leading: Icons.cleaning_services,
                 title: Text(I18n.of(context).clear_all_cache),
                 onPressed: (ctx) async {
                   try {

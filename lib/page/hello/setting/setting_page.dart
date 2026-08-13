@@ -239,8 +239,7 @@ class _SettingPageState extends State<SettingPage> {
               child: PainterAvatar(
                 url: accountStore.now!.userImage,
                 id: int.parse(accountStore.now!.userId),
-                width: 48,
-                height: 48,
+                size: const Size(48, 48),
               ),
             ),
             const SizedBox(width: 16),

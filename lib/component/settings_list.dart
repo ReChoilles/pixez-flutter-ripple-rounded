@@ -185,7 +185,7 @@ class SettingsTile<T> extends StatelessWidget {
   final _TileKind _kind;
 
   final Widget title;
-  final Widget? leading;
+  final Object? leading;
   final Widget? description;
   final Widget? trailing;
   final T? value;
@@ -276,7 +276,7 @@ class SettingsTile<T> extends StatelessWidget {
 
 class _SettingsTilePlain extends StatelessWidget {
   final Widget title;
-  final Widget? leading;
+  final Object? leading;
   final Widget? description;
   final Widget? trailing;
   final bool enabled;
@@ -312,7 +312,7 @@ class _SettingsTilePlain extends StatelessWidget {
         ),
       );
     } else if (leading != null) {
-      iconWidget = leading!;
+      iconWidget = leading! as Widget;
     } else {
       iconWidget = const SizedBox.shrink();
     }
@@ -381,7 +381,7 @@ class _SettingsTilePlain extends StatelessWidget {
 
 class _SettingsTileSwitch extends StatelessWidget {
   final Widget title;
-  final Widget? leading;
+  final Object? leading;
   final Widget? description;
   final bool enabled;
   final bool initialValue;
@@ -417,7 +417,7 @@ class _SettingsTileSwitch extends StatelessWidget {
         ),
       );
     } else if (leading != null) {
-      iconWidget = leading!;
+      iconWidget = leading! as Widget;
     } else {
       iconWidget = const SizedBox.shrink();
     }
@@ -485,7 +485,7 @@ class _SettingsTileSwitch extends StatelessWidget {
 
 class _SettingsTileRadio<T> extends StatelessWidget {
   final Widget title;
-  final Widget? leading;
+  final Object? leading;
   final Widget? description;
   final bool enabled;
   final T? radioValue;
@@ -519,7 +519,7 @@ class _SettingsTileRadio<T> extends StatelessWidget {
         ),
       );
     } else if (leading != null) {
-      iconWidget = leading!;
+      iconWidget = leading! as Widget;
     } else {
       iconWidget = const SizedBox.shrink();
     }
@@ -600,6 +600,8 @@ class SettingsRadioSection<T> extends StatelessWidget {
     final wrappedTiles = tiles.map((tile) {
       if (tile is _SettingsTileRadio<T>) {
         final isSelected = tile.radioValue == groupValue;
+        final tileLeading = tile.leading;
+        final tileDescription = tile.description;
         return Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
           child: InkWell(
@@ -607,7 +609,7 @@ class SettingsRadioSection<T> extends StatelessWidget {
             onTap: () => onChanged?.call(tile.radioValue),
             child: Row(
               children: [
-                if (tile.leading != null)
+                if (tileLeading != null)
                   Container(
                     width: 40,
                     height: 40,
@@ -616,12 +618,12 @@ class SettingsRadioSection<T> extends StatelessWidget {
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Icon(
-                      tile.leading is IconData ? (tile.leading as IconData) : Icons.circle,
+                      tileLeading is IconData ? (tileLeading as IconData) : Icons.circle,
                       size: 20,
                       color: colorScheme.onSecondaryContainer,
                     ),
                   ),
-                if (tile.leading != null) const SizedBox(width: 16),
+                if (tileLeading != null) const SizedBox(width: 16),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -631,12 +633,12 @@ class SettingsRadioSection<T> extends StatelessWidget {
                         style: textTheme.bodyLarge?.copyWith(color: colorScheme.onSurface),
                         child: tile.title,
                       ),
-                      if (tile.description != null)
+                      if (tileDescription != null)
                         Padding(
                           padding: const EdgeInsets.only(top: 2),
                           child: DefaultTextStyle.merge(
                             style: textTheme.bodySmall?.copyWith(color: colorScheme.onSurfaceVariant),
-                            child: tile.description,
+                            child: tileDescription,
                           ),
                         ),
                     ],
