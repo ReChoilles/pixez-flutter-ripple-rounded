@@ -490,7 +490,7 @@ class SettingsTile<T> extends StatelessWidget {
       case _TileKind.toggle:
         return onToggle == null
             ? () {}
-            : () => onToggle!(null);
+            : () => onToggle!(!(initialValue ?? false));
       case _TileKind.radio:
         final registry = RadioGroup.maybeOf<T>(context);
         return registry == null
