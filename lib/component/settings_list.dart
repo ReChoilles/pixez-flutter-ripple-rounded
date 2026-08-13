@@ -426,6 +426,7 @@ class SettingsTile<T> extends StatelessWidget {
     super.key,
     required this.title,
     this.leading,
+    this.leadingWidget,
     this.description,
     this.trailing,
     this.value,
@@ -442,6 +443,7 @@ class SettingsTile<T> extends StatelessWidget {
     required this.initialValue,
     required this.onToggle,
     this.leading,
+    this.leadingWidget,
     this.description,
     this.enabled = true,
   })  : _kind = _TileKind.toggle,
@@ -455,6 +457,7 @@ class SettingsTile<T> extends StatelessWidget {
     required this.title,
     required T this.radioValue,
     this.leading,
+    this.leadingWidget,
     this.description,
     this.enabled = true,
   })  : _kind = _TileKind.radio,
@@ -465,7 +468,8 @@ class SettingsTile<T> extends StatelessWidget {
         initialValue = null;
 
   final Widget title;
-  final Widget? leading;
+  final IconData? leading;
+  final Widget? leadingWidget;
   final Widget? description;
   final Widget? trailing;
   final Widget? value;
@@ -514,7 +518,10 @@ class SettingsTile<T> extends StatelessWidget {
               Expanded(
                 child: _TileLabel(
                   title: title,
-                  leading: leading,
+                  leading: leadingWidget ??
+                      (leading != null
+                          ? Icon(leading!, size: 24, color: secondary)
+                          : null),
                   description: description,
                   enabled: enabled,
                 ),
