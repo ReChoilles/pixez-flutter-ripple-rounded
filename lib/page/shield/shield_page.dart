@@ -206,8 +206,7 @@ class _ShieldPageState extends State<ShieldPage> {
               ),
             ),
           ),
-        );
-      },
+        },
     );
   }
 
