@@ -18,7 +18,6 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:material_color_utilities/material_color_utilities.dart';
 import 'package:pixez/component/picker/colorpicker.dart';
 import 'package:pixez/component/picker/utils.dart';
 import 'package:pixez/component/settings_list.dart';
@@ -201,14 +200,14 @@ class _ColorPickPageState extends State<ColorPickPage> {
 
 final List<Map<String, dynamic>> _colorThemes = [
   {'color': Colors.green, 'label': '默认'},
-  {'color': Colors.teal, 'label': '青色'},
-  {'color': Colors.blue, 'label': '蓝色'},
-  {'color': Colors.indigo, 'label': '靛蓝色'},
-  {'color': const Color(0xff6750a4), 'label': '紫罗兰色'},
-  {'color': Colors.pink, 'label': '粉红色'},
-  {'color': Colors.yellow, 'label': '黄色'},
-  {'color': Colors.orange, 'label': '橙色'},
-  {'color': Colors.deepOrange, 'label': '深橙色'},
+  {'color': Colors.cyan, 'label': '青色'},
+  {'color': Colors.lightBlue, 'label': '天蓝'},
+  {'color': Colors.deepPurple, 'label': '深紫'},
+  {'color': Colors.red, 'label': '红色'},
+  {'color': Colors.amber, 'label': '琥珀'},
+  {'color': Colors.lime, 'label': '酸橙'},
+  {'color': Colors.brown, 'label': '棕色'},
+  {'color': Colors.blueGrey, 'label': '蓝灰'},
 ];
 
 class PaletteCard extends StatefulWidget {
@@ -228,69 +227,33 @@ class PaletteCard extends StatefulWidget {
 class _PaletteCardState extends State<PaletteCard> {
   @override
   Widget build(BuildContext context) {
-    final Hct hct = Hct.fromInt(widget.color.toARGB32());
-    final primary = Color(Hct.from(hct.hue, 20.0, 90.0).toInt());
-    final tertiary = Color(Hct.from(hct.hue + 50, 20.0, 85.0).toInt());
-    final primaryContainer = Color(Hct.from(hct.hue, 30.0, 50.0).toInt());
-    final checkbox = Color(Hct.from(hct.hue, 30.0, 40.0).toInt());
-    return SizedBox(
-      width: 70,
-      height: 70,
-      child: Stack(
-        children: [
-          Card(
-            elevation: 0,
-            child: Container(
-              padding: const EdgeInsets.all(10),
-              child: ClipOval(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Expanded(
-                      child: Container(
-                        color: primary,
-                      ),
-                    ),
-                    Expanded(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Expanded(
-                            child: Container(
-                              color: tertiary,
-                            ),
-                          ),
-                          Expanded(
-                            child: Container(
-                              color: primaryContainer,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
+    final colorScheme = Theme.of(context).colorScheme;
+    return Container(
+      width: 56,
+      height: 56,
+      decoration: BoxDecoration(
+        color: widget.color,
+        shape: BoxShape.circle,
+        border: widget.selected
+            ? Border.all(color: colorScheme.primary, width: 3)
+            : null,
+        boxShadow: [
+          BoxShadow(
+            color: widget.color.withValues(alpha: 0.3),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
           ),
-          if (widget.selected)
-            Center(
-              child: Container(
-                width: 25,
-                height: 25,
-                decoration: BoxDecoration(
-                  color: checkbox,
-                  shape: BoxShape.circle,
-                ),
-                child: Icon(
-                  Icons.check_rounded,
-                  color: Theme.of(context).colorScheme.surfaceContainerLow,
-                  size: 12,
-                ),
-              ),
-            ),
         ],
       ),
+      child: widget.selected
+          ? Icon(
+              Icons.check_rounded,
+              color: widget.color.computeLuminance() > 0.5
+                  ? Colors.black87
+                  : Colors.white,
+              size: 24,
+            )
+          : null,
     );
   }
 }
@@ -450,8 +413,8 @@ class _ThemePageState extends State<ThemePage> {
                           final index = _colorThemes.indexOf(e);
                           final isCustom =
                               !_colorThemes.any((t) => t['color'] == userSetting.seedColor);
-                          final selected = index == 0
-                              ? isCustom
+                          final selected = isCustom
+                              ? false
                               : userSetting.seedColor.value == color.value;
                           return GestureDetector(
                             onTap: () {
@@ -639,4 +602,4 @@ class _ThemePageState extends State<ThemePage> {
       topStore.setTop("main");
     }
   }
-}
+}n          },\n          child: Padding(\n            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),\n            child: Row(\n              children: [\n                Icon(\n                  icon,\n                  size: 22,\n                  color: selected\n                      ? colorScheme.onSecondaryContainer\n                      : colorScheme.onSurfaceVariant,\n                ),\n                const SizedBox(width: 16),\n                Text(\n                  label,\n                  style: TextStyle(\n                    color: selected\n                        ? colorScheme.onSecondaryContainer\n                        : colorScheme.onSurface,\n                    fontWeight: selected ? FontWeight.w600 : FontWeight.normal,\n                  ),\n                ),\n                const Spacer(),\n                if (selected)\n                  Container(\n                    width: 22,\n                    height: 22,\n                    decoration: BoxDecoration(\n                      color: colorScheme.primary,\n                      shape: BoxShape.circle,\n                    ),\n                    child: Icon(\n                      Icons.check_rounded,\n                      size: 14,\n                      color: colorScheme.onPrimary,\n                    ),\n                  ),\n              ],\n            ),\n          ),\n        ),\n      ),\n    );\n  }\n\n  _pickColor() async {\n    Color? result = await Navigator.of(context).push(MaterialPageRoute(\n        builder: (context) =>\n            ColorPickPage(initialColor: userSetting.seedColor)));\n    if (result != null) {\n      await userSetting.setThemeData(result);\n      topStore.setTop(\"main\");\n    }\n  }\n}\n"}]
