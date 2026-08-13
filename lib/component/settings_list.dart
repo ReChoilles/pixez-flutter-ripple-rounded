@@ -1,18 +1,63 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:pixez/i18n.dart';
-import 'package:pixez/main.dart';
-import 'package:pixez/utils/haptic_util.dart';
+
+class RadioGroup<T> extends StatelessWidget {
+  final T? groupValue;
+  final ValueChanged<T?> onChanged;
+  final Widget child;
+
+  const RadioGroup({
+    super.key,
+    required this.groupValue,
+    required this.onChanged,
+    required this.child,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return _RadioGroupScope<T>(
+      groupValue: groupValue,
+      onChanged: onChanged,
+      child: child,
+    );
+  }
+
+  static _RadioGroupScope<T>? maybeOf<T>(BuildContext context) {
+    return context.dependOnInheritedWidgetOfExactType<_RadioGroupScope<T>>();
+  }
+}
+
+class _RadioGroupScope<T> extends InheritedWidget {
+  final T? groupValue;
+  final ValueChanged<T?> onChanged;
+
+  const _RadioGroupScope({
+    required this.groupValue,
+    required this.onChanged,
+    required super.child,
+  });
+
+  @override
+  bool updateShouldNotify(_RadioGroupScope<T> oldWidget) {
+    return oldWidget.groupValue != groupValue;
+  }
+}
+
+enum _TileKind { plain, toggle, radio }
+
+const double _outerRadius = 24;
+const double _innerRadius = 4;
+const double _rowGap = 4;
 
 class SettingsList extends StatelessWidget {
   const SettingsList({super.key, required this.sections, this.maxWidth = 1000});
+
   final List<Widget> sections;
   final double maxWidth;
 
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-      padding: const EdgeInsets.only(top: 12, bottom: 24),
+      padding: const EdgeInsets.symmetric(vertical: 12),
       itemCount: sections.length,
       itemBuilder: (context, index) => Center(
         child: ConstrainedBox(
@@ -32,6 +77,7 @@ class SettingsSection extends StatelessWidget {
     this.bottomInfo,
     this.margin,
   });
+
   final List<Widget> tiles;
   final Widget? title;
   final Widget? bottomInfo;
@@ -50,8 +96,8 @@ class SettingsSection extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
               child: DefaultTextStyle.merge(
-                style: textTheme.titleSmall
-                    ?.copyWith(color: colorScheme.primary, fontWeight: FontWeight.w600),
+                style:
+                    textTheme.titleSmall?.copyWith(color: colorScheme.primary),
                 child: title!,
               ),
             ),
@@ -72,51 +118,51 @@ class SettingsSection extends StatelessWidget {
 }
 
 class SettingsSplitGroup extends StatelessWidget {
-  const SettingsSplitGroup({super.key, required this.children});
+  const SettingsSplitGroup({
+    super.key,
+    required this.children,
+    this.outerRadius = _outerRadius,
+  });
+
   final List<Widget> children;
+  final double outerRadius;
+
+  static ValueChanged<bool>? pressReporterOf(BuildContext context) {
+    return context
+        .dependOnInheritedWidgetOfExactType<_SplitRowScope>()
+        ?.onPressChanged;
+  }
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-    final displayTiles = <Widget>[];
-    for (int i = 0; i < children.length; i++) {
-      final isFirst = i == 0;
-      final isLast = i == children.length - 1;
-      final hasDivider = !isLast;
-      displayTiles.add(
-        _SplitRow(
-          isFirst: isFirst,
-          isLast: isLast,
-          hasDivider: hasDivider,
-          child: children[i],
-        ),
-      );
-    }
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(16),
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          color: colorScheme.surfaceContainerLow,
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: displayTiles,
-        ),
-      ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        for (int i = 0; i < children.length; i++) ...[
+          if (i > 0) const SizedBox(height: _rowGap),
+          _SplitRow(
+            first: i == 0,
+            last: i == children.length - 1,
+            outerRadius: outerRadius,
+            child: children[i],
+          ),
+        ],
+      ],
     );
   }
 }
 
 class _SplitRow extends StatefulWidget {
   const _SplitRow({
-    required this.isFirst,
-    required this.isLast,
-    required this.hasDivider,
+    required this.first,
+    required this.last,
+    required this.outerRadius,
     required this.child,
   });
-  final bool isFirst;
-  final bool isLast;
-  final bool hasDivider;
+
+  final bool first;
+  final bool last;
+  final double outerRadius;
   final Widget child;
 
   @override
@@ -124,81 +170,261 @@ class _SplitRow extends StatefulWidget {
 }
 
 class _SplitRowState extends State<_SplitRow> {
-  double _radius = 4.0;
   bool _pressed = false;
 
-  void _onTapDown(TapDownDetails details) {
-    setState(() {
-      _pressed = true;
-      _radius = 24.0;
-    });
+  @override
+  Widget build(BuildContext context) {
+    final outer = widget.outerRadius;
+    final top = widget.first || _pressed ? outer : _innerRadius;
+    final bottom = widget.last || _pressed ? outer : _innerRadius;
+    return Material(
+      color: Theme.of(context).colorScheme.surfaceContainerLow,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(top),
+          bottom: Radius.circular(bottom),
+        ),
+      ),
+      clipBehavior: Clip.antiAlias,
+      child: _SplitRowScope(
+        onPressChanged: (pressed) => setState(() => _pressed = pressed),
+        child: widget.child,
+      ),
+    );
   }
+}
 
-  void _onTapUp(TapUpDetails details) {
-    setState(() {
-      _pressed = false;
-      _radius = 4.0;
-    });
-  }
+class _SplitRowScope extends InheritedWidget {
+  const _SplitRowScope({required this.onPressChanged, required super.child});
 
-  void _onTapCancel() {
-    setState(() {
-      _pressed = false;
-      _radius = 4.0;
-    });
+  final ValueChanged<bool> onPressChanged;
+
+  @override
+  bool updateShouldNotify(_SplitRowScope oldWidget) => false;
+}
+
+class SettingsRadioSection<T> extends StatelessWidget {
+  const SettingsRadioSection({
+    super.key,
+    required this.groupValue,
+    required this.onChanged,
+    required this.tiles,
+    this.title,
+  });
+
+  final T? groupValue;
+  final ValueChanged<T?> onChanged;
+  final List<Widget> tiles;
+  final Widget? title;
+
+  @override
+  Widget build(BuildContext context) {
+    return RadioGroup<T>(
+      groupValue: groupValue,
+      onChanged: onChanged,
+      child: SettingsSection(title: title, tiles: tiles),
+    );
   }
+}
+
+Color _disabledOn(BuildContext context) =>
+    Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.38);
+
+class _TileLabel extends StatelessWidget {
+  const _TileLabel({
+    required this.title,
+    this.leading,
+    this.description,
+    this.enabled = true,
+  });
+
+  final Widget title;
+  final IconData? leading;
+  final Widget? description;
+  final bool enabled;
 
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    return AnimatedContainer(
-      duration: const Duration(milliseconds: 150),
-      curve: Curves.easeOut,
-      margin: EdgeInsets.symmetric(horizontal: _pressed ? 4 : 0),
-      decoration: BoxDecoration(
-        color: _pressed
-            ? colorScheme.secondaryContainer.withValues(alpha: 0.5)
-            : Colors.transparent,
-        borderRadius: BorderRadius.circular(_radius),
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          widget.child,
-          if (widget.hasDivider && !_pressed)
-            Divider(
-              height: 1,
-              thickness: 1,
-              indent: 16,
-              endIndent: 16,
-              color: colorScheme.outlineVariant.withValues(alpha: 0.4),
+    final textTheme = Theme.of(context).textTheme;
+    final disabled = enabled ? null : _disabledOn(context);
+    final foreground = disabled ?? colorScheme.onSurface;
+    final secondary = disabled ?? colorScheme.onSurfaceVariant;
+
+    return Row(
+      children: [
+        if (leading != null) ...[
+          Icon(leading, size: 24, color: secondary),
+          const SizedBox(width: 16),
+        ],
+        Expanded(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              DefaultTextStyle.merge(
+                style: textTheme.bodyLarge?.copyWith(color: foreground),
+                child: title,
+              ),
+              if (description != null) ...[
+                const SizedBox(height: 2),
+                DefaultTextStyle.merge(
+                  style: textTheme.bodySmall?.copyWith(color: secondary),
+                  child: description!,
+                ),
+              ],
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class SettingsCategoryTile extends StatelessWidget {
+  const SettingsCategoryTile({
+    super.key,
+    required this.icon,
+    required this.title,
+    required this.description,
+    required this.onTap,
+  });
+
+  final IconData icon;
+  final String title;
+  final String description;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
+    return InkWell(
+      onTap: onTap,
+      onHighlightChanged: SettingsSplitGroup.pressReporterOf(context),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        child: Row(
+          children: [
+            Container(
+              width: 36,
+              height: 36,
+              decoration: BoxDecoration(
+                color: colorScheme.secondaryContainer,
+                shape: BoxShape.circle,
+              ),
+              child: Icon(
+                icon,
+                size: 18,
+                color: colorScheme.onSecondaryContainer,
+              ),
             ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(title, style: textTheme.bodyLarge),
+                  const SizedBox(height: 2),
+                  Text(
+                    description,
+                    style: textTheme.bodySmall
+                        ?.copyWith(color: colorScheme.onSurfaceVariant),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+              ),
+            ),
+            Icon(
+              Icons.chevron_right_rounded,
+              color: colorScheme.onSurfaceVariant,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class SettingsSliderTile extends StatelessWidget {
+  const SettingsSliderTile({
+    super.key,
+    required this.title,
+    required this.value,
+    required this.valueLabel,
+    required this.min,
+    required this.max,
+    required this.onChanged,
+    this.divisions,
+    this.leading,
+    this.description,
+  });
+
+  final Widget title;
+  final IconData? leading;
+  final Widget? description;
+  final String valueLabel;
+  final double value;
+  final double min;
+  final double max;
+  final int? divisions;
+  final ValueChanged<double> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
+
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: _TileLabel(
+                  title: title,
+                  leading: leading,
+                  description: description,
+                ),
+              ),
+              const SizedBox(width: 12),
+              Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                decoration: BoxDecoration(
+                  color: colorScheme.secondaryContainer,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Text(
+                  valueLabel,
+                  style: textTheme.labelMedium?.copyWith(
+                    color: colorScheme.onSecondaryContainer,
+                    fontFeatures: const [FontFeature.tabularFigures()],
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          Slider(
+            value: value,
+            min: min,
+            max: max,
+            divisions: divisions,
+            showValueIndicator: ShowValueIndicator.never,
+            padding: EdgeInsets.zero,
+            onChanged: onChanged,
+          ),
         ],
       ),
     );
   }
 }
 
-enum _TileKind { plain, toggle, radio }
-
 class SettingsTile<T> extends StatelessWidget {
-  final _TileKind _kind;
-
-  final Widget title;
-  final Object? leading;
-  final Widget? description;
-  final Widget? trailing;
-  final T? value;
-  final void Function(BuildContext context)? onPressed;
-  final bool enabled;
-
-  // Switch
-  final bool? initialValue;
-  final void Function(bool?)? onToggle;
-
-  // Radio
-  final T? radioValue;
-
   const SettingsTile({
     super.key,
     required this.title,
@@ -230,7 +456,7 @@ class SettingsTile<T> extends StatelessWidget {
   const SettingsTile.radioTile({
     super.key,
     required this.title,
-    required this.radioValue,
+    required T this.radioValue,
     this.leading,
     this.description,
     this.enabled = true,
@@ -238,643 +464,86 @@ class SettingsTile<T> extends StatelessWidget {
         trailing = null,
         value = null,
         onPressed = null,
-        initialValue = null,
-        onToggle = null;
+        onToggle = null,
+        initialValue = null;
 
-  @override
-  Widget build(BuildContext context) {
-    switch (_kind) {
-      case _TileKind.toggle:
-        return _SettingsTileSwitch(
-          title: title,
-          leading: leading,
-          description: description,
-          enabled: enabled,
-          initialValue: initialValue ?? false,
-          onToggle: onToggle,
-        );
-      case _TileKind.radio:
-        return _SettingsTileRadio<T>(
-          title: title,
-          leading: leading,
-          description: description,
-          enabled: enabled,
-          radioValue: radioValue,
-        );
-      case _TileKind.plain:
-        return _SettingsTilePlain(
-          title: title,
-          leading: leading,
-          description: description,
-          trailing: trailing,
-          enabled: enabled,
-          onPressed: onPressed,
-        );
-    }
-  }
-}
-
-class _SettingsTilePlain extends StatelessWidget {
-  final Widget title;
-  final Object? leading;
-  final Widget? description;
-  final Widget? trailing;
-  final bool enabled;
-  final void Function(BuildContext context)? onPressed;
-
-  const _SettingsTilePlain({
-    required this.title,
-    this.leading,
-    this.description,
-    this.trailing,
-    this.enabled = true,
-    this.onPressed,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-    final textTheme = Theme.of(context).textTheme;
-
-    Widget iconWidget;
-    if (leading is IconData) {
-      iconWidget = Container(
-        width: 40,
-        height: 40,
-        decoration: BoxDecoration(
-          color: colorScheme.secondaryContainer.withValues(alpha: 0.6),
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: Icon(
-          leading as IconData,
-          size: 20,
-          color: colorScheme.onSecondaryContainer,
-        ),
-      );
-    } else if (leading != null) {
-      iconWidget = leading! as Widget;
-    } else {
-      iconWidget = const SizedBox.shrink();
-    }
-
-    final content = Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-      child: Row(
-        children: [
-          if (leading != null) ...[
-            iconWidget,
-            const SizedBox(width: 16),
-          ],
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                DefaultTextStyle.merge(
-                  style: textTheme.bodyLarge?.copyWith(
-                    color: enabled
-                        ? colorScheme.onSurface
-                        : colorScheme.onSurface.withValues(alpha: 0.38),
-                  ),
-                  child: title,
-                ),
-                if (description != null)
-                  Padding(
-                    padding: const EdgeInsets.only(top: 2),
-                    child: DefaultTextStyle.merge(
-                      style: textTheme.bodySmall?.copyWith(
-                        color: colorScheme.onSurfaceVariant,
-                      ),
-                      child: description!,
-                    ),
-                  ),
-              ],
-            ),
-          ),
-          if (trailing != null) ...[
-            const SizedBox(width: 8),
-            trailing!,
-          ],
-          if (onPressed != null)
-            Padding(
-              padding: const EdgeInsets.only(left: 4),
-              child: Icon(
-                Icons.chevron_right_rounded,
-                size: 20,
-                color: colorScheme.onSurfaceVariant.withValues(alpha: 0.5),
-              ),
-            ),
-        ],
-      ),
-    );
-
-    if (onPressed != null) {
-      return InkWell(
-        onTap: enabled ? () => onPressed!(context) : null,
-        borderRadius: BorderRadius.circular(4),
-        child: content,
-      );
-    }
-    return content;
-  }
-}
-
-class _SettingsTileSwitch extends StatelessWidget {
-  final Widget title;
-  final Object? leading;
-  final Widget? description;
-  final bool enabled;
-  final bool initialValue;
-  final void Function(bool?)? onToggle;
-
-  const _SettingsTileSwitch({
-    required this.title,
-    this.leading,
-    this.description,
-    this.enabled = true,
-    required this.initialValue,
-    required this.onToggle,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-    final textTheme = Theme.of(context).textTheme;
-
-    Widget iconWidget;
-    if (leading is IconData) {
-      iconWidget = Container(
-        width: 40,
-        height: 40,
-        decoration: BoxDecoration(
-          color: colorScheme.tertiaryContainer.withValues(alpha: 0.6),
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: Icon(
-          leading as IconData,
-          size: 20,
-          color: colorScheme.onTertiaryContainer,
-        ),
-      );
-    } else if (leading != null) {
-      iconWidget = leading! as Widget;
-    } else {
-      iconWidget = const SizedBox.shrink();
-    }
-
-    final content = Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-      child: Row(
-        children: [
-          if (leading != null) ...[
-            iconWidget,
-            const SizedBox(width: 16),
-          ],
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                DefaultTextStyle.merge(
-                  style: textTheme.bodyLarge?.copyWith(
-                    color: enabled
-                        ? colorScheme.onSurface
-                        : colorScheme.onSurface.withValues(alpha: 0.38),
-                  ),
-                  child: title,
-                ),
-                if (description != null)
-                  Padding(
-                    padding: const EdgeInsets.only(top: 2),
-                    child: DefaultTextStyle.merge(
-                      style: textTheme.bodySmall?.copyWith(
-                        color: colorScheme.onSurfaceVariant,
-                      ),
-                      child: description!,
-                    ),
-                  ),
-              ],
-            ),
-          ),
-          const SizedBox(width: 8),
-          SizedBox(
-            height: 36,
-            child: Switch.adaptive(
-              value: initialValue,
-              onChanged: enabled ? onToggle : null,
-            ),
-          ),
-        ],
-      ),
-    );
-
-    if (onToggle != null) {
-      return InkWell(
-        onTap: enabled
-            ? () {
-                onToggle!(!initialValue);
-              }
-            : null,
-        borderRadius: BorderRadius.circular(4),
-        child: content,
-      );
-    }
-    return content;
-  }
-}
-
-class _SettingsTileRadio<T> extends StatelessWidget {
-  final Widget title;
-  final Object? leading;
-  final Widget? description;
-  final bool enabled;
-  final T? radioValue;
-
-  const _SettingsTileRadio({
-    required this.title,
-    this.leading,
-    this.description,
-    this.enabled = true,
-    required this.radioValue,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-    final textTheme = Theme.of(context).textTheme;
-
-    Widget iconWidget;
-    if (leading is IconData) {
-      iconWidget = Container(
-        width: 40,
-        height: 40,
-        decoration: BoxDecoration(
-          color: colorScheme.secondaryContainer.withValues(alpha: 0.6),
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: Icon(
-          leading as IconData,
-          size: 20,
-          color: colorScheme.onSecondaryContainer,
-        ),
-      );
-    } else if (leading != null) {
-      iconWidget = leading! as Widget;
-    } else {
-      iconWidget = const SizedBox.shrink();
-    }
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-      child: Row(
-        children: [
-          if (leading != null) ...[
-            iconWidget,
-            const SizedBox(width: 16),
-          ],
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                DefaultTextStyle.merge(
-                  style: textTheme.bodyLarge?.copyWith(
-                    color: enabled
-                        ? colorScheme.onSurface
-                        : colorScheme.onSurface.withValues(alpha: 0.38),
-                  ),
-                  child: title,
-                ),
-                if (description != null)
-                  Padding(
-                    padding: const EdgeInsets.only(top: 2),
-                    child: DefaultTextStyle.merge(
-                      style: textTheme.bodySmall?.copyWith(
-                        color: colorScheme.onSurfaceVariant,
-                      ),
-                      child: description!,
-                    ),
-                  ),
-              ],
-            ),
-          ),
-          const SizedBox(width: 8),
-          SizedBox(
-            height: 22,
-            width: 22,
-            child: Container(
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(
-                  color: colorScheme.onSurfaceVariant,
-                  width: 2,
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class SettingsRadioSection<T> extends StatelessWidget {
-  final Widget title;
-  final T groupValue;
-  final ValueChanged<T?>? onChanged;
-  final List<Widget> tiles;
-
-  const SettingsRadioSection({
-    super.key,
-    required this.title,
-    required this.groupValue,
-    required this.tiles,
-    this.onChanged,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-    final textTheme = Theme.of(context).textTheme;
-
-    final wrappedTiles = tiles.map((tile) {
-      if (tile is _SettingsTileRadio<T>) {
-        final isSelected = tile.radioValue == groupValue;
-        final tileLeading = tile.leading;
-        final tileDescription = tile.description;
-        return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-          child: InkWell(
-            borderRadius: BorderRadius.circular(4),
-            onTap: () => onChanged?.call(tile.radioValue),
-            child: Row(
-              children: [
-                if (tileLeading != null)
-                  Container(
-                    width: 40,
-                    height: 40,
-                    decoration: BoxDecoration(
-                      color: colorScheme.secondaryContainer.withValues(alpha: 0.6),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Icon(
-                      tileLeading is IconData ? (tileLeading as IconData) : Icons.circle,
-                      size: 20,
-                      color: colorScheme.onSecondaryContainer,
-                    ),
-                  ),
-                if (tileLeading != null) const SizedBox(width: 16),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      DefaultTextStyle.merge(
-                        style: textTheme.bodyLarge?.copyWith(color: colorScheme.onSurface),
-                        child: tile.title,
-                      ),
-                      if (tileDescription != null)
-                        Padding(
-                          padding: const EdgeInsets.only(top: 2),
-                          child: DefaultTextStyle.merge(
-                            style: textTheme.bodySmall?.copyWith(color: colorScheme.onSurfaceVariant),
-                            child: tileDescription,
-                          ),
-                        ),
-                    ],
-                  ),
-                ),
-                const SizedBox(width: 8),
-                SizedBox(
-                  height: 22,
-                  width: 22,
-                  child: isSelected
-                      ? Icon(Icons.radio_button_checked_rounded,
-                          color: colorScheme.primary, size: 22)
-                      : Container(
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            border: Border.all(
-                              color: colorScheme.onSurfaceVariant,
-                              width: 2,
-                            ),
-                          ),
-                        ),
-                ),
-              ],
-            ),
-          ),
-        );
-      }
-      return tile;
-    }).toList();
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          child: DefaultTextStyle.merge(
-            style: textTheme.labelMedium
-                ?.copyWith(color: colorScheme.onSurfaceVariant),
-            child: title,
-          ),
-        ),
-        ...wrappedTiles,
-      ],
-    );
-  }
-}
-
-class SettingsCategoryTile extends StatelessWidget {
-  final IconData icon;
-  final Widget title;
-  final Widget? description;
-  final Widget? trailing;
-  final VoidCallback? onPressed;
-  final Color? iconBackground;
-
-  const SettingsCategoryTile({
-    super.key,
-    required this.icon,
-    required this.title,
-    this.description,
-    this.trailing,
-    this.onPressed,
-    this.iconBackground,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-    final textTheme = Theme.of(context).textTheme;
-
-    final content = Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-      child: Row(
-        children: [
-          Container(
-            width: 44,
-            height: 44,
-            decoration: BoxDecoration(
-              color: iconBackground ?? colorScheme.secondaryContainer,
-              borderRadius: BorderRadius.circular(14),
-            ),
-            child: Icon(icon, size: 22, color: colorScheme.onSecondaryContainer),
-          ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                DefaultTextStyle.merge(
-                  style: textTheme.bodyLarge?.copyWith(
-                    color: colorScheme.onSurface,
-                    fontWeight: FontWeight.w500,
-                  ),
-                  child: title,
-                ),
-                if (description != null)
-                  Padding(
-                    padding: const EdgeInsets.only(top: 2),
-                    child: DefaultTextStyle.merge(
-                      style: textTheme.bodySmall
-                          ?.copyWith(color: colorScheme.onSurfaceVariant),
-                      child: description!,
-                    ),
-                  ),
-              ],
-            ),
-          ),
-          if (trailing != null) ...[
-            const SizedBox(width: 8),
-            trailing!,
-          ],
-          Icon(
-            Icons.chevron_right_rounded,
-            size: 22,
-            color: colorScheme.onSurfaceVariant.withValues(alpha: 0.5),
-          ),
-        ],
-      ),
-    );
-
-    if (onPressed != null) {
-      return InkWell(
-        onTap: onPressed,
-        borderRadius: BorderRadius.circular(4),
-        child: content,
-      );
-    }
-    return content;
-  }
-}
-
-class SettingsSliderTile extends StatelessWidget {
   final Widget title;
   final IconData? leading;
-  final double min;
-  final double max;
-  final double value;
-  final ValueChanged<double>? onChanged;
-  final int? divisions;
-  final String Function(double)? displayValue;
+  final Widget? description;
+  final Widget? trailing;
+  final Widget? value;
+  final void Function(BuildContext context)? onPressed;
+  final void Function(bool? value)? onToggle;
+  final bool? initialValue;
+  final T? radioValue;
+  final bool enabled;
+  final _TileKind _kind;
 
-  const SettingsSliderTile({
-    super.key,
-    required this.title,
-    this.leading,
-    required this.min,
-    required this.max,
-    required this.value,
-    this.onChanged,
-    this.divisions,
-    this.displayValue,
-  });
+  VoidCallback? _tapHandler(BuildContext context) {
+    if (!enabled) return null;
+    switch (_kind) {
+      case _TileKind.plain:
+        return onPressed == null ? null : () => onPressed!(context);
+      case _TileKind.toggle:
+        return onToggle == null ? null : () => onToggle!(null);
+      case _TileKind.radio:
+        final registry = RadioGroup.maybeOf<T>(context);
+        return registry == null ? null : () => registry.onChanged(radioValue);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
+    final secondary =
+        enabled ? colorScheme.onSurfaceVariant : _disabledOn(context);
 
-    Widget iconWidget;
-    if (leading != null) {
-      iconWidget = Container(
-        width: 40,
-        height: 40,
-        decoration: BoxDecoration(
-          color: colorScheme.tertiaryContainer.withValues(alpha: 0.6),
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: Icon(
-          leading,
-          size: 20,
-          color: colorScheme.onTertiaryContainer,
-        ),
-      );
-    } else {
-      iconWidget = const SizedBox.shrink();
-    }
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Row(
+    return InkWell(
+      onTap: _tapHandler(context),
+      onHighlightChanged: SettingsSplitGroup.pressReporterOf(context),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(minHeight: 32),
+          child: Row(
             children: [
-              if (leading != null) ...[
-                iconWidget,
-                const SizedBox(width: 16),
-              ],
               Expanded(
-                child: DefaultTextStyle.merge(
-                  style: textTheme.bodyLarge?.copyWith(color: colorScheme.onSurface),
-                  child: title,
+                child: _TileLabel(
+                  title: title,
+                  leading: leading,
+                  description: description,
+                  enabled: enabled,
                 ),
               ),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                decoration: BoxDecoration(
-                  color: colorScheme.secondaryContainer.withValues(alpha: 0.6),
-                  borderRadius: BorderRadius.circular(8),
+              if (value != null) ...[
+                const SizedBox(width: 12),
+                DefaultTextStyle.merge(
+                  style: textTheme.bodyMedium?.copyWith(color: secondary),
+                  child: value!,
                 ),
-                child: Text(
-                  displayValue?.call(value) ?? value.toStringAsFixed(0),
-                  style: textTheme.labelSmall?.copyWith(
-                    color: colorScheme.onSecondaryContainer,
-                    fontWeight: FontWeight.w600,
-                  ),
+              ],
+              if (trailing != null) ...[
+                const SizedBox(width: 8),
+                IconTheme.merge(
+                  data: IconThemeData(color: secondary),
+                  child: trailing!,
                 ),
-              ),
+              ],
+              if (_kind == _TileKind.toggle) ...[
+                const SizedBox(width: 12),
+                Switch(
+                  value: initialValue ?? false,
+                  onChanged: enabled ? onToggle : null,
+                ),
+              ],
+              if (_kind == _TileKind.radio) ...[
+                const SizedBox(width: 12),
+                Radio<T>(value: radioValue as T, enabled: enabled),
+              ],
             ],
           ),
-          const SizedBox(height: 4),
-          Padding(
-            padding: EdgeInsets.only(left: leading != null ? 56 : 0),
-            child: SliderTheme(
-              data: SliderThemeData(
-                trackHeight: 4,
-                thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 8),
-                overlayShape: const RoundSliderOverlayShape(overlayRadius: 16),
-                activeTrackColor: colorScheme.primary,
-                inactiveTrackColor: colorScheme.surfaceContainerHighest,
-                thumbColor: colorScheme.primary,
-                overlayColor: colorScheme.primary.withValues(alpha: 0.12),
-              ),
-              child: Slider(
-                min: min,
-                max: max,
-                value: value,
-                divisions: divisions,
-                onChanged: onChanged,
-              ),
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }
