@@ -154,7 +154,8 @@ class _AboutPageState extends State<AboutPage> {
                     }
                   },
                 ),
-                if (Platform.isAndroid || kDebugMode) ...[                  SettingsTile(
+                if (Platform.isAndroid || kDebugMode) [
+                  SettingsTile(
                     leading: _tileIcon(context, Icons.device_hub_rounded),
                     title: Text(I18n.of(context).repo_address),
                     description: const Text('github.com/Notsfsssf/pixez-flutter'),
@@ -253,7 +254,8 @@ class _AboutPageState extends State<AboutPage> {
                   ),
                 ],
               ),
-            if (Platform.isIOS) ...[              SettingsSection(
+            if (Platform.isIOS) [
+              SettingsSection(
                 title: const Text('支持开发者'),
                 tiles: [
                   SettingsTile(
@@ -547,4 +549,4 @@ class _AboutPageState extends State<AboutPage> {
       },
     );
   }
-description: Text(I18n.of(context).go_to_project_address),\n                onPressed: (ctx) {\n                  try {\n                    launchUrlString(\n                      'https://github.com/Notsfsssf/pixez-flutter',\n                    );\n                  } catch (e) {}\n                },\n              ),\n              SettingsTile(\n                leading: _tileIcon(context, Icons.update_rounded),\n                title: Text(I18n.of(context).check_for_updates),\n                onPressed: (ctx) {\n                  Navigator.of(ctx).push(\n                    MaterialPageRoute(builder: (_) => UpdatePage()),\n                  );\n                },\n              ),\n              SettingsTile(\n                leading: CircleAvatar(\n                  backgroundImage: NetworkImage(\n                    'https://avatars1.githubusercontent.com/u/9017470?s=400&v=4',\n                  ),\n                ),\n                title: Text('Skimige'),\n                description: Text(I18n.of(context).skimige_message),\n              ),\n            ],\n          ),\n        );\n      },\n    );\n  }\n}"}]
+}
